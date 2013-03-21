@@ -1,0 +1,116 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        
+        <title>Prueba Biblioteca</title>
+		<link rel="stylesheet" href="Biblioteca.css" type="text/css">
+		<link rel="stylesheet" href="../CSS/Gadget.css" type="text/css">
+        <link rel="stylesheet" href="../jQueryUI/css/redmond/jquery-ui-1.9.1.custom.css" />
+	</head>
+	
+	<body>		
+        <div id="panel_principal">
+        
+        </div>	
+
+        <div id="plantillas">
+	       <li id="plantilla_libro_encontrado_en_buscador" class="libro_encontrado_en_buscador">
+                <div id="autor_de_libro_encontrado" class="autor_de_libro_encontrado">
+                </div>:
+                <div id="titulo_de_libro_encontrado" class="titulo_de_libro_encontrado">
+                </div>   
+            </li>
+            <div id="plantilla_biblioteca" class="biblioteca">
+                <div id="controles_de_la_vista_de_biblioteca" class="controles_de_la_vista_de_biblioteca"> 
+                    <div>
+                        Autor:<input type="text" id="input_nombre_autor_del_alta_de_libros" class="input_nombre_autor_del_alta_de_libros"/>			
+                    </div>
+                    <div>
+                        Titulo:<input type="text" id="input_titulo_del_alta_de_libros" class="input_titulo_del_alta_de_libros"/>			
+                    </div>
+                    <button id="boton_agregar_del_alta_de_libros" class="boton_agregar_del_alta_de_libros">
+                        +       
+                    </button>
+                </div>
+	        </div>
+            <div id="plantilla_buscador_de_libros" class="buscador_de_libros">
+		        <div id="controles_del_buscador_de_libros" class="controles_del_buscador_de_libros">   
+                    <input type="text" id="input_de_busqueda_del_buscador_de_libros" class="input_de_busqueda_del_buscador_de_libros"/>			  
+		        </div>
+                <ul id="lista_de_libros_encontrados_del_buscador_de_libros" class="lista_de_libros_encontrados_del_buscador_de_libros">
+		        </ul>
+	        </div>
+            <div id="plantilla_gadget" class="gadget">
+                <div class="toolbar">
+                </div>
+                
+                <div class="contenedor">
+                    
+                </div>
+            </div>          
+        </div>
+    </body>
+    
+    <script type="text/javascript" src="../linq/linq.js"></script> 
+    <script type="text/javascript" src="../JQuery/jquery-1.9.1.js"></script> 
+    <script type="text/javascript" src="../jQueryUI/js/jquery-ui-1.9.1.custom.js"></script>
+    <script type="text/javascript" src="../VortexScripts/Vortex.js"></script>
+    <script type="text/javascript" src="../VortexScripts/FiltrosYTransformaciones.js"></script>
+    <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/GeneradorDeIdMensaje.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoMultiplexor.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidi.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidiMonoFiltro.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoRouter.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/PataConectora.js"></script> 
+    <script type="text/javascript" src="../VortexComm/gadget.js"></script> 
+    <script type="text/javascript" src="Biblioteca.js"></script>    
+    <script type="text/javascript" src="Libro.js"></script>    
+    <script type="text/javascript" src="BuscadorDeLibros.js"></script>    
+    
+
+    <script type="text/javascript" >            
+        $(function () {          
+            var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');
+            var router =  new NodoRouter();   
+            router.conectarCon(clienteHTTP);
+            clienteHTTP.conectarCon(router);
+            
+            var una_biblioteca = FabricaDeBibliotecas.crearBibliotecaConectadaALaRed(router);   
+            una_biblioteca.agregarLibro(new Libro({titulo:'100 anos de soledad', autor:'Gabriel Garcia Marquez'}));
+            una_biblioteca.agregarLibro(new Libro({titulo:'El hombre duplicado', autor:'Saramago'}));
+            una_biblioteca.agregarLibro(new Libro({titulo:'Crimen y castigo', autor:'Dostoievsky'}));
+            
+            var un_buscador_de_libros = FabricaDeBuscadoresDeLibros.crearBuscadorConectadoALaRed(router);
+            
+            var panel_principal = $('#panel_principal');
+            var plantillas = $('#plantillas');
+            var UI_buscador = plantillas.find('#plantilla_buscador_de_libros').clone();
+            var UI_biblioteca = plantillas.find('#plantilla_biblioteca').clone();
+            var plantilla_libro_encontrado = plantillas.find('#plantilla_libro_encontrado_en_buscador');
+            
+            var vista_buscador = new VistaDeBuscadorDeLibros(un_buscador_de_libros, UI_buscador, plantilla_libro_encontrado);
+            var vista_biblioteca = new VistaDeBiblioteca(una_biblioteca, UI_biblioteca);
+            
+            var gadget_buscador =  $.extend(true,{}, gadget);
+            gadget_buscador.start({
+                title			: 'Buscador de libros',
+                UI 				: plantillas.find("#plantilla_gadget").clone()
+            });
+            gadget_buscador.agregarContenido(vista_buscador);
+            
+            var gadget_biblioteca =  $.extend(true,{}, gadget);
+            gadget_biblioteca.start({
+                title			: 'Biblioteca',
+                UI 				: plantillas.find("#plantilla_gadget").clone()
+            });
+            
+            gadget_biblioteca.agregarContenido(vista_biblioteca);
+            
+            
+            gadget_buscador.dibujarEn(panel_principal); 
+            gadget_biblioteca.dibujarEn(panel_principal); 
+        });
+    </script>
+</html>
