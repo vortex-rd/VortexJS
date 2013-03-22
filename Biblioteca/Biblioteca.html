@@ -66,7 +66,6 @@
     <script type="text/javascript" src="../VortexScripts/PataConectora.js"></script> 
     <script type="text/javascript" src="../VortexComm/gadget.js"></script> 
     <script type="text/javascript" src="Biblioteca.js"></script>    
-    <script type="text/javascript" src="VistaDeBiblioteca.js"></script>    
     <script type="text/javascript" src="Libro.js"></script>    
     <script type="text/javascript" src="BuscadorDeLibros.js"></script>    
     
@@ -92,8 +91,7 @@
             var plantilla_libro_encontrado = plantillas.find('#plantilla_libro_encontrado_en_buscador');
             
             var vista_buscador = new VistaDeBuscadorDeLibros(un_buscador_de_libros, UI_buscador, plantilla_libro_encontrado);
-            var vista_biblioteca = new VistaDeBiblioteca(UI_biblioteca);
-            var controlador_biblioteca = new ControladorDeVistaDeBiblioteca(vista_biblioteca, router);
+            var vista_biblioteca = new VistaDeBiblioteca(una_biblioteca, UI_biblioteca);
             
             var gadget_buscador =  $.extend(true,{}, gadget);
             gadget_buscador.start({
@@ -106,7 +104,8 @@
             gadget_biblioteca.start({
                 title			: 'Biblioteca',
                 UI 				: plantillas.find("#plantilla_gadget").clone()
-            });            
+            });
+            
             gadget_biblioteca.agregarContenido(vista_biblioteca);
             
             
