@@ -3,7 +3,7 @@ var test = {}
 test.describe_1 = function(){
     describe("Creo una biblioteca vacia conectada a la red vortex usando un controlador y tambien conecto a la red un buscador de libros con su controlador. Espero a que se establezca la conexion.", function() { 
         beforeEach(function() {
-            runs(function() { 
+      3      runs(function() { 
                 test.un_router = new NodoRouter();            
                 test.una_biblioteca = FabricaDeBibliotecas.crearBibliotecaConectadaALaRed(test.un_router);                
                 test.un_buscador_de_libros = FabricaDeBuscadoresDeLibros.crearBuscadorConectadoALaRed(test.un_router);               
@@ -42,7 +42,9 @@ test.describe_1_1_1 = function(){
     });
     //<<<<<<<<<<tests
     it("El titulo del libro deberia ser 'walden 2'", function() {
-        expect(test.walden2.titulo()).toEqual("Walden 2");                
+        runs(function() { 
+            expect(test.walden2.titulo()).toEqual("Walden 2");        
+        });   
     }); 
     
     it("El autor del libro deberia ser Skinner", function() {
