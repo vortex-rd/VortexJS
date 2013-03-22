@@ -3,7 +3,6 @@ var FabricaDeBibliotecas = {
         return new Biblioteca();
     },
     crearBibliotecaConectadaALaRed : function(router){
-            
         una_biblioteca = new Biblioteca();
         un_controlador_de_biblioteca = new ControladorDeBiblioteca(una_biblioteca, router);
         
