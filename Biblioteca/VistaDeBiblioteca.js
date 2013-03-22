@@ -29,7 +29,7 @@ var ControladorDeVistaDeBiblioteca = function(una_vista_de_biblioteca, un_router
     this._vista = una_vista_de_biblioteca;
     this._router = un_router;   
 
-    this._portal = new NodoPortalBidi("biblioteca");
+    this._portal = new NodoPortalBidi("vista biblioteca");
     this._router.conectarCon(this._portal);
     this._portal.conectarCon(this._router); 
     
