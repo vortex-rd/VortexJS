@@ -1,4 +1,3 @@
-//bla bla
 var FabricaDeBibliotecas = {
     crearBiblioteca : function(){
         return new Biblioteca();
