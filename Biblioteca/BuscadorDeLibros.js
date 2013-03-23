@@ -63,7 +63,7 @@ VistaDeBuscadorDeLibros.prototype = {
         var self = this;
         this._panel_libros_encontrados.empty();
         this._buscador.librosEncontrados().ForEach(function(libro){
-            var vista_libro = new VistaDeLibro(libro, self._plantilla_libro.clone());
+            var vista_libro = new VistaDeLibroEnBuscador(libro, self._plantilla_libro.clone());
             vista_libro.dibujarEn(self._panel_libros_encontrados);
         });        
     },
@@ -76,7 +76,7 @@ VistaDeBuscadorDeLibros.prototype = {
     }
 };
 
-var VistaDeLibro = function(libro, UI){
+var VistaDeLibroEnBuscador = function(libro, UI){
     this._ui = UI;
   
     this._label_autor = UI.find('#autor_de_libro_encontrado');
@@ -86,7 +86,7 @@ var VistaDeLibro = function(libro, UI){
     this._label_titulo.text(libro.titulo());
 }
 
-VistaDeLibro.prototype = {
+VistaDeLibroEnBuscador.prototype = {
     dibujarEn: function(panel){
         panel.append(this._ui);
     }

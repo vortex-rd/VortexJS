@@ -3,9 +3,10 @@ var test = {}
 test.describe_1 = function(){
     describe("Creo una biblioteca vacia conectada a la red vortex usando un controlador y tambien conecto a la red un buscador de libros con su controlador. Espero a que se establezca la conexion.", function() { 
         beforeEach(function() {
-      3      runs(function() { 
-                test.un_router = new NodoRouter();            
-                test.una_biblioteca = FabricaDeBibliotecas.crearBibliotecaConectadaALaRed(test.un_router);                
+            runs(function() { 
+                test.un_router = new NodoRouter();  
+                test.nodo_biblioteca = new NodoBiblioteca(test.un_router);
+                test.una_biblioteca = test.nodo_biblioteca._biblioteca;               
                 test.un_buscador_de_libros = FabricaDeBuscadoresDeLibros.crearBuscadorConectadoALaRed(test.un_router);               
             }); 
            
@@ -88,7 +89,8 @@ test.describe_1_1_1_1 = function(){
 test.describe_1_1_1_1_1 = function(){
     beforeEach(function() {  
         runs(function() { 
-            test.biblioteca_2 = FabricaDeBibliotecas.crearBibliotecaConectadaALaRed(test.un_router);
+            test.nodo_biblioteca_2 = new NodoBiblioteca(test.un_router);
+            test.biblioteca_2 = test.nodo_biblioteca_2._biblioteca;     
         });
         waits(0); 
         waitsFor(function() {

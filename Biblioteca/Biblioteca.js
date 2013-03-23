@@ -1,13 +1,9 @@
-var FabricaDeBibliotecas = {
-    crearBiblioteca : function(){
-        return new Biblioteca();
-    },
-    crearBibliotecaConectadaALaRed : function(router){
-        una_biblioteca = new Biblioteca();
-        un_controlador_de_biblioteca = new ControladorDeBiblioteca(una_biblioteca, router);
-        
-        return una_biblioteca;
-    }
+var NodoBiblioteca = function(un_router){
+    this._biblioteca = new Biblioteca();
+    this._controlador_de_biblioteca = new ControladorDeBiblioteca(this._biblioteca, un_router);
+}
+NodoBiblioteca.prototype = {
+    
 }
     
 var Biblioteca = function(){    

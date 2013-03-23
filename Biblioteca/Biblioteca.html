@@ -31,6 +31,11 @@
                     <button id="boton_agregar_del_alta_de_libros" class="boton_agregar_del_alta_de_libros">
                         +       
                     </button>
+                    <button id="boton_refrescar_del_alta_de_libros" class="boton_refrescar_del_alta_de_libros">
+                        refrescar       
+                    </button>
+                    <ul id="panel_libros_en_vista_de_libros" class="panel_libros_en_vista_de_libros">
+                    </ul>
                 </div>
 	        </div>
             <div id="plantilla_buscador_de_libros" class="buscador_de_libros">
@@ -68,6 +73,7 @@
     <script type="text/javascript" src="Biblioteca.js"></script>    
     <script type="text/javascript" src="VistaDeBiblioteca.js"></script>    
     <script type="text/javascript" src="Libro.js"></script>    
+    <script type="text/javascript" src="VistaDeLibro.js"></script>    
     <script type="text/javascript" src="BuscadorDeLibros.js"></script>    
     
 
@@ -78,11 +84,8 @@
             router.conectarCon(clienteHTTP);
             clienteHTTP.conectarCon(router);
             
-            var una_biblioteca = FabricaDeBibliotecas.crearBibliotecaConectadaALaRed(router);   
-            una_biblioteca.agregarLibro(new Libro({titulo:'100 anos de soledad', autor:'Gabriel Garcia Marquez'}));
-            una_biblioteca.agregarLibro(new Libro({titulo:'El hombre duplicado', autor:'Saramago'}));
-            una_biblioteca.agregarLibro(new Libro({titulo:'Crimen y castigo', autor:'Dostoievsky'}));
-            
+            var nodo_biblioteca = new NodoBiblioteca(router);           
+        
             var un_buscador_de_libros = FabricaDeBuscadoresDeLibros.crearBuscadorConectadoALaRed(router);
             
             var panel_principal = $('#panel_principal');
@@ -92,7 +95,8 @@
             var plantilla_libro_encontrado = plantillas.find('#plantilla_libro_encontrado_en_buscador');
             
             var vista_buscador = new VistaDeBuscadorDeLibros(un_buscador_de_libros, UI_buscador, plantilla_libro_encontrado);
-            var vista_biblioteca = new VistaDeBiblioteca(UI_biblioteca);
+            
+            var vista_biblioteca = new VistaDeBiblioteca(UI_biblioteca, plantilla_libro_encontrado);
             var controlador_biblioteca = new ControladorDeVistaDeBiblioteca(vista_biblioteca, router);
             
             var gadget_buscador =  $.extend(true,{}, gadget);

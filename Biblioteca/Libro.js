@@ -22,22 +22,6 @@ Libro.prototype = {
     }
 };
 
-var VistaDeLibro = function(libro, UI){
-    this._ui = UI;
-  
-    this._label_autor = UI.find('#autor_de_libro_encontrado');
-    this._label_titulo = UI.find('#titulo_de_libro_encontrado');
-    
-    this._label_autor.text(libro.autor());
-    this._label_titulo.text(libro.titulo());
-}
-
-VistaDeLibro.prototype = {
-    dibujarEn: function(panel){
-        panel.append(this._ui);
-    }
-};
-
 var ControladorDeLibro = function(un_libro, un_portal){
     this._libro = un_libro;
     this._portal = un_portal;   
@@ -48,6 +32,10 @@ var ControladorDeLibro = function(un_libro, un_portal){
                            function(mensaje){
                                 self.enviarLibro();
                            });
+//    this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.pedidoDeLibros"), 
+//                           function(mensaje){
+//                                self.enviarLibro();
+//                           });
 }
     
 ControladorDeLibro.prototype = {
