@@ -52,7 +52,7 @@ test.describe_1_1 = function(){
 test.describe_1_1_1 = function(){
     beforeEach(function() {
         runs(function() { 
-            test.router_1 = new NodoRouter();   
+            test.router_1 = new NodoRouter("1");   
             spyOn(test.router_1, 'recibirMensaje').andCallThrough();
             
             test.portal_1.conectarCon(test.router_1);
@@ -339,7 +339,10 @@ test.describe_1_1_1_3 = function(){
      
     describe("El portal pide mensajes del tipo 1", function(){
         test.describe_1_1_1_3_1();
-    });   
+    }); 
+    describe("Conecto un segundo router bidireccionalmente al primero y a este un segundo portal, el que pide mensajes del tipo 1 y el portal 1 envia", function(){
+        test.describe_1_1_1_3_2();
+    }); 
 };
 
 test.describe_1_1_1_3_1 = function(){
@@ -422,7 +425,7 @@ test.describe_1_1_1_3_1_1_1 = function(){
     }); 
     describe("Conecto un segundo portal bidireccionalmente al router", function(){
         test.describe_1_1_1_3_1_1_1_1();
-    });  
+    }); 
 };
 
 test.describe_1_1_1_3_1_1_1_1 = function(){
@@ -652,7 +655,6 @@ test.describe_1_1_1_3_1_1_1_1_1_1_1_1_1_1_1_1_1_1 = function(){
     });  
 };
 
-
 test.describe_1_1_1_3_1_1_1_1_1_1_1_1_1_2 = function(){
     beforeEach(function() {    
         runs(function() {
@@ -678,6 +680,34 @@ test.describe_1_1_1_3_1_1_1_1_1_1_1_1_1_2 = function(){
     });  
 };
 
+test.describe_1_1_1_3_2 = function(){
+    beforeEach(function() {      
+        runs(function() {            
+            test.router_2 = new NodoRouter("2");   
+            test.portal_2 = new NodoPortalBidi("2");
+            
+            test.mensaje_de_tipo_1_recibido_en_portal_2 = false;
+            test.portal_2.pedirMensajes(test.filtro_de_mensajes_del_tipo_1, 
+                                   function(){test.mensaje_de_tipo_1_recibido_en_portal_2 = true;});  
+            
+            test.router_1.conectarBidireccionalmenteCon(test.router_2);
+            test.router_2.conectarBidireccionalmenteCon(test.portal_2);
+            
+            spyOn(test.router_2, 'recibirMensaje').andCallThrough();
+            spyOn(test.portal_2, 'recibirMensaje').andCallThrough();
+        });    
+        waits(100);
+        runs(function() {              
+            test.portal_1.enviarMensaje({tipoDeMensaje:'1'});   
+        });
+        waits(50);
+    });
+    it("El portal 2 deberia hacer recibido el mensaje", function() {
+        runs(function() {
+            expect(test.mensaje_de_tipo_1_recibido_en_portal_2).toBeTruthy();         
+        });
+    });                    
+};
 
 test.describe_1();
 

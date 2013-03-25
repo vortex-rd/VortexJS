@@ -49,6 +49,10 @@ NodoRouter.prototype = {
         };
         this.mergearFiltrosParaUnaPata(nuevaPata);
     },
+    conectarBidireccionalmenteCon : function (un_nodo) {
+		this.conectarCon(un_nodo);
+        un_nodo.conectarCon(this);
+    },
     conectadoBidireccionalmenteEnTodasSusPatas : function(){
         var conectado = true;
         this._patas.forEach(function(pata){            
