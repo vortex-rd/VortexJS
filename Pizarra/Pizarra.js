@@ -26,7 +26,7 @@ var pizarra = {
 		
 		
 		//contructor del padre
-		//self.gadget(options);
+		self.gadget(options);
 		//contructor del padre:fin
 		
 		

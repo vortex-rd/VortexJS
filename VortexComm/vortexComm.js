@@ -57,112 +57,148 @@ $(function () {
 });
 
 
-var VortexComm = function (config) {
-	var persistidor = config.persistidor;
-	var contexto = config.contexto;
-	var conjunto = config.conjunto;
-	
-	conjunto.agregarFiltroEntrada(new FiltroXClaveValor('aplicacion', 'VortexComm'));	
-	conjunto.agregarTrafoSalida(new TrafoXClaveValor('aplicacion', 'VortexComm'));	
-	
-	var nombreUsuario = persistidor.getValor('NombreDeUsuario');
-	if(nombreUsuario=='') {
-		nombreUsuario = 'usuario' + getIdObjeto();
-		persistidor.setValor('NombreDeUsuario', nombreUsuario);
-	}	
-	contexto.setParametro('NombreDeUsuario', nombreUsuario);
-	
-	
-	
-	
-	
-    var vortexComm = $("#vortexComm");
-	
-	
-	vortexComm.controlUsuario = vortexComm.find("#control_usuario");
-	
-	
-	vortexComm.controlUsuario.edit = vortexComm.controlUsuario.find('.control_usuario_edit');
-	vortexComm.controlUsuario.edit.val(nombreUsuario);
-	
-	vortexComm.controlUsuario.edit.attr('readonly', true);
-	vortexComm.controlUsuario.edit.css("background-color", "transparent");
-	
-	
-	vortexComm.controlUsuario.on("dblclick", function (e) {
-		e.stopPropagation();
+var VortexComm = {
+	//documenta intereface de options, y puede tener valores default
+	options: {
+		conjunto	: null,
+		persistidor	: null,
+		contexto	: null,
 		
-		vortexComm.controlUsuario.edit.removeAttr('readonly');
-		vortexComm.controlUsuario.edit.css("background-color", "black");
+		UI			: null
 		
-    });
+	},
+	///////
 	
-	vortexComm.controlUsuario.keypress(function(e) {
-		if(e.which == 13) {
-			e.stopPropagation();
-			nombreUsuario = vortexComm.controlUsuario.edit.val();
-			persistidor.setValor('NombreDeUsuario', nombreUsuario);	
-			contexto.setParametro('NombreDeUsuario', nombreUsuario);
-			
-			vortexComm.controlUsuario.edit.attr('readonly', true);
-			vortexComm.controlUsuario.edit.css("background-color", "transparent");
+	
+	
+	editValor: function($input, flagEdit){
+		if(flagEdit==true){
+			$input.removeAttr('readonly');
+			$input.css("background-color", "black");
+		}else{
+			$input.attr('readonly', true);
+			$input.css("background-color", "transparent");
 		}
-	});
-	
-	vortexComm.botonAddCanal = vortexComm.find('#administrador_canales_boton_add_canal');
-	
-	vortexComm.listaCanales = [];
-	
-	vortexComm.administradorCanales = vortexComm.find('#administrador_canales');
+	},
 	
 	
 	
-	vortexComm.panelGadgets = vortexComm.find('#panel_gadgets');
-	
-	var persistidorCanales = persistidor.getSubPersistidor("canales");
-	
-	vortexComm.botonAddCanal.on("click", function (){
-		var idCanal = "Canal" +  (vortexComm.listaCanales.length + 1).toString();
-		
-		var persistidorCanal = persistidorCanales.getSubPersistidor(idCanal);			
-		persistidorCanal.setValor("idCanal", idCanal);
-		persistidorCanal.setValor("canal", idCanal);
-		
-		var nuevoCanal = new Canal({persistidor:persistidorCanal, 
-									conjunto:conjunto.getSubConjunto(), 
-									vortexComm:vortexComm,
-									contexto:contexto.getSubContexto()});
-		
-		vortexComm.listaCanales.push(nuevoCanal);
-		vortexComm.administradorCanales.append(nuevoCanal);
-		
-		
-		
-	});
-	
-	vortexComm.desSeleccionarTodosLosCanales = function(){
+	desSeleccionarTodosLosCanales = function(){
 		//cambiar children por .find
 		//vortexComm.panelCanales.children().removeClass("control_canal_seleccionado");
 		vortexComm.administradorCanales.find('.control_canal').removeClass("control_canal_seleccionado");
 	};
 	
-	// vortexComm.resize(function(){
-			// vortexComm.panelCanales.height(vortexComm.height()/2);
-	// });
-	//persistencia	
-	var persistidoresCanales = persistidorCanales.getSubPersistidores();
-	$.each(persistidoresCanales, function (clave, persistidorCanal) {
-	        var nuevoCanal = new Canal({persistidor:persistidorCanal, 
-										conjunto:conjunto.getSubConjunto(), 
-										vortexComm:vortexComm,
-										contexto:contexto.getSubContexto()});
-			vortexComm.listaCanales.push(nuevoCanal);
+	VortexComm: function(options){
+		
+		self = this;
+		
+		$.extend(true, this.options, options);
+		
+		
+		
+		self.persistidor = self.options.persistidor;
+		self.contexto = self.options.contexto;
+		self.conjunto = self.options.conjunto;
+		
+		
+		
+		self.conjunto.agregarFiltroEntrada(new FiltroXClaveValor('aplicacion', 'VortexComm'));	
+		self.conjunto.agregarTrafoSalida(new TrafoXClaveValor('aplicacion', 'VortexComm'));
+		
+		
+		self.nombreUsuario = persistidor.getValor('NombreDeUsuario');
+		
+		if(self.nombreUsuario=='') {
+			self.nombreUsuario = 'usuario' + getIdObjeto();
+			self.persistidor.setValor('NombreDeUsuario', self.nombreUsuario);
+		}	
+		self.contexto.setParametro('NombreDeUsuario', self.nombreUsuario);
+		
+		
+		self.controlUsuario = self.options.UI.find("#control_usuario");
+		
+		
+		self.controlUsuario.edit = self.controlUsuario.find('.control_usuario_edit');
+		self.controlUsuario.edit.val(nombreUsuario);
+		
+		
+		
+		self.editValor(self.controlUsuario.edit, false);
+		
+		
+		self.controlUsuario.on("dblclick", function (e) {
+			e.stopPropagation();
+			self.editValor(self.controlUsuario, true);
+		});
+		
+		
+		self.controlUsuario.on("keypress", (function(e) {
+			if(e.which == 13) {
+				e.stopPropagation();
+				nombreUsuario = self.controlUsuario.edit.val();
+				
+				persistidor.setValor('NombreDeUsuario', nombreUsuario);	
+				self.contexto.setParametro('NombreDeUsuario', nombreUsuario);
+				
+				self.editValor(self.controlUsuario.edit, false);
+			}
+		});
+		
+		self.botonAddCanal = self.find('#administrador_canales_boton_add_canal');
+		
+		self.listaCanales = [];
+		
+		self.administradorCanales = self.find('#administrador_canales');
+		
+		self.panelGadgets = self.find('#panel_gadgets');
+		
+		
+		self.persistidorCanales = self.persistidor.getSubPersistidor("canales");
+		
+		self.botonAddCanal.on("click", function (){
 			
-			vortexComm.administradorCanales.append(nuevoCanal);	
+			var idCanal = "Canal" + (self.listaCanales.length + 1).toString();
 			
-    	});
-	
-	$.extend(true, this, vortexComm);
+			var persistidorCanal = self.persistidorCanales.getSubPersistidor(idCanal);			
+			persistidorCanal.setValor("idCanal", idCanal);
+			persistidorCanal.setValor("canal", idCanal);
+			
+			
+			var nuevoCanal = $.extend(true,{}, canal);
+			
+			
+			nuevoCanal.start({
+				persistidor:	persistidorCanal, 
+				conjunto:		self.conjunto.getSubConjunto(), 
+				vortexComm:		self,
+				contexto:		self.contexto.getSubContexto()
+			});
+			
+			/*ver de juntar esto*/
+			self.listaCanales.push(nuevoCanal);
+			self.administradorCanales.append(nuevoCanal);
+		});
+		
+		
+		
+		// vortexComm.resize(function(){
+				// vortexComm.panelCanales.height(vortexComm.height()/2);
+		// });
+		//persistencia	
+		var persistidoresCanales = persistidorCanales.getSubPersistidores();
+		$.each(persistidoresCanales, function (clave, persistidorCanal) {
+				var nuevoCanal = new Canal({persistidor:persistidorCanal, 
+											conjunto:conjunto.getSubConjunto(), 
+											vortexComm:vortexComm,
+											contexto:contexto.getSubContexto()});
+				vortexComm.listaCanales.push(nuevoCanal);
+				
+				vortexComm.administradorCanales.append(nuevoCanal);	
+				
+			});
+		
+		$.extend(true, this, vortexComm);
 };
 
 
@@ -226,49 +262,37 @@ var Canal = function(config){
 	var plantillas = $('#plantillas');
 	
 	
-	
 	var unChat = $.extend(true,{}, chat);
 	unChat.start({
+		title			: 'Chat',
+		id				: "chat" + idCanal,
+		
 		contexto		: contexto.getSubContexto(),
 		persistidor		: persistidorGadgets.getSubPersistidor("chat" + idCanal),
 		conjunto		: conjunto.getSubConjunto(),
-		UI 				: plantillas.find("#plantilla_chat").clone()
+		
+		UI 				: plantillas.find("#plantilla_gadgetChat").clone()
 	});
 	
 	
-	var gadget_chat =  $.extend(true,{}, gadget);
-	gadget_chat.start({
-		title			: 'Chat',
-		id				: "chat" + idCanal,
-		UI 				: plantillas.find("#plantilla_gadget").clone()
-	});
-	gadget_chat.agregarContenido(unChat);
-	
-	controlCanal.gadgets.push(gadget_chat);
-	
-	
-	
+	controlCanal.gadgets.push(unChat);
 	
 	
 	
 	var unaPizarra = $.extend(true,{}, pizarra);
 	unaPizarra.start({
+		title			: 'Pizarra',
+		id				: "pizarra" + idCanal,
+		
 		contexto		: contexto.getSubContexto(),
 		persistidor		: persistidorGadgets.getSubPersistidor("pizarra" + idCanal),
 		conjunto		: conjunto.getSubConjunto(),
-		UI 				: plantillas.find("#plantilla_pizarra").clone()
+		
+		UI 				: plantillas.find("#plantilla_gadgetPizarra").clone()
 	});
 	
+	controlCanal.gadgets.push(unaPizarra);
 	
-	var gadget_pizarra =  $.extend(true,{}, gadget);
-	gadget_pizarra.start({
-		title			: 'Pizarra',
-		id				: "pizarra" + idCanal,
-		UI 				: plantillas.find("#plantilla_gadget").clone()
-	});
-	gadget_pizarra.agregarContenido(unaPizarra);
-	
-	controlCanal.gadgets.push(gadget_pizarra);
 	
 	
 	
@@ -276,10 +300,9 @@ var Canal = function(config){
 	
 	
 	controlCanal.gadgets.forEach(function (gadget, index){
+		
 		vortexComm.panelGadgets.append(gadget.options.UI);
-		
-		
-		gadget.options.UI.hide();
+		gadget.ocultar();
 		
 	});
 	
@@ -287,9 +310,9 @@ var Canal = function(config){
 		e.stopPropagation();
 		
 		vortexComm.panelGadgets.children().hide();
-		controlCanal.gadgets.forEach(function (gadget, index) {
 		
-			gadget.options.UI.show();
+		controlCanal.gadgets.forEach(function (gadget, index) {
+			gadget.mostrar();
 		});
 		
 		
@@ -301,16 +324,23 @@ var Canal = function(config){
 	controlCanal.on("dblclick", function (e) {
 		e.stopPropagation();
 		
+		
+		self.editValor(controlCanal.edit);
+		
 		controlCanal.edit.attr('readonly', false);
 		controlCanal.edit.css("background-color", "white");
 		
     });
 	
 	controlCanal.keypress(function(e) {
+		var self = this;
+		
 		if(e.which == 13) {
 			e.stopPropagation();
-			canal = controlCanal.edit.val();
-			persistidor.setValor("canal", canal);
+			
+			canal = self.controlCanal.edit.val();
+			
+			self.persistidor.setValor("canal", canal);
 			filtroCanal.valor = canal;
 			trafoCanal.valor = canal; 	
 			controlCanal.edit.attr('readonly', true);
