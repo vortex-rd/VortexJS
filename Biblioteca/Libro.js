@@ -9,6 +9,8 @@ NodoLibro.prototype = {
         this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.busquedaDeLibrosPorAutor"),
                                                   new FiltroXClaveValor("autor", this._autor)]),  
                                     this.enviarLibro.bind(this));
+        this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.pedidoDeLibros"),  
+                                    this.enviarLibro.bind(this));
     },
     conectarCon: function(un_nodo){
         this._portal.conectarCon(un_nodo);   

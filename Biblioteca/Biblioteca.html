@@ -105,6 +105,17 @@
             gadget_buscador.agregarContenido(nodo_buscador);
             gadget_buscador.dibujarEn(panel_principal); 
             
+            var nodo_vista_biblioteca = new NodoVistaDeBiblioteca({UI:UI_biblioteca, plantilla_libro:plantilla_libro_encontrado});
+            router.conectarBidireccionalmenteCon(nodo_vista_biblioteca);
+            
+            var gadget_biblioteca =  $.extend(true,{}, gadget);
+            gadget_biblioteca.start({
+                title			: 'Biblioteca',
+                UI 				: plantilla_gadget.clone()
+            });
+            gadget_biblioteca.agregarContenido(nodo_vista_biblioteca);
+            gadget_biblioteca.dibujarEn(panel_principal); 
+            
             nodo_biblioteca.agregarLibro(new NodoLibro({autor:"Borges", titulo:"El Aleph"}));
             //var un_buscador_de_libros = FabricaDeBuscadoresDeLibros.crearBuscadorConectadoALaRed(router);
             
