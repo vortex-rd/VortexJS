@@ -5,7 +5,7 @@ var NodoLibro = function(cfg){
 }
 NodoLibro.prototype = {
     start: function(){
-        this._portal = new NodoPortalBidiMonoFiltro("libro");
+        this._portal = new NodoPortalBidi("libro");
         this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.busquedaDeLibrosPorAutor"),
                                                   new FiltroXClaveValor("autor", this._autor)]),  
                                     this.enviarLibro.bind(this));

@@ -1,7 +1,7 @@
 var test = {}
 
 test.describe_1 = function(){
-    describe("Creo un nodo biblioteca y un nodo buscador de libros conectados a un router.", function() { 
+    describe("Creo un nodo biblioteca, un nodo vista de biblioteca y un nodo buscador de libros conectados a un router.", function() { 
         beforeEach(function() {
             runs(function() { 
                 test.plantilla_libro_encontrado = $("<li>");
@@ -9,15 +9,28 @@ test.describe_1 = function(){
                 test.plantilla_libro_encontrado.append($("<div id='titulo_de_libro_encontrado'>"));
                 
                 test.plantilla_buscador = $("<div id='plantilla_buscador_de_libros'>");
-                test.plantilla_buscador.append($("<div id='input_de_busqueda_del_buscador_de_libros'>"));
+                test.plantilla_buscador.append($("<input id='input_de_busqueda_del_buscador_de_libros'>"));
                 test.plantilla_buscador.append($("<ul id='lista_de_libros_encontrados_del_buscador_de_libros'>"));
+                test.ui_buscador = test.plantilla_buscador.clone();
+                
+                test.plantilla_vista = $("<div id='plantilla_biblioteca'>");
+                test.plantilla_vista.append($("<input id='input_nombre_autor_del_alta_de_libros'>"));
+                test.plantilla_vista.append($("<input id='input_titulo_del_alta_de_libros'>"));
+                test.plantilla_vista.append($("<button id='boton_agregar_del_alta_de_libros'>"));
+                test.plantilla_vista.append($("<button id='boton_refrescar_del_alta_de_libros'>"));
+                test.plantilla_vista.append($("<ul id='panel_libros_en_vista_de_libros'>"));
+                test.ui_vista = test.plantilla_vista.clone();
                 
                 test.un_router = new NodoRouter("1");  
                 test.nodo_biblioteca = new NodoBiblioteca();
-                test.nodo_buscador = new NodoBuscadorDeLibros({ UI:test.plantilla_buscador.clone(), 
+                test.nodo_buscador = new NodoBuscadorDeLibros({ UI:test.ui_buscador, 
                                                                 plantilla_libro:test.plantilla_libro_encontrado});
                 
+                test.nodo_vista_biblioteca = new NodoVistaDeBiblioteca({ UI:test.ui_vista , 
+                                                plantilla_libro:test.plantilla_libro_encontrado});
+                
                 test.un_router.conectarBidireccionalmenteCon(test.nodo_biblioteca);
+                test.un_router.conectarBidireccionalmenteCon(test.nodo_vista_biblioteca);
                 test.un_router.conectarBidireccionalmenteCon(test.nodo_buscador);      
             }); 
             waits(100);
@@ -32,10 +45,22 @@ test.describe_1 = function(){
 test.describe_1_1 = function(){
     beforeEach(function() { 
         runs(function() { 
-            test.nodo_biblioteca.onMensajeAgregarLibroRecibido({autor:"Skinner", titulo:"Walden 2"});
+            test.input_nombre_autor_del_alta_de_libros = test.ui_vista.find("#input_nombre_autor_del_alta_de_libros");
+            test.input_titulo_del_alta_de_libros = test.ui_vista.find("#input_titulo_del_alta_de_libros");
+            test.boton_agregar_del_alta_de_libros = test.ui_vista.find("#boton_agregar_del_alta_de_libros");
+            
+            test.input_nombre_autor_del_alta_de_libros.val("Skinner");
+            test.input_titulo_del_alta_de_libros.val("Walden 2");
+            test.boton_agregar_del_alta_de_libros.click();
         }); 
-        waits(100);        
+        waits(75);        
     });  
+    it("La biblioteca deberia tener un libro", function() {
+        runs(function() { 
+            expect(test.nodo_biblioteca.libros().Count()).toEqual(1); 
+        });
+    });
+    
     ///////////
     describe("El buscador pide libros de skinner'", function() { 
         test.describe_1_1_1();
@@ -45,9 +70,11 @@ test.describe_1_1 = function(){
 test.describe_1_1_1 = function(){
     beforeEach(function() { 
         runs(function() { 
-            test.nodo_buscador.pedirLibrosPorAutor("Skinner");
+            test.input_de_busqueda_del_buscador_de_libros = test.ui_buscador.find("#input_de_busqueda_del_buscador_de_libros");            
+            test.input_de_busqueda_del_buscador_de_libros.val("Skinner");
+            test.input_de_busqueda_del_buscador_de_libros.change();
         });  
-        waits(100);
+        waits(50);
     });  
 
     it("El buscador deberia haber encontrado el libro", function() {

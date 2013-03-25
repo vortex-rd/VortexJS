@@ -28,7 +28,7 @@ NodoVistaDeBiblioteca.prototype = {
                 })
             );
         });
-        this._boton_alta_de_libro.click(this.enviarComandoDeBuscarLibros.bind(this));
+        this._boton_refrescar.click(this.enviarComandoDeBuscarLibros.bind(this));
     },
     enviarComandoDeAgregarLibro : function(un_libro) {
         this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.agregarLibro", 
