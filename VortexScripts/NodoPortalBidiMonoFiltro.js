@@ -37,6 +37,7 @@ NodoPortalBidiMonoFiltro.prototype = {
 	},
     conectarCon : function(un_receptor){
 		this._pata = new PataConectora(0, new GeneradorDeIdMensaje());
+        this.publicarFiltros();
         this._pata.conectarCon(un_receptor);
 	},
     conectadoBidireccionalmente : function(){
