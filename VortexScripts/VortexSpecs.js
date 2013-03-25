@@ -279,38 +279,38 @@ test.describe_1_1_1_3 = function(){
             test.router_1.conectarCon(test.portal_1);
         });
     });
-    it("El portal le deberia enviar un pedido de id al router, " +
-       "al recibir el pedido, el router deberia enviar una respuesta, " +
-       "al recibir la respuesta, el portal deberia enviar una confirmacion, " +
-       "al recibir la confirmacion, el router deberia enviar una reConfirmacion", function() {     
-        runs(function() {
-            expect(test.portal_1.recibirMensaje).not.toHaveBeenCalled();                        
-            expect(test.router_1.recibirMensaje).not.toHaveBeenCalled();
-            expect(test.portal_1.conectadoBidireccionalmente()).toBeFalsy();
-            expect(test.router_1.conectadoBidireccionalmenteEnTodasSusPatas()).toBeFalsy();         
-        });
-    
-        waits(0);        
-        waitsFor(function() {
-            return  test.portal_1.recibirMensaje.calls.length == 4 &&
-                    test.router_1.recibirMensaje.calls.length == 4;                        
-        }, "No se mandaron los mensajes", 500);
-           
-        runs(function() {
-            expect(test.portal_1.recibirMensaje.calls[0].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Pedido");
-            expect(test.portal_1.recibirMensaje.calls[1].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Respuesta");
-            expect(test.portal_1.recibirMensaje.calls[2].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Confirmacion");
-            expect(test.portal_1.recibirMensaje.calls[3].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.ReConfirmacion");
-            
-            expect(test.router_1.recibirMensaje.calls[0].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Pedido");
-            expect(test.router_1.recibirMensaje.calls[1].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Respuesta");
-            expect(test.router_1.recibirMensaje.calls[2].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Confirmacion");
-            expect(test.router_1.recibirMensaje.calls[3].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.ReConfirmacion");
-            
-            expect(test.portal_1.conectadoBidireccionalmente()).toBeTruthy();
-            expect(test.router_1.conectadoBidireccionalmenteEnTodasSusPatas()).toBeTruthy();                        
-        });
-    });
+//    it("El portal le deberia enviar un pedido de id al router, " +
+//       "al recibir el pedido, el router deberia enviar una respuesta, " +
+//       "al recibir la respuesta, el portal deberia enviar una confirmacion, " +
+//       "al recibir la confirmacion, el router deberia enviar una reConfirmacion", function() {     
+//        runs(function() {
+//            expect(test.portal_1.recibirMensaje).not.toHaveBeenCalled();                        
+//            expect(test.router_1.recibirMensaje).not.toHaveBeenCalled();
+//            expect(test.portal_1.conectadoBidireccionalmente()).toBeFalsy();
+//            expect(test.router_1.conectadoBidireccionalmenteEnTodasSusPatas()).toBeFalsy();         
+//        });
+//    
+//        waits(0);        
+//        waitsFor(function() {
+//            return  test.portal_1.recibirMensaje.calls.length == 4 &&
+//                    test.router_1.recibirMensaje.calls.length == 4;                        
+//        }, "No se mandaron los mensajes", 500);
+//           
+//        runs(function() {
+//            expect(test.portal_1.recibirMensaje.calls[0].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Pedido");
+//            expect(test.portal_1.recibirMensaje.calls[1].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Respuesta");
+//            expect(test.portal_1.recibirMensaje.calls[2].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Confirmacion");
+//            expect(test.portal_1.recibirMensaje.calls[3].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.ReConfirmacion");
+//            
+//            expect(test.router_1.recibirMensaje.calls[0].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Pedido");
+//            expect(test.router_1.recibirMensaje.calls[1].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Respuesta");
+//            expect(test.router_1.recibirMensaje.calls[2].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.Confirmacion");
+//            expect(test.router_1.recibirMensaje.calls[3].args[0].tipoDeMensaje).toEqual("Vortex.IdRemoto.ReConfirmacion");
+//            
+//            expect(test.portal_1.conectadoBidireccionalmente()).toBeTruthy();
+//            expect(test.router_1.conectadoBidireccionalmenteEnTodasSusPatas()).toBeTruthy();                        
+//        });
+//    });
     
     it("Al establecerse la conexion bidireccional el filtro de salida del portal deberia ser false, entonces, si el portal manda un mensaje el router no deberia recibirlo", function() {
         waits(0);        
