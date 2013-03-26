@@ -1,6 +1,7 @@
 var NodoLibro = function(cfg){
     this._titulo = cfg.titulo || "";
     this._autor = cfg.autor || "";
+    this._id_biblioteca = cfg.idBiblioteca || "";
     this.start();
 }
 NodoLibro.prototype = {
@@ -9,8 +10,9 @@ NodoLibro.prototype = {
         this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.busquedaDeLibrosPorAutor"),
                                                   new FiltroXClaveValor("autor", this._autor)]),  
                                     this.enviarLibro.bind(this));
-        this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.pedidoDeLibros"),  
-                                    this.enviarLibro.bind(this));
+        this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.pedidoDeLibros"),
+                                                  new FiltroXClaveValor("idBiblioteca", this._id_biblioteca)]),
+                                   this.enviarLibro.bind(this));
     },
     conectarCon: function(un_nodo){
         this._portal.conectarCon(un_nodo);   
@@ -21,7 +23,8 @@ NodoLibro.prototype = {
     enviarLibro : function() {
         this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.libro", 
                                     autor: this._autor,
-                                    titulo: this._titulo});
+                                    titulo: this._titulo,
+                                    idBiblioteca: this._id_biblioteca});
     }
 };
 

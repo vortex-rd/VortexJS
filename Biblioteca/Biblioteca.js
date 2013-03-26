@@ -1,4 +1,5 @@
-var NodoBiblioteca = function(){
+var NodoBiblioteca = function(id){
+    this._id = id;
     this.start();
 }
 NodoBiblioteca.prototype = {
@@ -9,7 +10,8 @@ NodoBiblioteca.prototype = {
         
         this._libros = [];
         
-        this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.agregarLibro"),  
+        this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.agregarLibro"),  
+                                                 new FiltroXClaveValor("idBiblioteca", this._id)]),
                        this.onMensajeAgregarLibroRecibido.bind(this));
     },
     libros : function(un_libro) {

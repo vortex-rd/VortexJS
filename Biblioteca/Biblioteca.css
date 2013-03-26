@@ -19,7 +19,8 @@
     display: inline-block;
 }
 
-.lista_de_libros_encontrados_del_buscador_de_libros{
+.lista_de_libros_encontrados_del_buscador_de_libros,
+.panel_libros_en_vista_de_libros{
     padding:5px;
     margin:0px;
 }
@@ -35,6 +36,7 @@
 .input_de_busqueda_del_buscador_de_libros
 {
     display: block;
+    width:100%;
 }
 
 .gadget{
