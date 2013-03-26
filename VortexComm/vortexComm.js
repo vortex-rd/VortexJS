@@ -1,208 +1,6 @@
 $(function () {
 	
-	var portalComun = new NodoPortalBidi();
-	var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');
-	//var clienteHTTP = new NodoClienteHTTP('http://192.168.1.130:62626/vortex');
-	portalComun.conectarCon(clienteHTTP);
-	clienteHTTP.conectarCon(portalComun);
 	
-	var pers = new Persistidor($('#persistencia'));
-	var ctx = new ContextoVortex(new ContextoNulo());
-	var conjunto = new ConjuntoVortex(portalComun);
-	
-	vxComm = new VortexComm({persistidor:pers, contexto:ctx, conjunto:conjunto});
-	
-	
-	$('#hideBar').on('click', function(){
-		
-		var timepoHide = 300;
-		
-		$('#administrador').animate(
-			{width:'toggle'},
-			timepoHide
-		);
-		
-		
-		if($('#hideBar').position().left > 0){
-		
-			$('#hideBar').animate(
-				{left:'0'},
-				timepoHide
-			);
-			
-		} else {
-		
-			$('#hideBar').animate(
-				{left:'210'},
-				timepoHide
-			);
-			
-		}
-	});
-	
-	
-	
-	
-	
-	/*
-	$('#administrador_canales').accordion({
-      collapsible: true
-    });
-	*/
-	/*
-	$("#panelPrincipal").empty();
-	vxComm.appendTo("#panelPrincipal");
-	*/
-	
-});
-
-
-var VortexComm = {
-	//documenta intereface de options, y puede tener valores default
-	options: {
-		conjunto	: null,
-		persistidor	: null,
-		contexto	: null,
-		
-		UI			: null
-		
-	},
-	///////
-	
-	
-	
-	editValor: function($input, flagEdit){
-		if(flagEdit==true){
-			$input.removeAttr('readonly');
-			$input.css("background-color", "black");
-		}else{
-			$input.attr('readonly', true);
-			$input.css("background-color", "transparent");
-		}
-	},
-	
-	
-	
-	desSeleccionarTodosLosCanales = function(){
-		//cambiar children por .find
-		//vortexComm.panelCanales.children().removeClass("control_canal_seleccionado");
-		vortexComm.administradorCanales.find('.control_canal').removeClass("control_canal_seleccionado");
-	};
-	
-	VortexComm: function(options){
-		
-		self = this;
-		
-		$.extend(true, this.options, options);
-		
-		
-		
-		self.persistidor = self.options.persistidor;
-		self.contexto = self.options.contexto;
-		self.conjunto = self.options.conjunto;
-		
-		
-		
-		self.conjunto.agregarFiltroEntrada(new FiltroXClaveValor('aplicacion', 'VortexComm'));	
-		self.conjunto.agregarTrafoSalida(new TrafoXClaveValor('aplicacion', 'VortexComm'));
-		
-		
-		self.nombreUsuario = persistidor.getValor('NombreDeUsuario');
-		
-		if(self.nombreUsuario=='') {
-			self.nombreUsuario = 'usuario' + getIdObjeto();
-			self.persistidor.setValor('NombreDeUsuario', self.nombreUsuario);
-		}	
-		self.contexto.setParametro('NombreDeUsuario', self.nombreUsuario);
-		
-		
-		self.controlUsuario = self.options.UI.find("#control_usuario");
-		
-		
-		self.controlUsuario.edit = self.controlUsuario.find('.control_usuario_edit');
-		self.controlUsuario.edit.val(nombreUsuario);
-		
-		
-		
-		self.editValor(self.controlUsuario.edit, false);
-		
-		
-		self.controlUsuario.on("dblclick", function (e) {
-			e.stopPropagation();
-			self.editValor(self.controlUsuario, true);
-		});
-		
-		
-		self.controlUsuario.on("keypress", (function(e) {
-			if(e.which == 13) {
-				e.stopPropagation();
-				nombreUsuario = self.controlUsuario.edit.val();
-				
-				persistidor.setValor('NombreDeUsuario', nombreUsuario);	
-				self.contexto.setParametro('NombreDeUsuario', nombreUsuario);
-				
-				self.editValor(self.controlUsuario.edit, false);
-			}
-		});
-		
-		self.botonAddCanal = self.find('#administrador_canales_boton_add_canal');
-		
-		self.listaCanales = [];
-		
-		self.administradorCanales = self.find('#administrador_canales');
-		
-		self.panelGadgets = self.find('#panel_gadgets');
-		
-		
-		self.persistidorCanales = self.persistidor.getSubPersistidor("canales");
-		
-		self.botonAddCanal.on("click", function (){
-			
-			var idCanal = "Canal" + (self.listaCanales.length + 1).toString();
-			
-			var persistidorCanal = self.persistidorCanales.getSubPersistidor(idCanal);			
-			persistidorCanal.setValor("idCanal", idCanal);
-			persistidorCanal.setValor("canal", idCanal);
-			
-			
-			var nuevoCanal = $.extend(true,{}, canal);
-			
-			
-			nuevoCanal.start({
-				persistidor:	persistidorCanal, 
-				conjunto:		self.conjunto.getSubConjunto(), 
-				vortexComm:		self,
-				contexto:		self.contexto.getSubContexto()
-			});
-			
-			/*ver de juntar esto*/
-			self.listaCanales.push(nuevoCanal);
-			self.administradorCanales.append(nuevoCanal);
-		});
-		
-		
-		
-		// vortexComm.resize(function(){
-				// vortexComm.panelCanales.height(vortexComm.height()/2);
-		// });
-		//persistencia	
-		var persistidoresCanales = persistidorCanales.getSubPersistidores();
-		$.each(persistidoresCanales, function (clave, persistidorCanal) {
-				var nuevoCanal = new Canal({persistidor:persistidorCanal, 
-											conjunto:conjunto.getSubConjunto(), 
-											vortexComm:vortexComm,
-											contexto:contexto.getSubContexto()});
-				vortexComm.listaCanales.push(nuevoCanal);
-				
-				vortexComm.administradorCanales.append(nuevoCanal);	
-				
-			});
-		
-		$.extend(true, this, vortexComm);
-};
-
-
-
 
 var Canal = function(config){
 	var persistidor = config.persistidor;
@@ -350,6 +148,190 @@ var Canal = function(config){
 	
 	$.extend(true, this, controlCanal);	
 };
+	
+	
+	
+	
+	
+	var portalComun = new NodoPortalBidi();
+	var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');
+	//var clienteHTTP = new NodoClienteHTTP('http://192.168.1.130:62626/vortex');
+	portalComun.conectarCon(clienteHTTP);
+	clienteHTTP.conectarCon(portalComun);
+	
+	
+	
+	// 1 seteo filtros en conjunto
+	var conjunto = new ConjuntoVortex(portalComun);
+	conjunto.agregarFiltroEntrada(new FiltroXClaveValor('aplicacion', 'VortexComm'));	
+	conjunto.agregarTrafoSalida(new TrafoXClaveValor('aplicacion', 'VortexComm'));
+	
+	
+	// 2 traigo del persistidor los datos
+	var persistidor = new Persistidor($('#persistencia'));
+	var nombreUsuario = persistidor.getValor('NombreDeUsuario');
+	
+	if(nombreUsuario=='') {
+		nombreUsuario = 'usuario' + getIdObjeto();
+		persistidor.setValor('NombreDeUsuario', nombreUsuario);
+	}	
+	
+	
+	
+	// 3 seteo parametros en contexto
+	var contexto = new ContextoVortex(new ContextoNulo());
+	contexto.setParametro('NombreDeUsuario', nombreUsuario);
+	
+	
+	
+	
+	
+	//funciones genericas (a acomodar)
+	var editTextControl = function($input, flagEdit){
+		if(flagEdit==true){
+			$input.removeAttr('readonly');
+			$input.css("background-color", "black");
+		}else{
+			$input.attr('readonly', true);
+			$input.css("background-color", "transparent");
+		}
+	};
+	var desSeleccionarTodosLosCanales = function(){
+		//cambiar children por .find
+		//vortexComm.panelCanales.children().removeClass("control_canal_seleccionado");
+		vortexComm.administradorCanales.find('.control_canal').removeClass("control_canal_seleccionado");
+	};
+	
+	
+	
+	
+	//*********** controlUsuario **
+	var controlUsuario = $("#control_usuario");
+	editTextControl(controlUsuario, false);
+	
+	controlUsuario.on("dblclick", function (e) {
+	
+		e.stopPropagation();
+		editTextControl(controlUsuario, true);
+		
+	});
+	
+	controlUsuario.on("keypress", (function(e) {
+	
+		if(e.which == 13) {
+			e.stopPropagation();
+			nombreUsuario = controlUsuario.find('input').val();
+			
+			persistidor.setValor('NombreDeUsuario', nombreUsuario);	
+			contexto.setParametro('NombreDeUsuario', nombreUsuario);
+			
+			editTextControl(self.controlUsuario.edit, false);
+		}
+	});
+	
+	//TO DO nombre horrible y confuso
+	var persistidorCanales = persistidor.getSubPersistidor("canales");
+	var persistidoresCanales = persistidorCanales.getSubPersistidores();
+	
+	
+	var administradorCanales = $('#administrador_canales');
+	$.each(persistidoresCanales, function (clave, persistidorCanal) {
+		
+		
+		
+		//TO DO: hacer el canal como un json, al igual que chat
+		var nuevoCanal = new Canal({persistidor:persistidorCanal, 
+									conjunto:conjunto.getSubConjunto(), 
+									vortexComm:vortexComm,
+									contexto:contexto.getSubContexto()});
+		listaCanales.push(nuevoCanal);
+		
+		administradorCanales.append(nuevoCanal);	
+		
+	});
+	
+	
+	//*********** botonAddCanal
+	var botonAddCanal = $('#administrador_canales_boton_add_canal');
+	var listaCanales = [];
+	
+	botonAddCanal.on("click", function (){
+		var idCanal = "Canal" + (listaCanales.length + 1).toString();
+		
+		var persistidorCanal = self.persistidorCanales.getSubPersistidor(idCanal);
+		persistidorCanal.setValor("idCanal", idCanal);
+		persistidorCanal.setValor("canal", idCanal);
+		
+		
+		// TO DO
+		var nuevoCanal = $.extend(true,{}, canal);
+		nuevoCanal.start({
+			persistidor:	persistidorCanal, 
+			conjunto:		self.conjunto.getSubConjunto(), 
+			vortexComm:		self,
+			contexto:		self.contexto.getSubContexto()
+		});
+		
+		/*ver de juntar esto, lista canales puede ser un json que tenga metodos*/
+		listaCanales.push(nuevoCanal);
+		administradorCanales.append(nuevoCanal);
+		
+	});
+	
+	
+	
+	
+	
+	
+	
+
+
+	
+	
+	$('#hideBar').on('click', function(){
+		
+		var timepoHide = 300;
+		
+		$('#administrador').animate(
+			{width:'toggle'},
+			timepoHide
+		);
+		
+		
+		if($('#hideBar').position().left > 0){
+		
+			$('#hideBar').animate(
+				{left:'0'},
+				timepoHide
+			);
+			
+		} else {
+		
+			$('#hideBar').animate(
+				{left:'210'},
+				timepoHide
+			);
+			
+		}
+	});
+	
+	
+	
+	
+	
+	/*
+	$('#administrador_canales').accordion({
+      collapsible: true
+    });
+	*/
+	/*
+	$("#panelPrincipal").empty();
+	vxComm.appendTo("#panelPrincipal");
+	*/
+	
+});
+
+
 
 
 
