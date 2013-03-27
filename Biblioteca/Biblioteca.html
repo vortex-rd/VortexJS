@@ -20,6 +20,10 @@
                 <div id="titulo_de_libro_encontrado" class="titulo_de_libro_encontrado">
                 </div>   
             </li>
+            <li id="plantilla_vista_edicion_de_libro" class="vista_edicion_de_libro">
+                <input type="text" id="autor_de_libro_en_edicion" class="autor_de_libro_en_edicion"/>
+                <input type="text" id="titulo_de_libro_en_edicion" class="titulo_de_libro_en_edicion"/>
+            </li>
             <div id="plantilla_biblioteca" class="biblioteca">
                 <div id="controles_de_la_vista_de_biblioteca" class="controles_de_la_vista_de_biblioteca"> 
                     <div>
@@ -94,6 +98,7 @@
             var UI_buscador = plantillas.find('#plantilla_buscador_de_libros').clone();
             var UI_biblioteca = plantillas.find('#plantilla_biblioteca').clone();
             var plantilla_libro_encontrado = plantillas.find('#plantilla_libro_encontrado_en_buscador');
+            var plantilla_vista_edicion_de_libro = plantillas.find('#plantilla_vista_edicion_de_libro');
             var plantilla_gadget =plantillas.find('#plantilla_gadget');
             
             var nodo_buscador = new NodoBuscadorDeLibros({UI: UI_buscador, plantilla_libro: plantilla_libro_encontrado});           
@@ -108,7 +113,7 @@
             gadget_buscador.dibujarEn(panel_principal); 
             
             var nodo_vista_biblioteca = new NodoVistaDeBiblioteca({UI:UI_biblioteca, 
-                                                                   plantilla_libro:plantilla_libro_encontrado, 
+                                                                   plantilla_libro:plantilla_vista_edicion_de_libro, 
                                                                    id_biblioteca: id_biblioteca});
             router.conectarBidireccionalmenteCon(nodo_vista_biblioteca);
             

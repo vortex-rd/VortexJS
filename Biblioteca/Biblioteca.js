@@ -18,6 +18,7 @@ NodoBiblioteca.prototype = {
         return Enumerable.From(this._libros);
     },
     onMensajeAgregarLibroRecibido: function(un_mensaje) {
+        un_mensaje.id = this._libros.length;
         this.agregarLibro(new NodoLibro(un_mensaje));
     },
     agregarLibro : function(un_nodo_libro) {

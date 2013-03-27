@@ -1,4 +1,5 @@
 var NodoLibro = function(cfg){
+    this._id = cfg.id;
     this._titulo = cfg.titulo || "";
     this._autor = cfg.autor || "";
     this._id_biblioteca = cfg.idBiblioteca || "";
@@ -13,6 +14,15 @@ NodoLibro.prototype = {
         this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.pedidoDeLibros"),
                                                   new FiltroXClaveValor("idBiblioteca", this._id_biblioteca)]),
                                    this.enviarLibro.bind(this));
+        this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.edicionDelibro"),
+                                                  new FiltroXClaveValor("idBiblioteca", this._id_biblioteca),
+                                                  new FiltroXClaveValor("idLibro", this._id)]),
+                                   this.actualizar.bind(this));
+    },
+    actualizar: function(libro){
+        this._autor = libro.autor;
+        this._titulo = libro.titulo;
+        this.enviarLibro();
     },
     conectarCon: function(un_nodo){
         this._portal.conectarCon(un_nodo);   
@@ -22,6 +32,7 @@ NodoLibro.prototype = {
     },
     enviarLibro : function() {
         this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.libro", 
+                                    idLibro: this._id,
                                     autor: this._autor,
                                     titulo: this._titulo,
                                     idBiblioteca: this._id_biblioteca});
@@ -29,50 +40,23 @@ NodoLibro.prototype = {
 };
 
 var Libro = function(cfg){
+    this._id = cfg.id;
     this._titulo = cfg.titulo || "";
     this._autor = cfg.autor || "";
+    this._id_biblioteca = cfg.idBiblioteca || "";
 }
 
 Libro.prototype = {
+    id : function() {
+        return this._id;
+    },
     titulo : function() {
         return this._titulo;
     },
     autor : function() {
         return this._autor;
+    },
+    idBiblioteca:function(){
+        return this._id_biblioteca;
     }
 };
-
-//var FabricaDeLibros = {
-//    conectarLibroALaRed : function(nodo, libro){
-//        var portal_libro = new NodoPortalBidiMonoFiltro("libro");
-//        nodo.conectarCon(portal_libro);
-//        portal_libro.conectarCon(nodo); 
-//        
-//        un_controlador_de_libro = new ControladorDeLibro(libro, portal_libro);
-//    }
-//}
-
-
-//var ControladorDeLibro = function(un_libro, un_portal){
-//    this._libro = un_libro;
-//    this._portal = un_portal;   
-//    
-//    var self = this;
-//    this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.busquedaDeLibrosPorAutor"),
-//                                              new FiltroXClaveValor("autor", un_libro.autor())]),  
-//                           function(mensaje){
-//                                self.enviarLibro();
-//                           });
-////    this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.pedidoDeLibros"), 
-////                           function(mensaje){
-////                                self.enviarLibro();
-////                           });
-//}
-//    
-//ControladorDeLibro.prototype = {
-//    enviarLibro : function() {
-//        this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.libro", 
-//                                    autor:this._libro.autor(),
-//                                    titulo: this._libro.titulo()});
-//    }
-//};

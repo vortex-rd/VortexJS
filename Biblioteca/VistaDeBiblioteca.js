@@ -15,7 +15,7 @@ var NodoVistaDeBiblioteca = function(cfg){
 NodoVistaDeBiblioteca.prototype = {
     start: function(){
         this._router = new NodoRouter("vista biblioteca");
-        this._portal = new NodoPortalBidi("vista biblioteca")
+        this._portal = new NodoPortalBidi("vista biblioteca");
         this._router.conectarBidireccionalmenteCon(this._portal);
         
         this._librosEncontrados = [];
@@ -46,10 +46,19 @@ NodoVistaDeBiblioteca.prototype = {
     },
     onLibroEncontrado : function (mensaje) {
         var libro = new Libro(mensaje);
-        if(this.librosEncontrados().Any(function(l){return ComparadorDeObjetos.comparar(l,libro)})) return;
+        if(this.librosEncontrados().Any(function(l){return ((l.id()==libro.id())&&
+                                                            (l.idBiblioteca()==libro.idBiblioteca())
+                                                           )
+                                                   })) return;
         this._librosEncontrados.push(libro);    
         
-        var vista_libro = new VistaDeLibroEnBuscador(libro, this._plantilla_libro.clone());
+        var vista_libro = new NodoVistaDeEdicionDeLibro({UI: this._plantilla_libro.clone(),
+                                                          idLibro: mensaje.idLibro,
+                                                          autor: mensaje.autor,
+                                                          titulo: mensaje.titulo,
+                                                          idBiblioteca: mensaje.idBiblioteca
+                                                        });
+        this._router.conectarBidireccionalmenteCon(vista_libro);
         vista_libro.dibujarEn(this._panel_libros);      
     },
     librosEncontrados : function() {
@@ -62,7 +71,50 @@ NodoVistaDeBiblioteca.prototype = {
         this._router.conectarCon(un_nodo);   
     },
     recibirMensaje: function(un_mensaje){
-        console.log("Nodo vista de biblioteca recibe mensaje:", un_mensaje)
         this._router.recibirMensaje(un_mensaje);
     } 
 }
+
+
+var NodoVistaDeEdicionDeLibro = function(cfg){
+    this._ui = cfg.UI;
+    this._id_libro = cfg.idLibro;
+    this._autor = cfg.autor;
+    this._titulo = cfg.titulo;
+    this._id_biblioteca = cfg.idBiblioteca;
+    this.start();
+}
+
+NodoVistaDeEdicionDeLibro.prototype = {
+    start: function(){
+        this._portal = new NodoPortalBidi("vista edicion libro" + this._id_libro);
+        this._input_autor = this._ui.find('#autor_de_libro_en_edicion');
+        this._input_titulo = this._ui.find('#titulo_de_libro_en_edicion');
+        
+        this._input_autor.change(this.onCambiosEnInput.bind(this));
+        this._input_titulo.change(this.onCambiosEnInput.bind(this));
+        
+        this._input_autor.val(this._autor);
+        this._input_titulo.val(this._titulo);
+    },  
+    onCambiosEnInput: function(){
+        this._autor = this._input_autor.val();
+        this._titulo = this._input_titulo.val();
+        this._portal.enviarMensaje({
+            tipoDeMensaje: "vortexComm.biblioteca.edicionDelibro",
+            idBiblioteca:this._id_biblioteca,
+            idLibro:this._id_libro,
+            autor:this._autor,
+            titulo:this._titulo
+        });
+    },
+    dibujarEn: function(panel){
+        panel.append(this._ui);
+    },
+    conectarCon: function(un_nodo){
+        this._portal.conectarCon(un_nodo);   
+    },
+    recibirMensaje: function(un_mensaje){
+        this._portal.recibirMensaje(un_mensaje);
+    } 
+};

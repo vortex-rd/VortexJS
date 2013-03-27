@@ -34,7 +34,13 @@ NodoBuscadorDeLibros.prototype = {
         var un_libro = new Libro(mensaje);                
         if(this.librosEncontrados().Any(function(l){return ComparadorDeObjetos.comparar(l,un_libro)})) return;
         this._librosEncontrados.push(un_libro);    
-        var vista_libro = new VistaDeLibroEnBuscador(un_libro, this._plantilla_libro.clone());
+        var vista_libro = new NodoVistaDeLibroEnBuscador({UI: this._plantilla_libro.clone(),
+                                                          idLibro: mensaje.idLibro,
+                                                          autor: mensaje.autor,
+                                                          titulo: mensaje.titulo,
+                                                          idBiblioteca: mensaje.idBiblioteca
+                                                        });
+        this._router.conectarBidireccionalmenteCon(vista_libro);
         vista_libro.dibujarEn(this._panel_libros_encontrados);        
     },
     librosEncontrados : function() {
@@ -47,23 +53,45 @@ NodoBuscadorDeLibros.prototype = {
         this._router.conectarCon(un_nodo);   
     },
     recibirMensaje: function(un_mensaje){
-        console.log("Nodo buscador recibe mensaje:", un_mensaje)
-        this._router.recibirMensaje(un_mensaje);
+        this._router.recibirMensaje(un_mensaje);    
     }   
 };
 
-var VistaDeLibroEnBuscador = function(libro, UI){
-    this._ui = UI;
-  
-    this._label_autor = UI.find('#autor_de_libro_encontrado');
-    this._label_titulo = UI.find('#titulo_de_libro_encontrado');
-    
-    this._label_autor.text(libro.autor());
-    this._label_titulo.text(libro.titulo());
+var NodoVistaDeLibroEnBuscador = function(cfg){
+    this._ui = cfg.UI;
+    this._id_libro = cfg.idLibro;
+    this._autor = cfg.autor;
+    this._titulo = cfg.titulo;
+    this._id_biblioteca = cfg.idBiblioteca;  
+    this.start();
 }
 
-VistaDeLibroEnBuscador.prototype = {
+NodoVistaDeLibroEnBuscador.prototype = {
+    start: function(){
+        this._portal = new NodoPortalBidi("vista libro en buscador" + this._id_libro);
+        
+        this._label_autor = this._ui.find('#autor_de_libro_encontrado');
+        this._label_titulo = this._ui.find('#titulo_de_libro_encontrado');
+        
+        this._label_autor.text(this._autor);
+        this._label_titulo.text(this._titulo);
+        
+        this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
+                                                  new FiltroXClaveValor("idBiblioteca", this._id_biblioteca),
+                                                  new FiltroXClaveValor("idLibro", this._id_libro)]),
+                                   this.actualizar.bind(this));
+    },  
+    actualizar: function(libro){
+        this._label_autor.text(libro.autor);
+        this._label_titulo.text(libro.titulo); 
+    },
     dibujarEn: function(panel){
         panel.append(this._ui);
-    }
+    },
+    conectarCon: function(un_nodo){
+        this._portal.conectarCon(un_nodo);   
+    },
+    recibirMensaje: function(un_mensaje){
+        this._portal.recibirMensaje(un_mensaje);
+    } 
 };
