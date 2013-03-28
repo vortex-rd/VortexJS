@@ -30,18 +30,19 @@ NodoBuscadorDeLibros.prototype = {
         this._librosEncontrados = [];
         this._panel_libros_encontrados.empty();
     },
-    onLibroEncontrado : function (mensaje) {
-        var un_libro = new Libro(mensaje);                
-        if(this.librosEncontrados().Any(function(l){return ComparadorDeObjetos.comparar(l,un_libro)})) return;
-        this._librosEncontrados.push(un_libro);    
-        var vista_libro = new NodoVistaDeLibroEnBuscador({UI: this._plantilla_libro.clone(),
-                                                          idLibro: mensaje.idLibro,
-                                                          autor: mensaje.autor,
-                                                          titulo: mensaje.titulo,
-                                                          idBiblioteca: mensaje.idBiblioteca
-                                                        });
-        this._router.conectarBidireccionalmenteCon(vista_libro);
-        vista_libro.dibujarEn(this._panel_libros_encontrados);        
+    onLibroEncontrado : function (mensaje) {      
+        var libro = new NodoVistaDeLibroEnBuscador({UI: this._plantilla_libro.clone(),
+                                                  idLibro: mensaje.idLibro,
+                                                  autor: mensaje.autor,
+                                                  titulo: mensaje.titulo,
+                                                  idBiblioteca: mensaje.idBiblioteca
+                                                });
+        if(this.librosEncontrados().Any(function(l){return (l._id_libro==libro._id_libro &&
+                                                            l._id_biblioteca==libro._id_biblioteca)})) return;
+        this._librosEncontrados.push(libro);    
+
+        this._router.conectarBidireccionalmenteCon(libro);
+        libro.dibujarEn(this._panel_libros_encontrados);        
     },
     librosEncontrados : function() {
         return Enumerable.From(this._librosEncontrados);

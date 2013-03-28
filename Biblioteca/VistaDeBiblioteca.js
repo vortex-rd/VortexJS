@@ -45,21 +45,19 @@ NodoVistaDeBiblioteca.prototype = {
                                     idBiblioteca: this._id_biblioteca});
     },
     onLibroEncontrado : function (mensaje) {
-        var libro = new Libro(mensaje);
-        if(this.librosEncontrados().Any(function(l){return ((l.id()==libro.id())&&
-                                                            (l.idBiblioteca()==libro.idBiblioteca())
-                                                           )
+        var libro = new NodoVistaDeEdicionDeLibro({UI: this._plantilla_libro.clone(),
+                                                  idLibro: mensaje.idLibro,
+                                                  autor: mensaje.autor,
+                                                  titulo: mensaje.titulo,
+                                                  idBiblioteca: mensaje.idBiblioteca
+                                                });
+        if(this.librosEncontrados().Any(function(l){return (l._id_libro==libro._id_libro &&
+                                                            l._id_biblioteca==libro._id_biblioteca)
                                                    })) return;
         this._librosEncontrados.push(libro);    
         
-        var vista_libro = new NodoVistaDeEdicionDeLibro({UI: this._plantilla_libro.clone(),
-                                                          idLibro: mensaje.idLibro,
-                                                          autor: mensaje.autor,
-                                                          titulo: mensaje.titulo,
-                                                          idBiblioteca: mensaje.idBiblioteca
-                                                        });
-        this._router.conectarBidireccionalmenteCon(vista_libro);
-        vista_libro.dibujarEn(this._panel_libros);      
+        this._router.conectarBidireccionalmenteCon(libro);
+        libro.dibujarEn(this._panel_libros);      
     },
     librosEncontrados : function() {
         return Enumerable.From(this._librosEncontrados);
@@ -96,6 +94,11 @@ NodoVistaDeEdicionDeLibro.prototype = {
         
         this._input_autor.val(this._autor);
         this._input_titulo.val(this._titulo);
+        
+        this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
+                                                  new FiltroXClaveValor("idBiblioteca", this._id_biblioteca),
+                                                  new FiltroXClaveValor("idLibro", this._id_libro)]),
+                                   this.actualizar.bind(this));
     },  
     onCambiosEnInput: function(){
         this._autor = this._input_autor.val();
@@ -108,6 +111,12 @@ NodoVistaDeEdicionDeLibro.prototype = {
             titulo:this._titulo
         });
     },
+    actualizar: function(libro){
+        this._input_autor.val(libro.autor);
+        this._input_titulo.val(libro.titulo);
+        this._autor = libro.autorr;
+        this._titulo = libro.titulo;
+    },    
     dibujarEn: function(panel){
         panel.append(this._ui);
     },
