@@ -125,17 +125,6 @@
             });
             gadget_biblioteca.agregarContenido(nodo_vista_biblioteca);
             gadget_biblioteca.dibujarEn(panel_principal); 
-            
-           
-            var libro = new NodoLibro({ id: 1, titulo: "libro1", autor : "borges" ,idBiblioteca: 1}); 
-            var vista = new NodoVistaDeEdicionDeLibro({ UI: plantilla_vista_edicion_de_libro.clone(), idLibro: 1, titulo: "libro1", autor : "borges" ,idBiblioteca: 1}); 
-            var encontrado = new NodoVistaDeLibroEnBuscador ({ UI: plantilla_libro_encontrado.clone(), idLibro: 1, titulo: "libro1", autor : "borges" ,idBiblioteca: 1}); 
-            router.conectarBidireccionalmenteCon(libro);
-            router.conectarBidireccionalmenteCon(vista);
-            router.conectarBidireccionalmenteCon(encontrado);
-           
-            vista.dibujarEn(panel_principal);
-            encontrado.dibujarEn(panel_principal);
         });
     </script>
 </html>
