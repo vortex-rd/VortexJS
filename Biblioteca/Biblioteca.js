@@ -18,11 +18,11 @@ NodoBiblioteca.prototype = {
         return Enumerable.From(this._libros);
     },
     onMensajeAgregarLibroRecibido: function(un_mensaje) {
+        un_mensaje.id = this._libros.length;
         var libro = new NodoLibro(un_mensaje);        
         this.agregarLibro(libro);
     },
     agregarLibro : function(un_nodo_libro) {
-        un_nodo_libro._id = this._libros.length;
         if(this.libros().Any(function(l){return (l._autor == un_nodo_libro._autor &&
                                                 l._titulo == un_nodo_libro._titulo)})) return;
         this._libros.push(un_nodo_libro);

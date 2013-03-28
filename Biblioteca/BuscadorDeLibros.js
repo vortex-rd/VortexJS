@@ -24,7 +24,7 @@ NodoBuscadorDeLibros.prototype = {
         this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
                                                     new FiltroXClaveValor("autor", autor)]),
                               this.onLibroEncontrado.bind(this));  
-        this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.busquedaDeLibrosPorAutor", autor:autor});
+        this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.busquedaDeLibros", autor:autor});
     },
     limpiarLibrosEncontrados: function(){
         this._librosEncontrados = [];

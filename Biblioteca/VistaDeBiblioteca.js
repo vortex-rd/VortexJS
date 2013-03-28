@@ -41,7 +41,7 @@ NodoVistaDeBiblioteca.prototype = {
                                     idBiblioteca: this._id_biblioteca});
     },
     enviarComandoDeBuscarLibros : function() {
-        this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.pedidoDeLibros",
+        this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.busquedaDeLibros",
                                     idBiblioteca: this._id_biblioteca});
     },
     onLibroEncontrado : function (mensaje) {
