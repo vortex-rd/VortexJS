@@ -101,8 +101,10 @@
             var plantilla_vista_edicion_de_libro = plantillas.find('#plantilla_vista_edicion_de_libro');
             var plantilla_gadget =plantillas.find('#plantilla_gadget');
             
+            var clases = {};
+            registrarClaseNodoBuscadorDelibros(clases);
             
-            var nodo_buscador = new NodoBuscadorDeLibros({UI: UI_buscador, plantilla_libro: plantilla_libro_encontrado});           
+            var nodo_buscador = new clases.NodoBuscadorDeLibros({UI: UI_buscador, plantilla_libro: plantilla_libro_encontrado});           
             router.conectarBidireccionalmenteCon(nodo_buscador);
 
             var gadget_buscador =  $.extend(true,{}, gadget);

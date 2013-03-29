@@ -1,0 +1,77 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">   
+        <title>Buscador de aplicaciones</title>
+	</head>
+	
+	<body>		
+        <div id="panel_principal">
+            <button id="boton_pedir_aplicaciones" class="boton_pedir_aplicaciones">
+                pedir       
+            </button>
+        </div>	
+
+        <div id="plantillas">
+            <div id="plantilla_gadget" class="gadget">
+                <div class="toolbar">
+                </div>
+                
+                <div class="contenedor">
+                    
+                </div>
+            </div>    
+        </div>
+    </body>
+    
+    <script type="text/javascript" src="../linq/linq.js"></script> 
+    <script type="text/javascript" src="../JQuery/jquery-1.9.1.js"></script> 
+    <script type="text/javascript" src="../jQueryUI/js/jquery-ui-1.9.1.custom.js"></script>
+    <script type="text/javascript" src="../VortexScripts/Vortex.js"></script>
+    <script type="text/javascript" src="../VortexScripts/FiltrosYTransformaciones.js"></script>
+    <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/GeneradorDeIdMensaje.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoMultiplexor.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidi.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidiMonoFiltro.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoRouter.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/PataConectora.js"></script> 
+    <script type="text/javascript" src="../VortexComm/gadget.js"></script>   
+    
+
+    <script type="text/javascript" >            
+        $(function () { 
+            var router =  new NodoRouter("principal"); 
+            
+            var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');             
+            router.conectarBidireccionalmenteCon(clienteHTTP);
+            
+            var panel_principal = $('#panel_principal');
+            var plantillas = $('#plantillas');            
+            var plantilla_gadget =plantillas.find('#plantilla_gadget');
+            
+            var portal_compras = new NodoPortalBidi("portal compras");
+            portal_compras.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.aplicacion"),
+                                        function(mensaje){    
+                                            var clases = {}; 
+                                            var func = Function("return " + mensaje.aplicacion)();
+                                            func(clases);
+                                            var nodo = new clases.NodoBuscadorDeLibros(mensaje.cfg);
+                                            router.conectarBidireccionalmenteCon(nodo);
+                                            var gadget_buscador =  $.extend(true,{}, gadget);
+                                            gadget_buscador.start({
+                                                title			: '',
+                                                UI 				: plantilla_gadget.clone()
+                                            });
+                                            gadget_buscador.agregarContenido(nodo);
+                                            gadget_buscador.dibujarEn(panel_principal); 
+                                        });
+            
+            router.conectarBidireccionalmenteCon(portal_compras); 
+            
+            $('#boton_pedir_aplicaciones').click(function(){
+                portal_compras.enviarMensaje({tipoDeMensaje: "vortexComm.market.pedidoDeAplicacion"});
+            });            
+        });
+    </script>
+</html>
