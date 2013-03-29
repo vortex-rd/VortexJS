@@ -62,7 +62,18 @@
             var plantilla_vista_edicion_de_libro = plantillas.find('#plantilla_vista_edicion_de_libro');
             var plantilla_gadget =plantillas.find('#plantilla_gadget');
             
-            //var nodo_buscador = new NodoBuscadorDeLibros({UI: UI_buscador, plantilla_libro: plantilla_libro_encontrado});    
+            var clases = {};
+            registrarClaseNodoBuscadorDelibros(clases);
+            
+            var nodo_buscador = new clases.NodoBuscadorDeLibros({UI: UI_buscador, plantilla_libro: plantilla_libro_encontrado});    
+            router.conectarBidireccionalmenteCon(nodo_buscador);
+            var gadget_buscador =  $.extend(true,{}, gadget);
+                                            gadget_buscador.start({
+                                                title			: '',
+                                                UI 				: plantilla_gadget.clone()
+                                            });
+                                            gadget_buscador.agregarContenido(nodo_buscador);
+                                            gadget_buscador.dibujarEn(panel_principal); 
             
             var portal_ventas = new NodoPortalBidi("portal ventas");
             portal_ventas.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.pedidoDeAplicacion"),
@@ -76,7 +87,7 @@
                                         }
                                     );
             
-            router.conectarBidireccionalmenteCon(portal_ventas);            
+            router.conectarBidireccionalmenteCon(portal_ventas);  
         });
     </script>
 </html>
