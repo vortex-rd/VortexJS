@@ -3,8 +3,36 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
         
         <title>Vendedor de buscador de libros</title>
-		<link rel="stylesheet" href="Biblioteca.css" type="text/css">
         <link rel="stylesheet" href="../jQueryUI/css/redmond/jquery-ui-1.9.1.custom.css" />
+        <style id="estilo">
+            .libro_encontrado_en_buscador{
+                list-style:none;    
+            }
+            
+            .libro_encontrado_en_buscador:hover{
+                background-color: Orange;    
+            }
+            
+            .autor_de_libro_encontrado{
+                display: inline-block;
+                font-weight:bold;
+            }
+            
+            .titulo_de_libro_encontrado{
+                display: inline-block;
+            }
+            
+            .lista_de_libros_encontrados_del_buscador_de_libros{
+                padding:5px;
+                margin:0px;
+            }
+            
+            .input_de_busqueda_del_buscador_de_libros
+            {
+                display: block;
+                width:100%;
+            }
+        </style>
 	</head>
 	
 	<body>		
@@ -82,7 +110,8 @@
                                                                          aplicacion: registrarClaseNodoBuscadorDelibros.toString(),
                                                                          cfg:{UI: UI_buscador[0].outerHTML,
                                                                               plantilla_libro: plantilla_libro_encontrado[0].outerHTML
-                                                                            }
+                                                                            },
+                                                                         estilo: $("#estilo")[0].outerHTML
                                                                         });
                                         }
                                     );

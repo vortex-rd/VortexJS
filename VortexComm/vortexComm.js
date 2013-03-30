@@ -211,16 +211,16 @@ var Canal = function(config){
 	
 	
 	
-	/*
-	var gKanbanBoard = new KanbanBoard({	id:"kb" + idCanal,
-											portal:portal, 
-											persistidor:persistidorGadgets.getSubPersistidor("kb" + idCanal), 
-											contexto:contexto.getSubContexto(),
-											conjunto:conjunto.getSubConjunto()
-										});
-	controlCanal.gadgets.push(gKanbanBoard);
+//	
+//	var gKanbanBoard = new KanbanBoard({	id:"kb" + idCanal,
+//											portal:portal, 
+//											persistidor:persistidorGadgets.getSubPersistidor("kb" + idCanal), 
+//											contexto:contexto.getSubContexto(),
+//											conjunto:conjunto.getSubConjunto()
+//										});
+//	controlCanal.gadgets.push(gKanbanBoard);
 	
-	*/
+	
 	
 	
 	var plantillas = $('#plantillas');
