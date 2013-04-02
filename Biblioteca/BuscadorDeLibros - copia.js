@@ -1,3 +1,4 @@
+var registrarClaseNodoBuscadorDelibros = function(clases){
     var NodoBuscadorDeLibros = function(cfg){
         this._plantilla_libro = $(cfg.plantilla_libro);
         this._ui = $(cfg.UI);
@@ -31,7 +32,7 @@
             this._panel_libros_encontrados.empty();
         },
         onLibroEncontrado : function (mensaje) {      
-            var libro = new NodoVistaDeLibroEnBuscador({UI: this._plantilla_libro.clone(),
+            var libro = new clases.NodoVistaDeLibroEnBuscador({UI: this._plantilla_libro.clone(),
                                                       idLibro: mensaje.idLibro,
                                                       autor: mensaje.autor,
                                                       titulo: mensaje.titulo,
@@ -57,8 +58,10 @@
             this._router.recibirMensaje(un_mensaje);    
         }   
     };
-
-    var NodoVistaDeLibroEnBuscador = function(cfg){
+    
+    clases.NodoBuscadorDeLibros = NodoBuscadorDeLibros;  
+    
+        var NodoVistaDeLibroEnBuscador = function(cfg){
         this._ui = $(cfg.UI);
         this._id_libro = cfg.idLibro;
         this._autor = cfg.autor;
@@ -66,7 +69,6 @@
         this._id_biblioteca = cfg.idBiblioteca;  
         this.start();
     };
-
     NodoVistaDeLibroEnBuscador.prototype = {
         start: function(){
             this._portal = new NodoPortalBidi("vista libro en buscador" + this._id_libro);
@@ -96,3 +98,6 @@
             this._portal.recibirMensaje(un_mensaje);
         } 
     };
+    clases.NodoVistaDeLibroEnBuscador = NodoVistaDeLibroEnBuscador;  
+    
+};

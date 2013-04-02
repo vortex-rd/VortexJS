@@ -2,67 +2,11 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">   
         <title>Buscador de aplicaciones</title>
+        <link rel="stylesheet" href="Gadget.css" />
         <style>
             #plantillas{
                 display:none;
             }
-            .gadget{
-                position:absolute;
-                border: solid 2px;
-                height: 200px;
-                width: 200px;
-                
-                overflow: hidden;
-                
-                border: solid 1px;
-                border-color: #FFC617;
-                border-color: #FFC617;
-                
-                background-color: rgb(255,255,255);
-                
-                -webkit-touch-callout: none;
-                -webkit-user-select: none;
-                -khtml-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
-            
-            .toolbar{
-                width:100%;
-                height:20;
-                
-                padding: 0 0 0 5;
-                
-                z-index: 1;
-                
-                background-color:#FFDC73;
-                
-                border-bottom-style:solid;
-                border-color: #FFC617;
-                border-width: 2px;
-                
-            }
-            
-            
-            
-            .contenedor{
-                width:100%;
-                
-                position: absolute;
-                
-                right:0;
-                left:0;
-                top:20;
-                bottom:0;
-                
-                background-color: white;
-                
-                overflow-y:auto;
-                overflow-x:auto;
-            
-            }
-
         </style>
 	</head>
 	
@@ -116,14 +60,12 @@
             portal_compras.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.aplicacion"),
                                         function(mensaje){    
                                             $("head").append($(mensaje.estilo));
-                                            var clases = {}; 
-                                            var func = Function("return " + mensaje.aplicacion)();
-                                            func(clases);
-                                            var nodo = new clases.NodoBuscadorDeLibros(mensaje.cfg);
+                                            $.globalEval(mensaje.script);                                            
+                                            var nodo = new NodoBuscadorDeLibros(mensaje.cfg);
                                             router.conectarBidireccionalmenteCon(nodo);
                                             var gadget_buscador =  $.extend(true,{}, gadget);
                                             gadget_buscador.start({
-                                                title			: '',
+                                                title			: mensaje.nombreApp,
                                                 UI 				: plantilla_gadget.clone()
                                             });
                                             gadget_buscador.agregarContenido(nodo);

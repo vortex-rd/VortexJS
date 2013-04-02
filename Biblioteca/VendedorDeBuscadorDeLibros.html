@@ -4,6 +4,12 @@
         
         <title>Vendedor de buscador de libros</title>
         <link rel="stylesheet" href="../jQueryUI/css/redmond/jquery-ui-1.9.1.custom.css" />
+        <style>
+            #plantillas{
+                display:none;
+            }
+        </style>
+        
         <style id="estilo">
             .libro_encontrado_en_buscador{
                 list-style:none;    
@@ -69,10 +75,7 @@
     <script type="text/javascript" src="../VortexScripts/NodoPortalBidi.js"></script> 
     <script type="text/javascript" src="../VortexScripts/NodoPortalBidiMonoFiltro.js"></script> 
     <script type="text/javascript" src="../VortexScripts/NodoRouter.js"></script> 
-    <script type="text/javascript" src="../VortexScripts/PataConectora.js"></script> 
-    <script type="text/javascript" src="../VortexComm/gadget.js"></script>   
-    <script type="text/javascript" src="BuscadorDeLibros.js"></script>    
-    
+    <script type="text/javascript" src="../VortexScripts/PataConectora.js"></script>     
 
     <script type="text/javascript" >            
         $(function () { 
@@ -85,38 +88,126 @@
             var panel_principal = $('#panel_principal');
             var plantillas = $('#plantillas');
             var UI_buscador = plantillas.find('#plantilla_buscador_de_libros').clone();
-            var UI_biblioteca = plantillas.find('#plantilla_biblioteca').clone();
             var plantilla_libro_encontrado = plantillas.find('#plantilla_libro_encontrado_en_buscador');
-            var plantilla_vista_edicion_de_libro = plantillas.find('#plantilla_vista_edicion_de_libro');
-            var plantilla_gadget =plantillas.find('#plantilla_gadget');
-            
-            var clases = {};
-            registrarClaseNodoBuscadorDelibros(clases);
-            
-            var nodo_buscador = new clases.NodoBuscadorDeLibros({UI: UI_buscador, plantilla_libro: plantilla_libro_encontrado});    
-            router.conectarBidireccionalmenteCon(nodo_buscador);
-            var gadget_buscador =  $.extend(true,{}, gadget);
-                                            gadget_buscador.start({
-                                                title			: '',
-                                                UI 				: plantilla_gadget.clone()
-                                            });
-                                            gadget_buscador.agregarContenido(nodo_buscador);
-                                            gadget_buscador.dibujarEn(panel_principal); 
-            
+
             var portal_ventas = new NodoPortalBidi("portal ventas");
             portal_ventas.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.pedidoDeAplicacion"),
                                         function(){
                                             portal_ventas.enviarMensaje({tipoDeMensaje:"vortexComm.market.aplicacion",
-                                                                         aplicacion: registrarClaseNodoBuscadorDelibros.toString(),
+                                                                         //aplicacion:  $('#buscadorDeLibros')[0].outerHTML,//registrarClaseNodoBuscadorDelibros.toString(),
+                                                                         script: $('#buscadorDeLibros')[0].innerHTML,
+                                                                         nombreApp: 'Buscador de Libros',
                                                                          cfg:{UI: UI_buscador[0].outerHTML,
                                                                               plantilla_libro: plantilla_libro_encontrado[0].outerHTML
                                                                             },
                                                                          estilo: $("#estilo")[0].outerHTML
                                                                         });
                                         }
-                                    );
-            
+                                    );            
             router.conectarBidireccionalmenteCon(portal_ventas);  
         });
-    </script>
+    </script >
+    
+    <script id="buscadorDeLibros" type="text/javascript">
+         var NodoBuscadorDeLibros = function(cfg){
+            this._plantilla_libro = $(cfg.plantilla_libro);
+            this._ui = $(cfg.UI);
+            this.start();
+        };
+        
+        NodoBuscadorDeLibros.prototype = {
+            start: function(){
+                this._router = new NodoRouter("buscador");
+                this._portal = new NodoPortalBidiMonoFiltro("buscador");
+                this._router.conectarBidireccionalmenteCon(this._portal);
+                
+                this._librosEncontrados = [];
+                this._input_busqueda = this._ui.find('#input_de_busqueda_del_buscador_de_libros');
+                this._panel_libros_encontrados = this._ui.find('#lista_de_libros_encontrados_del_buscador_de_libros');
+                
+                this._input_busqueda.change(this.nuevoCriterioDeBusqueda.bind(this));
+            },
+            nuevoCriterioDeBusqueda : function(){
+                this.pedirLibrosPorAutor(this._input_busqueda.val());
+            },
+            pedirLibrosPorAutor : function(autor) {        
+                this.limpiarLibrosEncontrados();
+                this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
+                                                            new FiltroXClaveValor("autor", autor)]),
+                                      this.onLibroEncontrado.bind(this));  
+                this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.busquedaDeLibros", autor:autor});
+            },
+            limpiarLibrosEncontrados: function(){
+                this._librosEncontrados = [];
+                this._panel_libros_encontrados.empty();
+            },
+            onLibroEncontrado : function (mensaje) {      
+                var libro = new NodoVistaDeLibroEnBuscador({UI: this._plantilla_libro.clone(),
+                                                          idLibro: mensaje.idLibro,
+                                                          autor: mensaje.autor,
+                                                          titulo: mensaje.titulo,
+                                                          idBiblioteca: mensaje.idBiblioteca
+                                                        });
+                if(this.librosEncontrados().Any(function(l){return (l._id_libro==libro._id_libro &&
+                                                                    l._id_biblioteca==libro._id_biblioteca)})) return;
+                this._librosEncontrados.push(libro);    
+        
+                this._router.conectarBidireccionalmenteCon(libro);
+                libro.dibujarEn(this._panel_libros_encontrados);        
+            },
+            librosEncontrados : function() {
+                return Enumerable.From(this._librosEncontrados);
+            },    
+            dibujarEn: function(panel){
+                panel.append(this._ui);
+            },
+            conectarCon: function(un_nodo){
+                this._router.conectarCon(un_nodo);   
+            },
+            recibirMensaje: function(un_mensaje){
+                this._router.recibirMensaje(un_mensaje);    
+            }   
+        };
+    
+        var NodoVistaDeLibroEnBuscador = function(cfg){
+            this._ui = $(cfg.UI);
+            this._id_libro = cfg.idLibro;
+            this._autor = cfg.autor;
+            this._titulo = cfg.titulo;
+            this._id_biblioteca = cfg.idBiblioteca;  
+            this.start();
+        };
+    
+        NodoVistaDeLibroEnBuscador.prototype = {
+            start: function(){
+                this._portal = new NodoPortalBidi("vista libro en buscador" + this._id_libro);
+                
+                this._label_autor = this._ui.find('#autor_de_libro_encontrado');
+                this._label_titulo = this._ui.find('#titulo_de_libro_encontrado');
+                
+                this._label_autor.text(this._autor);
+                this._label_titulo.text(this._titulo);
+                
+                this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
+                                                          new FiltroXClaveValor("idBiblioteca", this._id_biblioteca),
+                                                          new FiltroXClaveValor("idLibro", this._id_libro)]),
+                                           this.actualizar.bind(this));
+            },  
+            actualizar: function(libro){
+                this._label_autor.text(libro.autor);
+                this._label_titulo.text(libro.titulo); 
+            },
+            dibujarEn: function(panel){
+                panel.append(this._ui);
+            },
+            conectarCon: function(un_nodo){
+                this._portal.conectarCon(un_nodo);   
+            },
+            recibirMensaje: function(un_mensaje){
+                this._portal.recibirMensaje(un_mensaje);
+            } 
+        };
+        
+    </script>    
+    
 </html>
