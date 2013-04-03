@@ -1,3 +1,4 @@
+var scriptNodoBuscadorDelibros = function(){
     var NodoBuscadorDeLibros = function(cfg){
         this._plantilla_libro = $(cfg.plantilla_libro);
         this._ui = $(cfg.UI);
@@ -96,3 +97,9 @@
             this._portal.recibirMensaje(un_mensaje);
         } 
     };
+};
+
+scriptNodoBuscadorDelibros.script = function(){
+    var script = scriptNodoBuscadorDelibros.toString();
+    return script.substring(12, script.length-2);
+};

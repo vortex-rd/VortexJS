@@ -4,7 +4,6 @@
         
         <title>Prueba Biblioteca</title>
 		<link rel="stylesheet" href="Biblioteca.css" type="text/css">
-		<link rel="stylesheet" href="../CSS/Gadget.css" type="text/css">
         <link rel="stylesheet" href="../jQueryUI/css/redmond/jquery-ui-1.9.1.custom.css" />
 	</head>
 	
@@ -79,12 +78,12 @@
     <script type="text/javascript" src="Biblioteca.js"></script>    
     <script type="text/javascript" src="VistaDeBiblioteca.js"></script>    
     <script type="text/javascript" src="Libro.js"></script>    
-    <script type="text/javascript" src="VistaDeLibro.js"></script>    
     <script type="text/javascript" src="BuscadorDeLibros.js"></script>    
     
 
     <script type="text/javascript" >            
         $(function () { 
+            $.globalEval(scriptNodoBuscadorDelibros.script());
             var router =  new NodoRouter("principal"); 
             
             var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');             
@@ -101,10 +100,7 @@
             var plantilla_vista_edicion_de_libro = plantillas.find('#plantilla_vista_edicion_de_libro');
             var plantilla_gadget =plantillas.find('#plantilla_gadget');
             
-            var clases = {};
-            registrarClaseNodoBuscadorDelibros(clases);
-            
-            var nodo_buscador = new clases.NodoBuscadorDeLibros({UI: UI_buscador, plantilla_libro: plantilla_libro_encontrado});           
+            var nodo_buscador = new NodoBuscadorDeLibros({UI: UI_buscador, plantilla_libro: plantilla_libro_encontrado});           
             router.conectarBidireccionalmenteCon(nodo_buscador);
 
             var gadget_buscador =  $.extend(true,{}, gadget);
