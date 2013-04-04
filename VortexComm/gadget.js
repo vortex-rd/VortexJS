@@ -1,9 +1,9 @@
-
 var gadget = {
 	options: {
 		title				: 'Gadget Modelo',
 		id					: null,
-		UI					: null
+		UI					: null,
+		app					: null
 	},
 	
 	//constructor
@@ -55,11 +55,18 @@ var gadget = {
 	ocultar: function(){
 		this.options.UI.hide();
 	},
-	
+	//despues veo si queda
     dibujarEn: function(panel){
         panel.append(this.options.UI);
     },
-    agregarContenido: function(objetoDibujable){
-        objetoDibujable.dibujarEn(this.contenedor);
+	//////
+	
+	
+    agregarContenido: function(obj){
+		
+		this.options.app = obj;
+		
+		this.contenedor.append(obj.options.UI);
+		
     }
 }

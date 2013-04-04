@@ -1,156 +1,18 @@
-$(function () {
+var vortexComm = {
+	
+	portalComun:	null,
+	clienteHTTP: 	null,
+	conjunto:		null,
+	persistidor:	null,
+	nombreUsuario:	null,
 	
 	
-
-var Canal = function(config){
-	var persistidor = config.persistidor;
-	var portal = config.portal;
-	var vortexComm = config.vortexComm;
-	var contexto = config.contexto;
-	var conjunto = config.conjunto;
-	
-	var idCanal = persistidor.getValor("idCanal");
-	var canal = persistidor.getValor("canal");
-	
-	var controlCanal = $("#protoControlCanal")
-					.clone()
-					.attr('id', idCanal);
-		
-	contexto.setParametro('canal', canal);
-	
-	var filtroCanal = new FiltroXClaveValor("canal", canal);
-	var trafoCanal = new TrafoXClaveValor("canal", canal);
-	
-	conjunto.agregarFiltroEntrada(filtroCanal);	
-	conjunto.agregarTrafoSalida(trafoCanal);	
-	
-	
-	controlCanal.edit = controlCanal.find('.control_canal_edit');
-	
-	
-	controlCanal.edit.val(canal);
-	
-	
-	
-	controlCanal.edit.attr('readonly', true);
-	controlCanal.edit.css("background-color", "transparent");
-	
-	
-	controlCanal.gadgets = [];
-	
-	var persistidorGadgets = persistidor.getSubPersistidor("gadgets");			
-	
-	
-	/********************* GADGETs **************************/
-	
-	
-	
-	/*
-	var gKanbanBoard = new KanbanBoard({	id:"kb" + idCanal,
-											portal:portal, 
-											persistidor:persistidorGadgets.getSubPersistidor("kb" + idCanal), 
-											contexto:contexto.getSubContexto(),
-											conjunto:conjunto.getSubConjunto()
-										});
-	controlCanal.gadgets.push(gKanbanBoard);
-	
-	*/
-	
-	
-	var plantillas = $('#plantillas');
-	
-	
-	var unChat = $.extend(true,{}, chat);
-	unChat.start({
-		title			: 'Chat',
-		id				: "chat" + idCanal,
-		
-		contexto		: contexto.getSubContexto(),
-		persistidor		: persistidorGadgets.getSubPersistidor("chat" + idCanal),
-		conjunto		: conjunto.getSubConjunto(),
-		
-		UI 				: plantillas.find("#plantilla_gadgetChat").clone()
-	});
-	
-	
-	controlCanal.gadgets.push(unChat);
-	
-	
-	
-	var unaPizarra = $.extend(true,{}, pizarra);
-	unaPizarra.start({
-		title			: 'Pizarra',
-		id				: "pizarra" + idCanal,
-		
-		contexto		: contexto.getSubContexto(),
-		persistidor		: persistidorGadgets.getSubPersistidor("pizarra" + idCanal),
-		conjunto		: conjunto.getSubConjunto(),
-		
-		UI 				: plantillas.find("#plantilla_gadgetPizarra").clone()
-	});
-	
-	controlCanal.gadgets.push(unaPizarra);
-	
-	
-	
-	
-	/********************* FIN: GADGETs **************************/
-	
-	
-	controlCanal.gadgets.forEach(function (gadget, index){
-		
-		vortexComm.panelGadgets.append(gadget.options.UI);
-		gadget.ocultar();
-		
-	});
-	
-	controlCanal.on("click", function (e) {
-		e.stopPropagation();
-		
-		vortexComm.panelGadgets.children().hide();
-		
-		controlCanal.gadgets.forEach(function (gadget, index) {
-			gadget.mostrar();
-		});
-		
-		
-		
-		vortexComm.desSeleccionarTodosLosCanales();
-		controlCanal.addClass("control_canal_seleccionado");
-    });
-	
-	controlCanal.on("dblclick", function (e) {
-		e.stopPropagation();
-		
-		
-		self.editValor(controlCanal.edit);
-		
-		controlCanal.edit.attr('readonly', false);
-		controlCanal.edit.css("background-color", "white");
-		
-    });
-	
-	controlCanal.keypress(function(e) {
-		var self = this;
-		
-		if(e.which == 13) {
-			e.stopPropagation();
-			
-			canal = self.controlCanal.edit.val();
-			
-			self.persistidor.setValor("canal", canal);
-			filtroCanal.valor = canal;
-			trafoCanal.valor = canal; 	
-			controlCanal.edit.attr('readonly', true);
-			controlCanal.edit.css("background-color", "transparent");
-		}
-	});
-	
-	$.extend(true, this, controlCanal);	
 };
-	
-	
-	
+
+
+
+
+$(function () {
 	
 	
 	var portalComun = new NodoPortalBidi();
@@ -186,21 +48,7 @@ var Canal = function(config){
 	
 	
 	
-	//funciones genericas (a acomodar)
-	var editTextControl = function($input, flagEdit){
-		if(flagEdit==true){
-			$input.removeAttr('readonly');
-			$input.css("background-color", "black");
-		}else{
-			$input.attr('readonly', true);
-			$input.css("background-color", "transparent");
-		}
-	};
-	var desSeleccionarTodosLosCanales = function(){
-		//cambiar children por .find
-		//vortexComm.panelCanales.children().removeClass("control_canal_seleccionado");
-		vortexComm.administradorCanales.find('.control_canal').removeClass("control_canal_seleccionado");
-	};
+	
 	
 	
 	
@@ -210,14 +58,14 @@ var Canal = function(config){
 	editTextControl(controlUsuario, false);
 	
 	controlUsuario.on("dblclick", function (e) {
-	
 		e.stopPropagation();
-		editTextControl(controlUsuario, true);
+		editTextControl(this, true);
 		
 	});
 	
-	controlUsuario.on("keypress", (function(e) {
 	
+	controlUsuario.on("keypress", function(e) {
+		
 		if(e.which == 13) {
 			e.stopPropagation();
 			nombreUsuario = controlUsuario.find('input').val();
@@ -225,56 +73,73 @@ var Canal = function(config){
 			persistidor.setValor('NombreDeUsuario', nombreUsuario);	
 			contexto.setParametro('NombreDeUsuario', nombreUsuario);
 			
-			editTextControl(self.controlUsuario.edit, false);
+			editTextControl(this, false);
 		}
+		
 	});
 	
 	//TO DO nombre horrible y confuso
 	var persistidorCanales = persistidor.getSubPersistidor("canales");
 	var persistidoresCanales = persistidorCanales.getSubPersistidores();
 	
+	var listaCanales = [];
 	
 	var administradorCanales = $('#administrador_canales');
+	
 	$.each(persistidoresCanales, function (clave, persistidorCanal) {
 		
 		
+		var un_canal = $.extend(true,{}, canal);
 		
-		//TO DO: hacer el canal como un json, al igual que chat
-		var nuevoCanal = new Canal({persistidor:persistidorCanal, 
-									conjunto:conjunto.getSubConjunto(), 
-									vortexComm:vortexComm,
-									contexto:contexto.getSubContexto()});
-		listaCanales.push(nuevoCanal);
+		un_canal.start({
+			persistidor		: persistidorCanal, 
+			conjunto		: conjunto.getSubConjunto(), 
+			contexto		: contexto.getSubContexto(),
+			
+			UI				: $('#plantilla_canal').clone(),
+			
+			panelGadgets	: $('#panel_gadgets')
+			
+		});
 		
-		administradorCanales.append(nuevoCanal);	
+		//TO DO ver de juntar
+		listaCanales.push(un_canal);
+		administradorCanales.append(un_canal.options.UI);
 		
 	});
 	
 	
 	//*********** botonAddCanal
 	var botonAddCanal = $('#administrador_canales_boton_add_canal');
-	var listaCanales = [];
 	
 	botonAddCanal.on("click", function (){
 		var idCanal = "Canal" + (listaCanales.length + 1).toString();
 		
-		var persistidorCanal = self.persistidorCanales.getSubPersistidor(idCanal);
+		var persistidorCanal = persistidorCanales.getSubPersistidor(idCanal);
 		persistidorCanal.setValor("idCanal", idCanal);
 		persistidorCanal.setValor("canal", idCanal);
 		
 		
-		// TO DO
-		var nuevoCanal = $.extend(true,{}, canal);
-		nuevoCanal.start({
-			persistidor:	persistidorCanal, 
-			conjunto:		self.conjunto.getSubConjunto(), 
-			vortexComm:		self,
-			contexto:		self.contexto.getSubContexto()
+		
+		var un_canal = $.extend(true,{}, canal);
+		
+		
+		un_canal.start({
+			persistidor		: persistidorCanal, 
+			conjunto		: conjunto.getSubConjunto(), 
+			contexto		: contexto.getSubContexto(),
+			
+			UI				: $('#plantilla_canal').clone(),
+			
+			panelGadgets	: $('#panel_gadgets')
+			
 		});
 		
-		/*ver de juntar esto, lista canales puede ser un json que tenga metodos*/
-		listaCanales.push(nuevoCanal);
-		administradorCanales.append(nuevoCanal);
+		
+		//TO DO ver de juntar
+		listaCanales.push(un_canal);
+		administradorCanales.append(un_canal.options.UI);	
+		
 		
 	});
 	
@@ -317,21 +182,255 @@ var Canal = function(config){
 	
 	
 	
-	
-	
-	/*
-	$('#administrador_canales').accordion({
-      collapsible: true
-    });
-	*/
-	/*
-	$("#panelPrincipal").empty();
-	vxComm.appendTo("#panelPrincipal");
-	*/
-	
 });
 
 
 
+//funciones genericas (a acomodar)
+var editTextControl = function($textControl, flagEdit){
 
+	
+	
+	
+	var $input = $textControl.find('input');
+	
+	if(flagEdit==true){
+		$input.removeAttr('readonly');
+		$input.css("background-color", "black");
+	}else{
+		$input.attr('readonly', true);
+		$input.css("background-color", "transparent");
+	}
+	
+	
+};
 
+var desSeleccionarTodosLosCanales = function(){
+	//cambiar children por .find
+	//vortexComm.panelCanales.children().removeClass("control_canal_seleccionado");
+	$('#administrador_canales').find('.control_canal').removeClass("control_canal_seleccionado");
+};
+	
+var canal = {
+	options: {
+		UI				: null,
+		conjunto		: null,
+		persistidor		: null,
+		contexto		: null,
+		
+		
+		panelGadgets	: null,
+		idCanal			: null,
+		canal			: null
+	},
+	
+	
+	//constructor
+	
+	setOptions: function(options){
+		$.extend(true, this.options, options);
+	},
+		
+	start: function(options){
+		this.canal(options);
+	},
+	
+	gadgets: [],
+	
+	canal: function(options) {
+		
+		var self = this;
+		
+		$.extend(true, self.options, options);
+		
+		
+		//Routing
+		self.filtroCanal = new FiltroXClaveValor("canal", canal);
+		self.trafoCanal = new TrafoXClaveValor("canal", canal);
+		
+		self.conjuntoCanal = self.options.conjunto;
+		self.conjuntoCanal.agregarFiltroEntrada(self.filtroCanal);
+		self.conjuntoCanal.agregarTrafoSalida(self.trafoCanal);
+		
+		
+		
+		
+		//recepcion de mensajes
+		//self.conjuntoCanal.pedirMensajes( function (mensaje) {
+		//	self.recibirMensaje(mensaje);
+		//});
+		
+		
+		//Persistencia
+		var contexto = options.contexto;
+		var conjunto = options.conjunto;
+		
+		
+		
+		if(self.options.idCanal == null){
+			
+			
+			self.options.idCanal = self.options.persistidor.getValor("idCanal");
+			self.options.canal = self.options.persistidor.getValor("canal");
+			
+		}else{
+			self.options.persistidor.setValor("idCanal", self.options.idCanal);
+			self.options.persistidor.setValor("canal", self.options.canal);
+		}
+		
+				
+		
+		
+		var persistidorGadgets = self.options.persistidor.getSubPersistidor("gadgets");			
+		
+		
+		//contexto (parametros)
+		contexto.setParametro('canal', self.options.canal);
+		
+		
+		
+		//UI
+		self.controlCanal = $(self.options.UI);
+		
+		
+		self.controlCanal.attr('id', self.options.idCanal);
+		
+		
+		var panelGadgets = $('#panel_gadgets');
+		
+		
+		editTextControl(self.controlCanal, false);
+		
+		
+		self.controlCanal.on("click", function (e) {
+			e.stopPropagation();
+			
+			//TO DO hacerlo de forma que se ejecute el ocultar de los gadgets
+			self.options.panelGadgets.children().hide();
+			
+			self.gadgets.forEach(function (gadget, index) {
+				gadget.mostrar();
+			});
+			
+			
+			desSeleccionarTodosLosCanales();
+			self.controlCanal.addClass("control_canal_seleccionado");
+		});
+		
+		self.controlCanal.on("dblclick", function (e) {
+			e.stopPropagation();
+			
+			
+			
+			
+			editTextControl($(this), true);
+			
+		});
+		
+		self.controlCanal.keypress(function(e) {
+			if(e.which == 13) {
+				e.stopPropagation();
+				
+				canal = $(this).find('input').val();
+				
+				self.options.persistidor.setValor("canal", canal);
+				
+				self.filtroCanal.valor = canal;
+				self.trafoCanal.valor = canal;
+				
+				
+				
+				editTextControl($(this), false);
+			}
+		});
+		
+		
+		
+		
+		/********************* GADGETs **************************/
+		
+		
+		
+		/*
+		var gKanbanBoard = new KanbanBoard({	id:"kb" + idCanal,
+												portal:portal, 
+												persistidor:persistidorGadgets.getSubPersistidor("kb" + idCanal), 
+												contexto:contexto.getSubContexto(),
+												conjunto:conjunto.getSubConjunto()
+											});
+		self.gadgets.push(gKanbanBoard);
+		
+		*/
+		
+		
+		var plantillas = $('#plantillas');
+		var unGadget;
+		
+		
+		
+		unGadget = $.extend(true,{}, gadget);
+		unGadget.start({
+			title			: 'Chat',
+			id				: "chat" + self.options.idCanal,
+			UI				: plantillas.find("#plantilla_gadget").clone()
+		});
+		
+		
+		var unChat = $.extend(true,{}, chat);
+		
+		unChat.start({
+			
+			contexto		: contexto.getSubContexto(),
+			persistidor		: persistidorGadgets.getSubPersistidor("chat" + self.options.idCanal),
+			conjunto		: conjunto.getSubConjunto(),
+			
+			UI 				: plantillas.find("#plantilla_chat").clone()
+		});
+		
+		unGadget.agregarContenido(unChat);
+		
+		self.gadgets.push(unGadget);
+		
+		
+		
+		
+		
+		
+		
+		unGadget = $.extend(true,{}, gadget);
+		unGadget.start({
+			title			: 'Pizarra',
+			id				: "pizarra" + idCanal,
+			
+			UI				: plantillas.find("#plantilla_gadget").clone()
+		});
+		
+		var unaPizarra = $.extend(true,{}, pizarra);
+		
+		unaPizarra.start({
+			contexto		: contexto.getSubContexto(),
+			persistidor		: persistidorGadgets.getSubPersistidor("pizarra" + self.options.idCanal),
+			conjunto		: conjunto.getSubConjunto(),
+			
+			UI 				: plantillas.find("#plantilla_pizarra").clone()
+		});
+		
+		unGadget.agregarContenido(unaPizarra);
+		self.gadgets.push(unGadget);
+		
+		
+		/********************* FIN: GADGETs **************************/
+		
+		
+		
+		self.gadgets.forEach(function (gadget, index){
+			//agregar a los gadgets
+			gadget.dibujarEn(self.options.panelGadgets);
+			gadget.ocultar();
+			
+		});
+		
+	}
+	
+	
+};

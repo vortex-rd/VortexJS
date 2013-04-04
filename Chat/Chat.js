@@ -13,6 +13,9 @@ var chat = {
 	
 	//constructor
 	start: function(options){
+		
+		
+		
 		var self = this;
 		self.chat(options);
 	},
@@ -21,23 +24,29 @@ var chat = {
 	chat: function(options){
 		
 		
+		
 		var self = this;
 		
 		$.extend(true, self.options, options);
 		
 		//contructor del padre
-		self.gadget(options);
+		//self.gadget(options);
+		
+		
+		
+		
 		
 		
 		self.conjuntoMensajeDeChat = self.options.conjunto.getSubConjunto();
 		self.conjuntoMensajeDeChat.agregarFiltroEntrada(new FiltroXClaveValor("tipoDeMensaje", "MensajeDeChat"));
 		self.conjuntoMensajeDeChat.agregarTrafoSalida(new TrafoXClaveValor("tipoDeMensaje", "MensajeDeChat"));
-		self.conjuntoMensajeDeChat.pedirMensajes( function (mensaje){
+		self.conjuntoMensajeDeChat.pedirMensajes(function (mensaje){
 				self.recibirMensaje(mensaje);
 		});
 		
 		
 		self.txtMensaje = self.options.UI.find('.txtMensaje');
+		
 		self.contenedorMensajes = self.options.UI.find('.contenedorMensajes');
 		
 		
@@ -46,16 +55,16 @@ var chat = {
 		});
 		
 		
-		
-		
-		
-		
-		
-	
-		
-		
 		self.ajustarAltoContenedorMensajes();
 		self.txtMensaje.focus();
+		
+		
+		/*
+		self.options.UI
+		overflow-y:auto;
+		overflow-x:auto;
+		*/
+		
 		
 	},
 	//constructor:fin
@@ -153,7 +162,8 @@ var chat = {
 		var self = this;
 		var _bottom;
 		_bottom = '';
-		_bottom+= self.contenedor.height();
+		
+		_bottom+= self.contenedorMensajes.parent().height();
 		_bottom-= self.txtMensaje.position().top;
 		self.contenedorMensajes.css('bottom', _bottom);
 	},
@@ -234,4 +244,4 @@ var chat = {
 	}
 	
 }
-chat = $.extend(true,{}, gadget, chat);
+//chat = $.extend(true,{}, gadget, chat);
