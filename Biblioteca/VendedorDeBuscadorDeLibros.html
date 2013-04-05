@@ -10,7 +10,7 @@
             }
         </style>
         
-        <style id="estilo">
+        <style id="estiloBuscadorDeLibros">
             .libro_encontrado_en_buscador{
                 list-style:none;    
             }
@@ -95,15 +95,19 @@
             portal_ventas.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.pedidoDeAplicacion"),
                                         function(){
                                             portal_ventas.enviarMensaje({tipoDeMensaje:"vortexComm.market.aplicacion",
-                                                                         //aplicacion:  $('#buscadorDeLibros')[0].outerHTML,
-                                                                         //aplicacion: registrarClaseNodoBuscadorDelibros.toString(),
                                                                          script: scriptNodoBuscadorDelibros.script(),
-                                                                         //script: $('#buscadorDeLibros')[0].innerHTML,
-                                                                         nombreApp: 'Buscador de Libros',
-                                                                         cfg:{UI: UI_buscador[0].outerHTML,
-                                                                              plantilla_libro: plantilla_libro_encontrado[0].outerHTML
-                                                                            },
-                                                                         estilo: $("#estilo")[0].outerHTML
+                                                                         nombreScript: 'buscadorDeLibros',
+                                                                         version: 0.1,                                                                         
+                                                                         apps:[
+                                                                            {
+                                                                                nombreApp: 'Buscador de Libros',
+                                                                                clase: 'NodoBuscadorDeLibros',
+                                                                                cfg:{   UI: UI_buscador[0].outerHTML,
+                                                                                        plantilla_libro: plantilla_libro_encontrado[0].outerHTML
+                                                                                    }
+                                                                            } 
+                                                                         ],
+                                                                         estilo: $("#estiloBuscadorDeLibros")[0].outerHTML
                                                                         });
                                         }
                                     );            

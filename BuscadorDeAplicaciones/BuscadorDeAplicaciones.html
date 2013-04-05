@@ -25,7 +25,17 @@
                 <div class="contenedor">
                     
                 </div>
-            </div>    
+            </div>  
+            <div id="plantilla_buscador_de_aplicaciones" class="buscador_de_aplicaciones">
+		        <div id="controles_del_buscador_de_aplicaciones" class="controles_del_buscador_de_aplicaciones">   
+                    <input type="text" id="input_de_busqueda_del_buscador_de_aplicaciones" class="input_de_busqueda_del_buscador_de_aplicaciones"/>			  
+		        </div>
+                <ul id="lista_de_aplicaciones_encontradas_del_buscador_de_aplicaciones" class="lista_de_aplicaciones_encontradas_del_buscador_de_aplicaciones">
+		        </ul>
+	        </div>
+            <li id="plantilla_app_encontrada_en_buscador" class="app_encontrada_en_buscador">
+                <div id="nombre_de_app_encontrada" class="nombre_de_app_encontrada"></div>   
+            </li>
         </div>
     </body>
     
@@ -43,7 +53,7 @@
     <script type="text/javascript" src="../VortexScripts/NodoRouter.js"></script> 
     <script type="text/javascript" src="../VortexScripts/PataConectora.js"></script> 
     <script type="text/javascript" src="../VortexComm/gadget.js"></script>   
-    
+    <script type="text/javascript" src="BuscadorDeAplicaciones.js"></script>    
 
     <script type="text/javascript" >            
         $(function () { 
@@ -60,16 +70,16 @@
             portal_compras.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.aplicacion"),
                                         function(mensaje){    
                                             $("head").append($(mensaje.estilo));
-                                            $.globalEval(mensaje.script);                                            
-                                            var nodo = new NodoBuscadorDeLibros(mensaje.cfg);
+                                            $.globalEval(mensaje.script);           
+                                            var nodo = new window[mensaje.apps[0].clase](mensaje.apps[0].cfg);
                                             router.conectarBidireccionalmenteCon(nodo);
-                                            var gadget_buscador =  $.extend(true,{}, gadget);
-                                            gadget_buscador.start({
-                                                title			: mensaje.nombreApp,
+                                            var un_gadget =  $.extend(true,{}, gadget);
+                                            un_gadget.start({
+                                                title			: mensaje.apps[0].nombreApp,
                                                 UI 				: plantilla_gadget.clone()
                                             });
-                                            gadget_buscador.agregarContenido(nodo);
-                                            gadget_buscador.dibujarEn(panel_principal); 
+                                            un_gadget.agregarContenido(nodo);
+                                            un_gadget.dibujarEn(panel_principal); 
                                         });
             
             router.conectarBidireccionalmenteCon(portal_compras); 
