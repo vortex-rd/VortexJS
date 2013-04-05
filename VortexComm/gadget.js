@@ -69,4 +69,4 @@ var gadget = {
 		this.contenedor.append(obj.options.UI);
 		
     }
-}
+};

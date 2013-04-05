@@ -40,6 +40,8 @@ $(function () {
 	
 	
 	
+	
+	
 	// 3 seteo parametros en contexto
 	var contexto = new ContextoVortex(new ContextoNulo());
 	contexto.setParametro('NombreDeUsuario', nombreUsuario);
@@ -49,13 +51,13 @@ $(function () {
 	
 	
 	
-	
-	
-	
-	
-	//*********** controlUsuario **
+	//*********** controlUsuario
 	var controlUsuario = $("#control_usuario");
 	editTextControl(controlUsuario, false);
+	controlUsuario.find('input').val(nombreUsuario);
+	
+	
+	
 	
 	controlUsuario.on("dblclick", function (e) {
 		e.stopPropagation();
@@ -117,7 +119,7 @@ $(function () {
 		
 		var persistidorCanal = persistidorCanales.getSubPersistidor(idCanal);
 		persistidorCanal.setValor("idCanal", idCanal);
-		persistidorCanal.setValor("canal", idCanal);
+		persistidorCanal.setValor("descripcion", idCanal);
 		
 		
 		
@@ -187,19 +189,18 @@ $(function () {
 
 
 //funciones genericas (a acomodar)
-var editTextControl = function($textControl, flagEdit){
-
+var editTextControl = function(textControl, flagEdit){
 	
-	
-	
-	var $input = $textControl.find('input');
+	var $input = $(textControl).find('input');
 	
 	if(flagEdit==true){
 		$input.removeAttr('readonly');
-		$input.css("background-color", "black");
+		
+		$input.addClass('editable');
+		
 	}else{
 		$input.attr('readonly', true);
-		$input.css("background-color", "transparent");
+		$input.removeClass('editable');
 	}
 	
 	
@@ -221,7 +222,7 @@ var canal = {
 		
 		panelGadgets	: null,
 		idCanal			: null,
-		canal			: null
+		descripcion		: null
 	},
 	
 	
@@ -245,8 +246,8 @@ var canal = {
 		
 		
 		//Routing
-		self.filtroCanal = new FiltroXClaveValor("canal", canal);
-		self.trafoCanal = new TrafoXClaveValor("canal", canal);
+		self.filtroCanal = new FiltroXClaveValor("canal", self.options.idCanal);
+		self.trafoCanal = new TrafoXClaveValor("canal", self.options.idCanal);
 		
 		self.conjuntoCanal = self.options.conjunto;
 		self.conjuntoCanal.agregarFiltroEntrada(self.filtroCanal);
@@ -271,11 +272,11 @@ var canal = {
 			
 			
 			self.options.idCanal = self.options.persistidor.getValor("idCanal");
-			self.options.canal = self.options.persistidor.getValor("canal");
+			self.options.descripcion = self.options.persistidor.getValor("descripcion");
 			
 		}else{
 			self.options.persistidor.setValor("idCanal", self.options.idCanal);
-			self.options.persistidor.setValor("canal", self.options.canal);
+			self.options.persistidor.setValor("descripcion", self.options.descripcion);
 		}
 		
 				
@@ -285,12 +286,12 @@ var canal = {
 		
 		
 		//contexto (parametros)
-		contexto.setParametro('canal', self.options.canal);
-		
-		
+		contexto.setParametro('idCanal', self.options.idCanal);
 		
 		//UI
 		self.controlCanal = $(self.options.UI);
+		
+		self.controlCanal.find('input').val(self.options.idCanal);
 		
 		
 		self.controlCanal.attr('id', self.options.idCanal);
@@ -331,12 +332,13 @@ var canal = {
 			if(e.which == 13) {
 				e.stopPropagation();
 				
-				canal = $(this).find('input').val();
+				idCanal = $(this).find('input').val();
 				
-				self.options.persistidor.setValor("canal", canal);
+				self.options.persistidor.setValor("idCanal", idCanal);
+				self.options.persistidor.setValor("descripcion", idCanal);
 				
-				self.filtroCanal.valor = canal;
-				self.trafoCanal.valor = canal;
+				self.filtroCanal.valor = idCanal;
+				self.trafoCanal.valor = idCanal;
 				
 				
 				

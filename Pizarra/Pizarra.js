@@ -137,6 +137,9 @@ var pizarra = {
 				"aplicacion"		: "net.gaia.vortex.pizarra"
 			}				
 			
+			
+			console.log('Se pierde el ID del mensaje a veces', mensaje);
+			
 			self.conjuntoPizarra.recibirMensaje(mensaje);
 			
 			self.puntos = [];
@@ -148,6 +151,6 @@ var pizarra = {
 	}
 	
 	
-}
+};
 //pizarra = $.extend(true,{}, gadget, pizarra);
 

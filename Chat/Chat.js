@@ -59,11 +59,8 @@ var chat = {
 		self.txtMensaje.focus();
 		
 		
-		/*
-		self.options.UI
-		overflow-y:auto;
-		overflow-x:auto;
-		*/
+		
+		self.usuarios.push(options.contexto.getParametro('NombreDeUsuario'));
 		
 		
 	},
@@ -112,6 +109,8 @@ var chat = {
 			
 			
 			var idUsuario=-1;
+			
+			
 			//busco el usuario en el array
 			for (var i = 0; self.usuarios[i]; i++) {
 				if (self.usuarios[i] == mensaje.usuario) {
@@ -243,5 +242,5 @@ var chat = {
 			
 	}
 	
-}
+};
 //chat = $.extend(true,{}, gadget, chat);
