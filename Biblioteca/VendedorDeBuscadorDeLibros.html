@@ -92,25 +92,31 @@
             var plantilla_libro_encontrado = plantillas.find('#plantilla_libro_encontrado_en_buscador');
 
             var portal_ventas = new NodoPortalBidi("portal ventas");
-            portal_ventas.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.pedidoDeAplicacion"),
+            portal_ventas.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.pedidoDeAplicacion"),
+                                                        new FiltroXClaveValor("id", 'buscadorDeLibros')]),
                                         function(){
                                             portal_ventas.enviarMensaje({tipoDeMensaje:"vortexComm.market.aplicacion",
                                                                          script: scriptNodoBuscadorDelibros.script(),
-                                                                         nombreScript: 'buscadorDeLibros',
-                                                                         version: 0.1,                                                                         
-                                                                         apps:[
-                                                                            {
-                                                                                nombreApp: 'Buscador de Libros',
-                                                                                clase: 'NodoBuscadorDeLibros',
-                                                                                cfg:{   UI: UI_buscador[0].outerHTML,
-                                                                                        plantilla_libro: plantilla_libro_encontrado[0].outerHTML
-                                                                                    }
-                                                                            } 
-                                                                         ],
+                                                                         version: 0.1,  
+                                                                         id:"buscadorDeLibros",
+                                                                         nombre: 'Buscador de Libros',
+                                                                         clase: 'NodoBuscadorDeLibros',
+                                                                         cfg:{   UI: UI_buscador[0].outerHTML,
+                                                                                plantilla_libro: plantilla_libro_encontrado[0].outerHTML
+                                                                            },
                                                                          estilo: $("#estiloBuscadorDeLibros")[0].outerHTML
                                                                         });
                                         }
-                                    );            
+                                    );    
+            portal_ventas.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.busquedaDeAplicaciones"),
+                                                        new FiltroXClaveValor("nombre", 'Buscador de Libros')]),
+                                                                   function(){
+                                            portal_ventas.enviarMensaje({tipoDeMensaje:"vortexComm.market.resumenAplicacion",
+                                                                        idApp:"buscadorDeLibros",
+                                                                         nombre: 'Buscador de Libros'
+                                                                        });
+                                        }
+                        );  
             router.conectarBidireccionalmenteCon(portal_ventas);  
         });
     </script >

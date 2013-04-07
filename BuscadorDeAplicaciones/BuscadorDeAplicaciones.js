@@ -1,7 +1,9 @@
-var scriptNodoBuscadorDeAplicaciones = function(){
+//var scriptNodoBuscadorDeAplicaciones = function(){
     var NodoBuscadorDeAplicaciones = function(cfg){
         this._plantilla_aplicacion = $(cfg.plantilla_aplicacion);
         this._ui = $(cfg.UI);
+        this._panel_gadgets = $(cfg.panel_gadgets);
+        this._plantilla_gadget = $(cfg.plantilla_gadget);
         this.start();
     };
     
@@ -34,7 +36,9 @@ var scriptNodoBuscadorDeAplicaciones = function(){
         onAppEncontrada : function (mensaje) {      
             var app = new NodoVistaDeAppEncontradaEnBuscador({UI: this._plantilla_aplicacion.clone(),
                                                               idApp: mensaje.idApp,
-                                                              nombre: mensaje.nombre
+                                                              nombre: mensaje.nombre,
+                                                              panel_gadgets: this._panel_gadgets,
+                                                              plantilla_gadget: this._plantilla_gadget
                                                             });
             if(this.appsEncontradas().Any(function(l){return (l._id==app._id)})) return;
             this._aplicaciones_encontradas.push(app);    
@@ -60,22 +64,51 @@ var scriptNodoBuscadorDeAplicaciones = function(){
         this._ui = $(cfg.UI);
         this._id = cfg.idApp;
         this._nombre = cfg.nombre;
+        this._panel_gadgets = $(cfg.panel_gadgets);
+        this._plantilla_gadget = $(cfg.plantilla_gadget);
         this.start();
     };
 
     NodoVistaDeAppEncontradaEnBuscador.prototype = {
         start: function(){
+            this._router = new NodoRouter("vista app en buscador" + this._id);
             this._portal = new NodoPortalBidi("vista app en buscador" + this._id);
-            
-            this._label_nombre = this._ui.find('#nombre_de_app_encontrada');
-            
+            this._router.conectarBidireccionalmenteCon(this._portal);
+                        
+            this._label_nombre = this._ui.find('#nombre_de_app_encontrada');            
             this._label_nombre.text(this._nombre);
+            var self= this;
+            this._label_nombre.click(function(){
+                    self.pedirAplicacion();
+                });
             
-            this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
-                                                      new FiltroXClaveValor("idBiblioteca", this._id_biblioteca),
-                                                      new FiltroXClaveValor("idLibro", this._id_libro)]),
-                                       this.actualizar.bind(this));
         },  
+        pedirAplicacion:function(){
+            this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.aplicacion"),
+                                                        new FiltroXClaveValor("id", 'buscadorDeLibros')]),
+                                       this.onMensajeAplicacionRecibido.bind(this)  
+                                      );
+            this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.market.pedidoDeAplicacion", id:this._id});
+        },
+        onMensajeAplicacionRecibido: function(mensaje){
+            $("head").append($(mensaje.estilo));
+            $.globalEval(mensaje.script); 
+            this.app = new Aplicacion(mensaje);
+            this._label_nombre.css("background-color", "green")
+            this._label_nombre.unbind("click");
+            this._label_nombre.click(this.instanciarAplicacion.bind(this));            
+        },
+        instanciarAplicacion:function(){
+            var instanciaApp = this.app.instanciar();
+            this._router.conectarBidireccionalmenteCon(instanciaApp);
+            var un_gadget =  $.extend(true,{}, gadget);
+            un_gadget.start({
+                title			: this.app.nombre(),
+                UI 				: this._plantilla_gadget.clone()
+            });
+            un_gadget.agregarContenido(instanciaApp);
+            un_gadget.dibujarEn(this._panel_gadgets); 
+        },
         dibujarEn: function(panel){
             panel.append(this._ui);
         },
@@ -86,9 +119,23 @@ var scriptNodoBuscadorDeAplicaciones = function(){
             this._portal.recibirMensaje(un_mensaje);
         } 
     };
-};
-
-scriptNodoBuscadorDeAplicaciones.script = function(){
-    var script = scriptNodoBuscadorDelibros.toString();
-    return script.substring(12, script.length-2);
-};
+    
+    var Aplicacion = function(cfg){
+        this._clase = cfg.clase;
+        this._cfg = cfg.cfg;
+        this._nombre = cfg.nombre;
+    }
+    Aplicacion.prototype = {
+        instanciar: function(){
+            return new window[this._clase](this._cfg);
+        },
+        nombre: function(){
+            return this._nombre;
+        }
+    }
+//};
+//
+//scriptNodoBuscadorDeAplicaciones.script = function(){
+//    var script = scriptNodoBuscadorDeAplicaciones.toString();
+//    return script.substring(12, script.length-2);
+//};
