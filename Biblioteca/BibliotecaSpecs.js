@@ -4,6 +4,7 @@ test.describe_1 = function(){
     describe("Creo un nodo biblioteca, un nodo vista de biblioteca y un nodo buscador de libros conectados a un router.", function() { 
         beforeEach(function() {
             runs(function() { 
+                $.globalEval(scriptNodoBuscadorDelibros.script());
                 test.plantilla_libro_encontrado = $("<li>");
                 test.plantilla_libro_encontrado.append($("<div id='autor_de_libro_encontrado'>"));
                 test.plantilla_libro_encontrado.append($("<div id='titulo_de_libro_encontrado'>"));
