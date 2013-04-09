@@ -95,7 +95,7 @@ $(function () {
 		
 		un_canal.start({
 			persistidor		: persistidorCanal, 
-			conjunto		: conjunto.getSubConjunto(), 
+			conjunto		: conjunto.getSubConjunto(),
 			contexto		: contexto.getSubContexto(),
 			
 			UI				: $('#plantilla_canal').clone(),

@@ -71,6 +71,10 @@ var chat = {
 	
 	recibirMensaje: function(mensaje){
 		
+		
+		console.log("mensaje", mensaje);
+		
+		
 		var self = this;
 		
 		
@@ -201,7 +205,6 @@ var chat = {
 				
 				//Así veo el mio
 				var mensajeYo =  $.extend({}, mensaje);
-				
 				mensajeYo.usuario="Yo";
 				self.recibirMensaje(mensajeYo);
 				//
