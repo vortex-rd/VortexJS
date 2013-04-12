@@ -24,9 +24,10 @@ NodoProveedorDeLibreria.prototype = {
                                      descripcion: this.libreria.descripcion
                                     });
     },
-    enviarLibreria:function(){
-        this.portal.enviarMensaje({tipoDeMensaje:"vortexComm.market.libreria",
-                                     nombre:this.libreria.nombre,
+    enviarLibreria:function(mensaje){
+        this.portal.enviarMensaje({tipoDeMensaje: "vortexComm.market.libreria",
+                                    idSolicitante: mensaje.idSolicitante,
+                                     nombre: this.libreria.nombre,
                                      version: this.libreria.version,
                                      descripcion: this.libreria.descripcion,
                                      dependencias: this.libreria.dependencias,
@@ -34,7 +35,7 @@ NodoProveedorDeLibreria.prototype = {
                                     });
     },
     conectarCon: function(un_nodo){
-        this.router.conectarCon();
+        this.router.conectarCon(un_nodo);
     },
     recibirMensaje: function(un_mensaje){
         this.router.recibirMensaje(un_mensaje);

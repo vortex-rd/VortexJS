@@ -4,9 +4,9 @@ var libreriaBuscadorDelibros = {
     dependencias: [],
     descripcion:"Un buscador de libros en bibliotecas",
     script: function(){
-                        var script = scriptNodoBuscadorDelibros.toString();
-                        return script.substring(12, script.length-2);
-                    },
+        var script = this.codigo.toString();
+        return script.substring(12, script.length-2);
+    },
     codigo: function(){
         var NodoBuscadorDeLibros = function(cfg){
             this._plantilla_libro = $(cfg.plantilla_libro);

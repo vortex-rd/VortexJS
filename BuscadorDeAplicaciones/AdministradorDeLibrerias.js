@@ -1,5 +1,5 @@
 var NodoAdministradorDeLibrerias = function(cfg){    
-    this.idUsuario = cfg.idAdministrador;
+    this.idAdministrador = cfg.idAdministrador;
     this.start();
 };
 
@@ -11,13 +11,13 @@ NodoAdministradorDeLibrerias.prototype = {
         this.router.conectarBidireccionalmenteCon(this.portal);        
         
         this.portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.libreria"),
-                                                   new FiltroXClaveValor("idAdministrador", this.idAdministrador)]),
+                                                   new FiltroXClaveValor("idSolicitante", this.idAdministrador)]),
                                     this.recibirMensajeLibreria.bind(this));  
     },
     recibirMensajeLibreria:function(un_mensaje){
         if(this.tengoLaLibreria(un_mensaje.nombre, un_mensaje.version)) return;
-        $("head").append($(mensaje.estilo));
-        $.globalEval(mensaje.script); 
+        $("head").append($(un_mensaje.estilo));
+        $.globalEval(un_mensaje.script); 
         this.librerias.push(un_mensaje);        
     },
     tengoLaLibreria:function(nombre, version){
@@ -28,7 +28,7 @@ NodoAdministradorDeLibrerias.prototype = {
         return false;        
     },
     conectarCon: function(un_nodo){
-        this.router.conectarCon();
+        this.router.conectarCon(un_nodo);
     },
     recibirMensaje: function(un_mensaje){
         this.router.recibirMensaje(un_mensaje);
