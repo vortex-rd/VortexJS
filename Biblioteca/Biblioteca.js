@@ -1,17 +1,18 @@
-var NodoBiblioteca = function(id){
-    this._id = id;
+var NodoBiblioteca = function(cfg){
+    //this._id = id;
+    this._canalPrivado = id.canalPrivado;
+    this._canalPublico = id.canalPublico;
     this.start();
 }
 NodoBiblioteca.prototype = {
     start : function(){
         this._router = new NodoRouter("biblioteca");
-        this._portal = new NodoPortalBidi("biblioteca");
+        this._portal = new NodoPortalConCanal("biblioteca", this._canalPrivado);
         this._router.conectarBidireccionalmenteCon(this._portal);
         
         this._libros = [];
         
-        this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.agregarLibro"),  
-                                                 new FiltroXClaveValor("idBiblioteca", this._id)]),
+        this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.agregarLibro"),
                        this.onMensajeAgregarLibroRecibido.bind(this));
     },
     libros : function(un_libro) {
@@ -19,7 +20,12 @@ NodoBiblioteca.prototype = {
     },
     onMensajeAgregarLibroRecibido: function(un_mensaje) {
         un_mensaje.id = this._libros.length;
-        var libro = new NodoLibro(un_mensaje);        
+        var cfgLibro = {};
+        cfgLibro.titulo = un_mensaje.titulo;
+        cfgLibro.autor = un_mensaje.autor;
+        cfgLibro.canalPrivado = new SubCanal(this._canalPrivado, "libro", this._libros.length);
+        cfgLibro.canalPublico = this._canalPublico;
+        var libro = new NodoLibro(cfgLibro);        
         this.agregarLibro(libro);
     },
     agregarLibro : function(un_nodo_libro) {
