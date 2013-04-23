@@ -22,8 +22,8 @@ NodoBiblioteca.prototype = {
         var cfgLibro = {};
         cfgLibro.titulo = un_mensaje.titulo;
         cfgLibro.autor = un_mensaje.autor;
-        cfgLibro.canalPrivado = new SubCanal(this._canalPrivado, "libro", this._libros.length);
-        cfgLibro.canalPublico = this._canalPublico;
+        cfgLibro.canalControl = new SubCanal(this._canalPrivado, "libro", this._libros.length);
+        cfgLibro.canalBusquedas = this._canalPublico;
         var libro = new NodoLibro(cfgLibro);        
         this.agregarLibro(libro);
     },
