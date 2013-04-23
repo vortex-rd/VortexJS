@@ -4,7 +4,7 @@ test.describe_1 = function(){
     describe("Creo un nodo biblioteca, un nodo vista de biblioteca y un nodo buscador de libros conectados a un router.", function() { 
         beforeEach(function() {
             runs(function() { 
-                $.globalEval(scriptNodoBuscadorDelibros.script());
+                $.globalEval(libreriaBuscadorDelibros.script());
                 test.plantilla_libro_encontrado = $("<li>");
                 test.plantilla_libro_encontrado.append($("<div id='autor_de_libro_encontrado'>"));
                 test.plantilla_libro_encontrado.append($("<div id='titulo_de_libro_encontrado'>"));
@@ -23,12 +23,17 @@ test.describe_1 = function(){
                 test.ui_vista = test.plantilla_vista.clone();
                 
                 test.un_router = new NodoRouter("1");  
-                test.nodo_biblioteca = new NodoBiblioteca();
+                test.canal_control = new CanalClaveValor("MiBiblioteca", "Biblioteca", "1");
+                test.canal_busquedas = new CanalClaveValor("Haciendo", "Canal", "Haciendo");
+                test.nodo_biblioteca = new NodoBiblioteca({canalControl: test.canal_control,
+                                                          canalBusquedas: test.canal_busquedas});
                 test.nodo_buscador = new NodoBuscadorDeLibros({ UI:test.ui_buscador, 
-                                                                plantilla_libro:test.plantilla_libro_encontrado});
+                                                                plantilla_libro:test.plantilla_libro_encontrado,
+                                                                canalBusquedas: test.canal_busquedas});
                 
-                test.nodo_vista_biblioteca = new NodoVistaDeBiblioteca({ UI:test.ui_vista , 
-                                                plantilla_libro:test.plantilla_libro_encontrado});
+                test.nodo_vista_biblioteca = new NodoVistaDeBiblioteca({    UI:test.ui_vista , 
+                                                                            plantilla_libro:test.plantilla_libro_encontrado,
+                                                                            canalControl: test.canal_control});
                 
                 test.un_router.conectarBidireccionalmenteCon(test.nodo_biblioteca);
                 test.un_router.conectarBidireccionalmenteCon(test.nodo_vista_biblioteca);
