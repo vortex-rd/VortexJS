@@ -1,21 +1,19 @@
 var NodoLibro = function(cfg){
-    this._id = cfg.id;
     this._titulo = cfg.titulo || "";
     this._autor = cfg.autor || "";
-    this._id_biblioteca = cfg.idBiblioteca || "";
+    this._canal_control = cfg.canalControl;
+    this._canal_busquedas = cfg.canalBusquedas;
     this.start();
 }
 NodoLibro.prototype = {
     start: function(){
-        this._router = new NodoRouter("libro " + this._id + " de la biblioteca " + this._id_biblioteca);
-        this._portal = new NodoPortalBidi("libro" + this._id + " de la biblioteca " + this._id_biblioteca);
-        this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.edicionDelibro"),
-                                                  new FiltroXClaveValor("idBiblioteca", this._id_biblioteca),
-                                                  new FiltroXClaveValor("idLibro", this._id)]),
+        this._router = new NodoRouter("libro");
+        this._portal_control = new NodoPortalConCanal("libro", this._canal_control);
+        this._portal_control.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.edicionDelibro"),
                                    this.actualizar.bind(this));
-        this._router.conectarBidireccionalmenteCon(this._portal);
+        this._router.conectarBidireccionalmenteCon(this._portal_control);
         
-        this._portal_busquedas = new NodoPortalBidiMonoFiltro("libro" + this._id + " de la biblioteca " + this._id_biblioteca);
+        this._portal_busquedas = new NodoPortalBidiMonoFiltroConCanal("libro", this._canal_busquedas);
         this.hacerPedidoDeBusquedas();
         this._router.conectarBidireccionalmenteCon(this._portal_busquedas);
     },
@@ -28,11 +26,11 @@ NodoLibro.prototype = {
     },
     hacerPedidoDeBusquedas: function(){
         this._portal_busquedas.pedirMensajes(new FiltroAND([    new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.busquedaDeLibros"),
-                                                                new FiltroOR([  new FiltroXClaveValor("idBiblioteca", this._id_biblioteca),
-                                                                                new FiltroXClaveValor("autor", this._autor)
-                                                                             ])
+                                                                new FiltroXClaveValor("autor", this._autor)
                                                             ]),
-                                             this.enviarLibro.bind(this));                        
+                                             this.enviarLibro.bind(this, this._portal_busquedas));    
+        this._portal_control.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.busquedaDeLibros"),
+                                             this.enviarLibro.bind(this, this._portal_control));    
     },
     conectarCon: function(un_nodo){
         this._router.conectarCon(un_nodo);   
@@ -40,33 +38,23 @@ NodoLibro.prototype = {
     recibirMensaje: function(un_mensaje){
         this._router.recibirMensaje(un_mensaje);
     },
-    enviarLibro : function() {
-        this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.libro", 
-                                    idLibro: this._id,
+    enviarLibro : function(portal) {
+        portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.libro", 
                                     autor: this._autor,
-                                    titulo: this._titulo,
-                                    idBiblioteca: this._id_biblioteca});
+                                    titulo: this._titulo});
     }
 };
 
 var Libro = function(cfg){
-    this._id = cfg.id;
     this._titulo = cfg.titulo || "";
     this._autor = cfg.autor || "";
-    this._id_biblioteca = cfg.idBiblioteca || "";
 }
 
 Libro.prototype = {
-    id : function() {
-        return this._id;
-    },
     titulo : function() {
         return this._titulo;
     },
     autor : function() {
         return this._autor;
-    },
-    idBiblioteca:function(){
-        return this._id_biblioteca;
     }
 };

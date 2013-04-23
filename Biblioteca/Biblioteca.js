@@ -22,8 +22,8 @@ NodoBiblioteca.prototype = {
         var cfgLibro = {};
         cfgLibro.titulo = un_mensaje.titulo;
         cfgLibro.autor = un_mensaje.autor;
-        cfgLibro.canalControl = new SubCanal(this._canalPrivado, "libro", this._libros.length);
-        cfgLibro.canalBusquedas = this._canalPublico;
+        cfgLibro.canalControl = new SubCanal(this._canal_control, "libro", this._libros.length);
+        cfgLibro.canalBusquedas = this._canal_busquedas;
         var libro = new NodoLibro(cfgLibro);        
         this.agregarLibro(libro);
     },
@@ -38,7 +38,6 @@ NodoBiblioteca.prototype = {
         this._router.conectarCon(un_nodo);   
     },
     recibirMensaje: function(un_mensaje){
-        console.log("Nodo biblioteca recibe mensaje:", un_mensaje)
         this._router.recibirMensaje(un_mensaje);
     }   
 }
