@@ -8,10 +8,10 @@ Project URL: https://sourceforge.net/p/vortexnet
 var NodoPortalBidi = function(aliasPortal){
     this._listaPedidos = [];
     this._pata = { 
-			recibirMensaje : function(un_mensaje){},
+            recibirMensaje : function(un_mensaje){},
             publicarFiltro : function(un_filtro){},
             filtroRecibido : function(){ return new FiltroFalse();}
-		};
+        };
     this._alias_portal = "portal " + aliasPortal;
 };
 NodoPortalBidi.prototype = {
@@ -24,29 +24,29 @@ NodoPortalBidi.prototype = {
         this._pata.publicarFiltro(filtroMergeado);
     },
     enviarMensaje : function(un_mensaje){
-		this._pata.recibirMensaje(un_mensaje);
-	},
+        this._pata.recibirMensaje(un_mensaje);
+    },
     pedirMensajes : function( filtro, callback){
-		this._listaPedidos.push({ "filtro": filtro, "callback": callback});
+        this._listaPedidos.push({ "filtro": filtro, "callback": callback});
         this.publicarFiltros();
-	},
+    },
     recibirMensaje : function(un_mensaje) {
         console.log('mensaje recibido en ' + this._alias_portal, un_mensaje);
         if(un_mensaje.tipoDeMensaje.slice(0, "Vortex.".length) == "Vortex."){
             this._pata.recibirMensaje(un_mensaje);
             return;
         }
-		this._listaPedidos.forEach(function (pedido) {					
-					if(pedido.filtro.evaluarMensaje(un_mensaje)){
-						pedido.callback(un_mensaje);
-					}
-				});	        
-	},
+        this._listaPedidos.forEach(function (pedido) {					
+                    if(pedido.filtro.evaluarMensaje(un_mensaje)){
+                        pedido.callback(un_mensaje);
+                    }
+                });	        
+    },
     conectarCon : function(un_receptor){
-		this._pata = new PataConectora(0, new GeneradorDeIdMensaje());
+        this._pata = new PataConectora(0, new GeneradorDeIdMensaje());
         this.publicarFiltros();
         this._pata.conectarCon(un_receptor);
-	},
+    },
     conectadoBidireccionalmente : function(){
         return this._pata.conectadaBidireccionalmente();
     },
