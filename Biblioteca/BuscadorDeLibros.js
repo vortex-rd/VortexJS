@@ -11,13 +11,14 @@ var libreriaBuscadorDelibros = {
         var NodoBuscadorDeLibros = function(cfg){
             this._plantilla_libro = $(cfg.plantilla_libro);
             this._ui = $(cfg.UI);
+            this._canal_busquedas = cfg.canalBusquedas;
             this.start();
         };
         
         NodoBuscadorDeLibros.prototype = {
             start: function(){
                 this._router = new NodoRouter("buscador");
-                this._portal = new NodoPortalBidiMonoFiltro("buscador");
+                this._portal = new NodoPortalBidiMonoFiltroConCanal("buscador", this._canal_busquedas);
                 this._router.conectarBidireccionalmenteCon(this._portal);
                 
                 this._librosEncontrados = [];
@@ -41,11 +42,11 @@ var libreriaBuscadorDelibros = {
                 this._panel_libros_encontrados.empty();
             },
             onLibroEncontrado : function (mensaje) {      
+                var des_serializador = new DesSerializadorDeFiltros();
                 var libro = new NodoVistaDeLibroEnBuscador({UI: this._plantilla_libro.clone(),
-                                                          idLibro: mensaje.idLibro,
                                                           autor: mensaje.autor,
                                                           titulo: mensaje.titulo,
-                                                          idBiblioteca: mensaje.idBiblioteca
+                                                          canalLibro: des_serializador.DesSerializarFiltro(mensaje.canalLibro)
                                                         });
                 if(this.librosEncontrados().Any(function(l){return (l._id_libro==libro._id_libro &&
                                                                     l._id_biblioteca==libro._id_biblioteca)})) return;
@@ -70,16 +71,15 @@ var libreriaBuscadorDelibros = {
     
         var NodoVistaDeLibroEnBuscador = function(cfg){
             this._ui = $(cfg.UI);
-            this._id_libro = cfg.idLibro;
             this._autor = cfg.autor;
             this._titulo = cfg.titulo;
-            this._id_biblioteca = cfg.idBiblioteca;  
+            this._canal_libro = cfg.canalLibro;
             this.start();
         };
     
         NodoVistaDeLibroEnBuscador.prototype = {
             start: function(){
-                this._portal = new NodoPortalBidi("vista libro en buscador" + this._id_libro);
+                this._portal = new NodoPortalConCanal("vista libro en buscador", this._canal_libro);
                 
                 this._label_autor = this._ui.find('#autor_de_libro_encontrado');
                 this._label_titulo = this._ui.find('#titulo_de_libro_encontrado');
@@ -87,9 +87,7 @@ var libreriaBuscadorDelibros = {
                 this._label_autor.text(this._autor);
                 this._label_titulo.text(this._titulo);
                 
-                this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
-                                                          new FiltroXClaveValor("idBiblioteca", this._id_biblioteca),
-                                                          new FiltroXClaveValor("idLibro", this._id_libro)]),
+                this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
                                            this.actualizar.bind(this));
             },  
             actualizar: function(libro){

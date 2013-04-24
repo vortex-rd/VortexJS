@@ -41,7 +41,8 @@ NodoLibro.prototype = {
     enviarLibro : function(portal) {
         portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.libro", 
                                     autor: this._autor,
-                                    titulo: this._titulo});
+                                    titulo: this._titulo,
+                                    canalLibro: this._canal_control.Serializar()});
     }
 };
 
