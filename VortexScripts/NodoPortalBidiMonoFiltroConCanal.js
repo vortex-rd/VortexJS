@@ -20,7 +20,7 @@ NodoPortalBidiMonoFiltroConCanal.prototype = {
         this._pata.publicarFiltro(this._canal.estamparFiltro(this._pedido.filtro));
     },
     enviarMensaje : function(un_mensaje){
-		this._pata.recibirMensaje(canal.estamparMensaje(un_mensaje));
+		this._pata.recibirMensaje(this._canal.estamparMensaje(un_mensaje));
 	},
     pedirMensajes : function( filtro, callback){
 		this._pedido = { "filtro": filtro, "callback": callback};

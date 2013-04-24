@@ -1,5 +1,5 @@
 var NodoVistaDeBiblioteca = function(cfg){
-    this._id_biblioteca = cfg.id_biblioteca;
+    this._canal_control = cfg.canalControl;
     this._ui = cfg.UI;
     this._input_autor_en_alta = this._ui.find('#input_nombre_autor_del_alta_de_libros');
     this._input_titulo_en_alta = this._ui.find('#input_titulo_del_alta_de_libros');
@@ -15,13 +15,12 @@ var NodoVistaDeBiblioteca = function(cfg){
 NodoVistaDeBiblioteca.prototype = {
     start: function(){
         this._router = new NodoRouter("vista biblioteca");
-        this._portal = new NodoPortalBidi("vista biblioteca");
+        this._portal = new NodoPortalConCanal("vista biblioteca", this._canal_control);
         this._router.conectarBidireccionalmenteCon(this._portal);
         
         this._librosEncontrados = [];
         
-        this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),  
-                                                 new FiltroXClaveValor("idBiblioteca", this._id_biblioteca)]),
+        this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
                           this.onLibroEncontrado.bind(this));  
         var self = this;
         this._boton_alta_de_libro.click(function(){
@@ -37,22 +36,18 @@ NodoVistaDeBiblioteca.prototype = {
     enviarComandoDeAgregarLibro : function(un_libro) {
         this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.agregarLibro", 
                                     autor:un_libro.autor(),
-                                    titulo: un_libro.titulo(),
-                                    idBiblioteca: this._id_biblioteca});
+                                    titulo: un_libro.titulo()});
     },
     enviarComandoDeBuscarLibros : function() {
-        this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.busquedaDeLibros",
-                                    idBiblioteca: this._id_biblioteca});
+        this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.busquedaDeLibros"});
     },
     onLibroEncontrado : function (mensaje) {
+        var des_serializador = new DesSerializadorDeFiltros();
         var libro = new NodoVistaDeEdicionDeLibro({UI: this._plantilla_libro.clone(),
-                                                  idLibro: mensaje.idLibro,
                                                   autor: mensaje.autor,
                                                   titulo: mensaje.titulo,
-                                                  idBiblioteca: mensaje.idBiblioteca
-                                                });
-        if(this.librosEncontrados().Any(function(l){return (l._id_libro==libro._id_libro &&
-                                                            l._id_biblioteca==libro._id_biblioteca)
+                                                  canalLibro: des_serializador.DesSerializarFiltro(mensaje.canalLibro)});
+        if(this.librosEncontrados().Any(function(l){return ComparadorDeFiltros.compararFiltros(libro._canal_libro, l._canal_libro);
                                                    })) return;
         this._librosEncontrados.push(libro);    
         

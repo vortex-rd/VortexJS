@@ -25,7 +25,7 @@ NodoPortalConCanal.prototype = {
         this._pata.publicarFiltro(this._canal.estamparFiltro(filtroMergeado));
     },
     enviarMensaje : function(un_mensaje){
-		this._pata.recibirMensaje(canal.estamparMensaje(un_mensaje));
+		this._pata.recibirMensaje(this._canal.estamparMensaje(un_mensaje));
 	},
     pedirMensajes : function( filtro, callback){
 		this._listaPedidos.push({ "filtro": filtro, "callback": callback});

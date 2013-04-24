@@ -48,8 +48,8 @@ var libreriaBuscadorDelibros = {
                                                           titulo: mensaje.titulo,
                                                           canalLibro: des_serializador.DesSerializarFiltro(mensaje.canalLibro)
                                                         });
-                if(this.librosEncontrados().Any(function(l){return (l._id_libro==libro._id_libro &&
-                                                                    l._id_biblioteca==libro._id_biblioteca)})) return;
+                if(this.librosEncontrados().Any(function(l){return ComparadorDeFiltros.compararFiltros(libro._canal_libro, l._canal_libro);
+                                                           })) return;
                 this._librosEncontrados.push(libro);    
         
                 this._router.conectarBidireccionalmenteCon(libro);
