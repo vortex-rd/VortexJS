@@ -159,8 +159,10 @@ var TrafoXParametro= function (parametro) {
 
 var FiltroAND = function (_filtros) {
 	this.filtros = (_filtros === undefined)? [] : _filtros;
-    
-    this.evaluarMensaje = function (un_mensaje) {
+    this.simplificar();
+};
+FiltroAND.prototype = {
+    evaluarMensaje : function (un_mensaje) {
         var valorRetorno = true;
 		for(var i=0; i<this.filtros.length; i++){
 			var evaluacion = this.filtros[i].evaluarMensaje(un_mensaje);
@@ -172,44 +174,50 @@ var FiltroAND = function (_filtros) {
 			}
 		}
         return valorRetorno;
-    }
-    
-    this._observador = {cambioElFiltro : function(filtro){}};
-    
-    var self = this;
-    this.filtros.forEach(function(filtro){
-        filtro.onChange(self);
-    });
-    
-    this.onChange = function(observador){
-        this._observador = observador;
-    }
-    
-    this.cambioElFiltro =  function(filtro){
-        this._observador.cambioElFiltro(this); 
-    }
-    
-	this.Serializar= function(){
+    },        
+	Serializar: function(){
 		var ret = {	'tipo': 'AND',
 					'filtros': []};
 		for(var i=0; i<this.filtros.length; i++){
 			ret.filtros.push(this.filtros[i].Serializar());
 		}		
 		return ret;
-	}
-	
-	this.DesSerializar= function(un_filtro_serializado){
+	},	
+	DesSerializar: function(un_filtro_serializado){
 		var desSerializador = new DesSerializadorDeFiltros();
 		for(var i=0; i<un_filtro_serializado.filtros.length; i++){
 			this.filtros.push(desSerializador.DesSerializarFiltro(un_filtro_serializado.filtros[i]));
 		}
-	}
-}
+        this.simplificar();
+	},
+    simplificar: function(){
+        var nueva_lista_de_filtros = [];
+        for(var i=0; i<this.filtros.length; i++){
+			if(this.filtros[i] instanceof FiltroAND){
+                for(var j=0; j<this.filtros[i].filtros.length; j++){
+                    nueva_lista_de_filtros.push(this.filtros[i].filtros[j]);
+                }
+            }else{
+                nueva_lista_de_filtros.push(this.filtros[i]);
+            }
+		}
+        this.filtros = nueva_lista_de_filtros;
+    },
+    addFiltros:function(filtros){
+        for(var i=0; i<this.filtros.length; i++){
+			if(this.filtros[i] instanceof FiltroAND){
+                this.addFiltros(this.filtros[i].filtros);
+            }
+		}
+    }
+};
 
 var FiltroOR = function (_filtros) {
 	this.filtros = (_filtros === undefined)? [] : _filtros;
-    
-    this.evaluarMensaje = function (un_mensaje) {
+    this.simplificar();
+};
+FiltroOR.prototype = {    
+    evaluarMensaje : function (un_mensaje) {
         var valorRetorno = false;
 		for(var i=0; i<this.filtros.length; i++){
 			var evaluacion = this.filtros[i].evaluarMensaje(un_mensaje);
@@ -221,39 +229,36 @@ var FiltroOR = function (_filtros) {
 			}
 		}
         return valorRetorno;
-    }
-	
-    this._observador = {cambioElFiltro : function(filtro){}};
-    
-    var self = this;
-    this.filtros.forEach(function(filtro){
-        filtro.onChange(self);
-    });
-    
-    this.onChange = function(observador){
-        this._observador = observador;
-    }
-    
-    this.cambioElFiltro =  function(filtro){
-        this._observador.cambioElFiltro(this); 
-    }
-    
-	this.Serializar= function(){
+    },
+	Serializar: function(){
 		var ret = {	'tipo': 'OR',
 					'filtros': []};
 		for(var i=0; i<this.filtros.length; i++){
 			ret.filtros.push(this.filtros[i].Serializar());
 		}		
 		return ret;
-	}
-	
-	this.DesSerializar= function(un_filtro_serializado){
+	},	
+	DesSerializar: function(un_filtro_serializado){
 		var desSerializador = new DesSerializadorDeFiltros();
 		for(var i=0; i<un_filtro_serializado.filtros.length; i++){
 			this.filtros.push(desSerializador.DesSerializarFiltro(un_filtro_serializado.filtros[i]));
 		}
-	}
-}
+        this.simplificar();
+	},
+    simplificar: function(){
+        var nueva_lista_de_filtros = [];
+        for(var i=0; i<this.filtros.length; i++){
+			if(this.filtros[i] instanceof FiltroOR){
+                for(var j=0; j<this.filtros[i].filtros.length; j++){
+                    nueva_lista_de_filtros.push(this.filtros[i].filtros[j]);
+                }
+            }else{
+                nueva_lista_de_filtros.push(this.filtros[i]);
+            }
+		}
+        this.filtros = nueva_lista_de_filtros;
+    },
+};
         
 var FiltroDesconocido = function(){
 	this.evaluarMensaje = function (un_mensaje) {

@@ -88,56 +88,80 @@
     <script type="text/javascript" >            
         $(function () { 
             $.globalEval(libreriaBuscadorDelibros.script());
+            var id_usuario = getIdObjeto();
+            var canal_usuario = new Canal("usuario", 
+                                           new FiltroXClaveValor("Usuario", id_usuario) , 
+                                           new TrafoXClaveValor("Usuario", id_usuario));
+            var canal_biblio_1 = canal_usuario.getSubCanal("MiBiblioteca", 
+                                               new FiltroXClaveValor("Biblioteca", 1) , 
+                                               new TrafoXClaveValor("Biblioteca", 1));
+            var canal_biblio_2 = canal_usuario.getSubCanal("MiBiblioteca", 
+                                               new FiltroXClaveValor("Biblioteca", 2) , 
+                                               new TrafoXClaveValor("Biblioteca", 2));
             
-            
-            var canal_control = new Canal("MiBiblioteca", 
-                                               new FiltroXClaveValor("Biblioteca", "1") , 
-                                               new TrafoXClaveValor("Biblioteca", "1"));
-            var canal_busquedas = new Canal("Haciendo", 
+            var canal_haciendo = new Canal("Haciendo", 
                                                new FiltroXClaveValor("Canal", "Haciendo") , 
                                                new TrafoXClaveValor("Canal", "Haciendo"));
             
             var router =  new NodoRouter("principal"); 
             
-            var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');             
-            router.conectarBidireccionalmenteCon(clienteHTTP);
-            var nodo_biblioteca = new NodoBiblioteca({canalControl: canal_control,
-                                                      canalBusquedas: canal_busquedas});           
-            router.conectarBidireccionalmenteCon(nodo_biblioteca);
+            //var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');             
+            //router.conectarBidireccionalmenteCon(clienteHTTP);
+            var nodo_biblioteca_1 = new NodoBiblioteca({canalControl: canal_biblio_1,
+                                                      canalBusquedas: canal_haciendo});           
+            router.conectarBidireccionalmenteCon(nodo_biblioteca_1);
+            
+            var nodo_biblioteca_2 = new NodoBiblioteca({canalControl: canal_biblio_2,
+                                                      canalBusquedas: canal_haciendo});           
+            router.conectarBidireccionalmenteCon(nodo_biblioteca_2);
             
             var panel_principal = $('#panel_principal');
             var plantillas = $('#plantillas');
             var UI_buscador = plantillas.find('#plantilla_buscador_de_libros').clone();
-            var UI_biblioteca = plantillas.find('#plantilla_biblioteca').clone();
+            var UI_biblioteca_1 = plantillas.find('#plantilla_biblioteca').clone();
+            var UI_biblioteca_2 = plantillas.find('#plantilla_biblioteca').clone();
             var plantilla_libro_encontrado = plantillas.find('#plantilla_libro_encontrado_en_buscador');
             var plantilla_vista_edicion_de_libro = plantillas.find('#plantilla_vista_edicion_de_libro');
             var plantilla_gadget =plantillas.find('#plantilla_gadget');
             
             var nodo_buscador = new NodoBuscadorDeLibros({UI: UI_buscador, 
                                                           plantilla_libro: plantilla_libro_encontrado,
-                                                          canalBusquedas: canal_busquedas});           
+                                                          canalBusquedas: canal_haciendo});           
             router.conectarBidireccionalmenteCon(nodo_buscador);
 
             var gadget_buscador =  $.extend(true,{}, gadget);
             gadget_buscador.start({
-                title			: 'Buscador de libros',
+                title			: 'Buscador de libros - Haciendo',
                 UI 				: plantilla_gadget.clone()
             });
             gadget_buscador.agregarContenido(nodo_buscador);
             gadget_buscador.dibujarEn(panel_principal); 
             
-            var nodo_vista_biblioteca = new NodoVistaDeBiblioteca({UI:UI_biblioteca, 
+            var nodo_vista_biblioteca_1 = new NodoVistaDeBiblioteca({UI:UI_biblioteca_1, 
                                                                    plantilla_libro:plantilla_vista_edicion_de_libro,
-                                                                   canalControl: canal_control});
-            router.conectarBidireccionalmenteCon(nodo_vista_biblioteca);
+                                                                   canalControl: canal_biblio_1});
+            router.conectarBidireccionalmenteCon(nodo_vista_biblioteca_1);
             
-            var gadget_biblioteca =  $.extend(true,{}, gadget);
-            gadget_biblioteca.start({
-                title			: 'Biblioteca',
+            var gadget_biblioteca_1 =  $.extend(true,{}, gadget);
+            gadget_biblioteca_1.start({
+                title			: 'Biblioteca 1 - Usuario 1',
                 UI 				: plantilla_gadget.clone()
             });
-            gadget_biblioteca.agregarContenido(nodo_vista_biblioteca);
-            gadget_biblioteca.dibujarEn(panel_principal); 
+            gadget_biblioteca_1.agregarContenido(nodo_vista_biblioteca_1);
+            gadget_biblioteca_1.dibujarEn(panel_principal); 
+            
+            var nodo_vista_biblioteca_2 = new NodoVistaDeBiblioteca({UI:UI_biblioteca_2, 
+                                                                   plantilla_libro:plantilla_vista_edicion_de_libro,
+                                                                   canalControl: canal_biblio_2});
+            router.conectarBidireccionalmenteCon(nodo_vista_biblioteca_2);
+            
+            var gadget_biblioteca_2 =  $.extend(true,{}, gadget);
+            gadget_biblioteca_2.start({
+                title			: 'Biblioteca 2 - Usuario 1',
+                UI 				: plantilla_gadget.clone()
+            });
+            gadget_biblioteca_2.agregarContenido(nodo_vista_biblioteca_2);
+            gadget_biblioteca_2.dibujarEn(panel_principal); 
         });
     </script>
 </html>

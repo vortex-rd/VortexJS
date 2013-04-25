@@ -759,4 +759,15 @@ describe("Filtros", function() {
         expect(filtroDesSerializado.evaluarMensaje({'Clave1':'Valor1'})).toEqual(true);
         expect(filtroDesSerializado.evaluarMensaje({'Clave2':'Valor2'})).toEqual(false);
     });
+    
+    it("6 - Si en un filtro AND pongo otro filtro AND deberian quedar los filtros del segundo al mismo nivel que los del primero", function() {
+        var filtro_1 = new FiltroXClaveValor("clave1", 1);
+        var filtro_2 = new FiltroXClaveValor("clave2", 2);
+        var filtro_3 = new FiltroXClaveValor("clave3", 3);
+        
+        var filtro_and_2 = new FiltroAND([filtro_1, filtro_2]);
+        var filtro_and_1 = new FiltroAND([filtro_and_2, filtro_3]);
+        
+        expect(filtro_and_1.filtros.length).toEqual(3);
+    });
 });
