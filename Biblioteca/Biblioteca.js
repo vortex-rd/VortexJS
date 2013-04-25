@@ -22,13 +22,16 @@ NodoBiblioteca.prototype = {
         var cfgLibro = {};
         cfgLibro.titulo = un_mensaje.titulo;
         cfgLibro.autor = un_mensaje.autor;
-        cfgLibro.canalControl = new CanalClaveValor("libro" + this._libros.length,"libro", this._libros.length, this._canal_control);
+        cfgLibro.canalControl = this._canal_control.getSubCanal("libro" + this._libros.length, 
+                                               new FiltroXClaveValor("libro", this._libros.length) , 
+                                               new TrafoXClaveValor("libro", this._libros.length));
+        
         cfgLibro.canalBusquedas = this._canal_busquedas;
         var libro = new NodoLibro(cfgLibro);        
         this.agregarLibro(libro);
     },
     agregarLibro : function(un_nodo_libro) {
-        if(this.libros().Any(function(l){return ComparadorDeFiltros.compararFiltros(libro._canal_control, l._canal_control);
+        if(this.libros().Any(function(l){return ComparadorDeFiltros.compararFiltros(un_nodo_libro._canal_control.alias, l._canal_control.alias);
                                                            })) return;
         this._libros.push(un_nodo_libro);
         this._router.conectarBidireccionalmenteCon(un_nodo_libro);

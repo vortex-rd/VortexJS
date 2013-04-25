@@ -74,6 +74,9 @@
     <script type="text/javascript" src="../VortexScripts/NodoPortalBidiMonoFiltro.js"></script> 
     <script type="text/javascript" src="../VortexScripts/NodoRouter.js"></script> 
     <script type="text/javascript" src="../VortexScripts/PataConectora.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/Canal.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalConCanal.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidiMonoFiltroConCanal.js"></script> 
     <script type="text/javascript" src="../VortexComm/gadget.js"></script> 
     <script type="text/javascript" src="Biblioteca.js"></script>    
     <script type="text/javascript" src="VistaDeBiblioteca.js"></script>    
@@ -85,12 +88,21 @@
     <script type="text/javascript" >            
         $(function () { 
             $.globalEval(libreriaBuscadorDelibros.script());
+            
+            
+            var canal_control = new Canal("MiBiblioteca", 
+                                               new FiltroXClaveValor("Biblioteca", "1") , 
+                                               new TrafoXClaveValor("Biblioteca", "1"));
+            var canal_busquedas = new Canal("Haciendo", 
+                                               new FiltroXClaveValor("Canal", "Haciendo") , 
+                                               new TrafoXClaveValor("Canal", "Haciendo"));
+            
             var router =  new NodoRouter("principal"); 
             
             var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');             
             router.conectarBidireccionalmenteCon(clienteHTTP);
-            var id_biblioteca = getIdObjeto();
-            var nodo_biblioteca = new NodoBiblioteca(id_biblioteca);           
+            var nodo_biblioteca = new NodoBiblioteca({canalControl: canal_control,
+                                                      canalBusquedas: canal_busquedas});           
             router.conectarBidireccionalmenteCon(nodo_biblioteca);
             
             var panel_principal = $('#panel_principal');
@@ -101,7 +113,9 @@
             var plantilla_vista_edicion_de_libro = plantillas.find('#plantilla_vista_edicion_de_libro');
             var plantilla_gadget =plantillas.find('#plantilla_gadget');
             
-            var nodo_buscador = new NodoBuscadorDeLibros({UI: UI_buscador, plantilla_libro: plantilla_libro_encontrado});           
+            var nodo_buscador = new NodoBuscadorDeLibros({UI: UI_buscador, 
+                                                          plantilla_libro: plantilla_libro_encontrado,
+                                                          canalBusquedas: canal_busquedas});           
             router.conectarBidireccionalmenteCon(nodo_buscador);
 
             var gadget_buscador =  $.extend(true,{}, gadget);
@@ -113,8 +127,8 @@
             gadget_buscador.dibujarEn(panel_principal); 
             
             var nodo_vista_biblioteca = new NodoVistaDeBiblioteca({UI:UI_biblioteca, 
-                                                                   plantilla_libro:plantilla_vista_edicion_de_libro, 
-                                                                   id_biblioteca: id_biblioteca});
+                                                                   plantilla_libro:plantilla_vista_edicion_de_libro,
+                                                                   canalControl: canal_control});
             router.conectarBidireccionalmenteCon(nodo_vista_biblioteca);
             
             var gadget_biblioteca =  $.extend(true,{}, gadget);

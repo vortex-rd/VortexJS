@@ -5,41 +5,52 @@ Project URL: https://sourceforge.net/p/vortexnet
 */
 
 
-var CanalClaveValor = function(alias, clave, valor, super_canal){
+var Canal = function(alias, filtro, transformacion){
     this._alias = alias;
-    this._clave = clave;
-    this._valor = valor;
-    
-    this.superCanal = super_canal;
-    if(super_canal === undefined){
-        this.superCanal = {
-                estamparFiltro:function(un_filtro){
-                    return new FiltroAND([un_filtro])
-                },
-                estamparMensaje:function(un_mensaje){
-                    return un_mensaje;
-                }
-            }
-    }
+    this._filtro = filtro;
+    this._trafo = transformacion;
     this.start();
 }
 
-CanalClaveValor.prototype = {
+Canal.prototype = {
     start:function(){
-        this.filtro = new FiltroXClaveValor(this._clave, this._valor);
-        this.trafo = new TrafoXClaveValor(this._clave, this._valor);
 
     },
     estamparFiltro: function(un_filtro){
-        var sumaDeFiltros = this.superCanal.estamparFiltro(un_filtro);
-        sumaDeFiltros.filtros.push(this.filtro);
-        return sumaDeFiltros;     
+        return new FiltroAND([this._filtro, un_filtro]);     
     },
     estamparMensaje: function(un_mensaje){
-        var mensajeTransformado = this.superCanal.estamparMensaje(un_mensaje);
-        return this.trafo.transformarMensaje(mensajeTransformado);
+        return this._trafo.transformarMensaje(un_mensaje);
     },
-    setSuperCanal: function(un_canal){
-        this.superCanal = un_canal;
+    getSubCanal: function(alias, filtro, transformacion){
+        return new Canal(alias, 
+                         new FiltroAND([this._filtro, filtro]), 
+                         new TrafoCompuesta([this._trafo, transformacion]));
+    },
+    serializar: function(){
+        return {alias: this._alias,
+                filtro: this._filtro.Serializar(), 
+                trafo: this._trafo.serializar()
+                };
+    },
+    desSerializar: function(canal_serializado){
+        this._alias = canal_serializado.alias;
+        var desSerializadorFiltros = new DesSerializadorDeFiltros();
+        this._filtro = desSerializadorFiltros.DesSerializarFiltro(canal_serializado.filtro);
+        var desSerializadorTrafos = new DesSerializadorDeTrafos();
+        this._trafo = desSerializadorTrafos.DesSerializarTrafo(canal_serializado.trafo);
     }
 }
+
+var CanalNulo = function(){
+
+};
+
+CanalNulo.prototype = {
+    estamparFiltro:function(un_filtro){
+        return new FiltroAND([un_filtro])
+    },
+    estamparMensaje:function(un_mensaje){
+        return un_mensaje;
+    }
+};

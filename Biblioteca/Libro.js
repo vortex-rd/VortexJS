@@ -25,12 +25,17 @@ NodoLibro.prototype = {
         this.enviarLibro();
     },
     hacerPedidoDeBusquedas: function(){
+        var self = this;
         this._portal_busquedas.pedirMensajes(new FiltroAND([    new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.busquedaDeLibros"),
                                                                 new FiltroXClaveValor("autor", this._autor)
                                                             ]),
-                                             this.enviarLibro.bind(this, this._portal_busquedas));    
+                                             function(){
+                                                 self.enviarLibro(self._portal_busquedas);
+                                             });    
         this._portal_control.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.busquedaDeLibros"),
-                                             this.enviarLibro.bind(this, this._portal_control));    
+                                             function(){
+                                                 self.enviarLibro(self._portal_control);
+                                             });    
     },
     conectarCon: function(un_nodo){
         this._router.conectarCon(un_nodo);   
@@ -39,10 +44,18 @@ NodoLibro.prototype = {
         this._router.recibirMensaje(un_mensaje);
     },
     enviarLibro : function(portal) {
-        portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.libro", 
+        var mensaje = {tipoDeMensaje: "vortexComm.biblioteca.libro", 
                                     autor: this._autor,
                                     titulo: this._titulo,
-                                    canalLibro: this._canal_control.Serializar()});
+                                    canalLibro: this._canal_control.serializar()};
+        if(portal !== undefined){portal.enviarMensaje(mensaje);
+                                return}
+        this._portal_control.enviarMensaje(mensaje);
+        var otro_mensaje = {tipoDeMensaje: "vortexComm.biblioteca.libro", 
+                                    autor: this._autor,
+                                    titulo: this._titulo,
+                                    canalLibro: this._canal_control.serializar()};
+        this._portal_busquedas.enviarMensaje(otro_mensaje);        
     }
 };
 

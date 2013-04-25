@@ -23,8 +23,13 @@ test.describe_1 = function(){
                 test.ui_vista = test.plantilla_vista.clone();
                 
                 test.un_router = new NodoRouter("1");  
-                test.canal_control = new CanalClaveValor("MiBiblioteca", "Biblioteca", "1");
-                test.canal_busquedas = new CanalClaveValor("Haciendo", "Canal", "Haciendo");
+                test.canal_control = new Canal("MiBiblioteca", 
+                                               new FiltroXClaveValor("Biblioteca", "1") , 
+                                               new TrafoXClaveValor("Biblioteca", "1"));
+                test.canal_busquedas = new Canal("Haciendo", 
+                                               new FiltroXClaveValor("Canal", "Haciendo") , 
+                                               new TrafoXClaveValor("Canal", "Haciendo"));
+                
                 test.nodo_biblioteca = new NodoBiblioteca({canalControl: test.canal_control,
                                                           canalBusquedas: test.canal_busquedas});
                 test.nodo_buscador = new NodoBuscadorDeLibros({ UI:test.ui_buscador, 
@@ -80,7 +85,7 @@ test.describe_1_1_1 = function(){
             test.input_de_busqueda_del_buscador_de_libros.val("Skinner");
             test.input_de_busqueda_del_buscador_de_libros.change();
         });  
-        waits(50);
+        waits(100);
     });  
 
     it("El buscador deberia haber encontrado el libro", function() {

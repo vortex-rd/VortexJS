@@ -67,19 +67,68 @@ var FiltroXClaveValor = function (clave, valor) {
 	}
 }
 
+var DesSerializadorDeTrafos = function(){
+	this.DesSerializarTrafo = function(una_trafo_serializada){
+        var trafo;
+		switch(una_trafo_serializada.tipo)
+		{
+			case 'COMP':
+				trafo =  new TrafoCompuesta();
+				break;
+			case 'KEYVALUE':
+				trafo =  new TrafoXClaveValor();
+				break;
+		}
+		trafo.desSerializar(una_trafo_serializada);
+		return trafo;
+	}
+}
+
 var TrafoXClaveValor = function (clave, valor) {
 	this.clave = clave;
 	this.valor = valor;
-	
-    this.transformarMensaje = function (un_mensaje) {
+};
+TrafoXClaveValor.prototype = {
+    transformarMensaje : function (un_mensaje) {
     	un_mensaje[this.clave] = this.valor;
         return un_mensaje;
-    }
-
-	this.ToString= function(){
-		return JSON.stringify({'clave': this.clave, 'valor': this.valor});
+    },
+    serializar : function(){
+		return {	tipo: 'KEYVALUE',
+					clave: this.clave,
+                    valor: this.valor};
+	},	
+	desSerializar : function(una_trafo_serializada){
+        this.clave = una_trafo_serializada.clave; 
+		this.valor = una_trafo_serializada.valor; 
 	}
-}
+};
+
+var TrafoCompuesta = function(trafos){
+    this.trafos = (trafos === undefined)? [] : trafos;
+};
+TrafoCompuesta.prototype = {
+    transformarMensaje : function (un_mensaje) {
+        for(var i=0; i<this.trafos.length; i++){
+			this.trafos[i].transformarMensaje(un_mensaje);
+		}
+        return un_mensaje;
+    },
+    serializar : function(){
+		var ret = {	tipo: 'COMP',
+					trafos: []};
+		for(var i=0; i<this.trafos.length; i++){
+			ret.trafos.push(this.trafos[i].serializar());
+		}		
+		return ret;
+	},	
+	desSerializar : function(una_trafo_serializada){
+		var desSerializador = new DesSerializadorDeTrafos();
+		for(var i=0; i<una_trafo_serializada.trafos.length; i++){
+			this.trafos.push(desSerializador.DesSerializarTrafo(una_trafo_serializada.trafos[i]));
+		}
+	}
+};
 
 
 var FiltroXParametro = function (parametro) {

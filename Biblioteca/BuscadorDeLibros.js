@@ -42,13 +42,14 @@ var libreriaBuscadorDelibros = {
                 this._panel_libros_encontrados.empty();
             },
             onLibroEncontrado : function (mensaje) {      
-                var des_serializador = new DesSerializadorDeFiltros();
+                var canal_libro = new Canal();
+                canal_libro.desSerializar(mensaje.canalLibro);
                 var libro = new NodoVistaDeLibroEnBuscador({UI: this._plantilla_libro.clone(),
                                                           autor: mensaje.autor,
                                                           titulo: mensaje.titulo,
-                                                          canalLibro: des_serializador.DesSerializarFiltro(mensaje.canalLibro)
+                                                          canalLibro: canal_libro
                                                         });
-                if(this.librosEncontrados().Any(function(l){return ComparadorDeFiltros.compararFiltros(libro._canal_libro, l._canal_libro);
+                if(this.librosEncontrados().Any(function(l){return libro._canal_libro._alias== l._canal_libro._alias;
                                                            })) return;
                 this._librosEncontrados.push(libro);    
         

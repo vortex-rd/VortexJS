@@ -42,12 +42,13 @@ NodoVistaDeBiblioteca.prototype = {
         this._portal.enviarMensaje({tipoDeMensaje: "vortexComm.biblioteca.busquedaDeLibros"});
     },
     onLibroEncontrado : function (mensaje) {
-        var des_serializador = new DesSerializadorDeFiltros();
+        var canal_libro = new Canal();
+        canal_libro.desSerializar(mensaje.canalLibro);
         var libro = new NodoVistaDeEdicionDeLibro({UI: this._plantilla_libro.clone(),
                                                   autor: mensaje.autor,
                                                   titulo: mensaje.titulo,
-                                                  canalLibro: des_serializador.DesSerializarFiltro(mensaje.canalLibro)});
-        if(this.librosEncontrados().Any(function(l){return ComparadorDeFiltros.compararFiltros(libro._canal_libro, l._canal_libro);
+                                                  canalLibro: canal_libro});
+        if(this.librosEncontrados().Any(function(l){return libro._canal_libro._alias == l._canal_libro._alias;
                                                    })) return;
         this._librosEncontrados.push(libro);    
         
@@ -71,16 +72,16 @@ NodoVistaDeBiblioteca.prototype = {
 
 var NodoVistaDeEdicionDeLibro = function(cfg){
     this._ui = cfg.UI;
-    this._id_libro = cfg.idLibro;
     this._autor = cfg.autor;
     this._titulo = cfg.titulo;
-    this._id_biblioteca = cfg.idBiblioteca;
+    this._canal_libro = cfg.canalLibro;
+    
     this.start();
 }
 
 NodoVistaDeEdicionDeLibro.prototype = {
     start: function(){
-        this._portal = new NodoPortalBidi("vista edicion libro" + this._id_libro);
+        this._portal = new NodoPortalConCanal("vista edicion libro", this._canal_libro);
         this._input_autor = this._ui.find('#autor_de_libro_en_edicion');
         this._input_titulo = this._ui.find('#titulo_de_libro_en_edicion');
         
@@ -90,9 +91,7 @@ NodoVistaDeEdicionDeLibro.prototype = {
         this._input_autor.val(this._autor);
         this._input_titulo.val(this._titulo);
         
-        this._portal.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
-                                                  new FiltroXClaveValor("idBiblioteca", this._id_biblioteca),
-                                                  new FiltroXClaveValor("idLibro", this._id_libro)]),
+        this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
                                    this.actualizar.bind(this));
     },  
     onCambiosEnInput: function(){
@@ -100,8 +99,6 @@ NodoVistaDeEdicionDeLibro.prototype = {
         this._titulo = this._input_titulo.val();
         this._portal.enviarMensaje({
             tipoDeMensaje: "vortexComm.biblioteca.edicionDelibro",
-            idBiblioteca:this._id_biblioteca,
-            idLibro:this._id_libro,
             autor:this._autor,
             titulo:this._titulo
         });
