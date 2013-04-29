@@ -105,8 +105,8 @@
             
             var router =  new NodoRouter("principal"); 
             
-            //var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');             
-            //router.conectarBidireccionalmenteCon(clienteHTTP);
+            var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');             
+            router.conectarBidireccionalmenteCon(clienteHTTP);
             var nodo_biblioteca_1 = new NodoBiblioteca({canalControl: canal_biblio_1,
                                                       canalBusquedas: canal_haciendo});           
             router.conectarBidireccionalmenteCon(nodo_biblioteca_1);

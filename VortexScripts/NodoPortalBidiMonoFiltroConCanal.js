@@ -17,7 +17,7 @@ var NodoPortalBidiMonoFiltroConCanal = function(aliasPortal, canal){
 };
 NodoPortalBidiMonoFiltroConCanal.prototype = {
     publicarFiltros : function(){
-        this._pata.publicarFiltro(this._canal.estamparFiltro(this._pedido.filtro));
+        this._pata.publicarFiltro(this._canal.estamparFiltro(this._pedido.filtro.simplificar()));
     },
     enviarMensaje : function(un_mensaje){
 		this._pata.recibirMensaje(this._canal.estamparMensaje(un_mensaje));

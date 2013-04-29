@@ -44,16 +44,16 @@ NodoVistaDeBiblioteca.prototype = {
     onLibroEncontrado : function (mensaje) {
         var canal_libro = new Canal();
         canal_libro.desSerializar(mensaje.canalLibro);
-        var libro = new NodoVistaDeEdicionDeLibro({UI: this._plantilla_libro.clone(),
+        var vLibro = new NodoVistaDeEdicionDeLibro({UI: this._plantilla_libro.clone(),
                                                   autor: mensaje.autor,
                                                   titulo: mensaje.titulo,
                                                   canalLibro: canal_libro});
-        if(this.librosEncontrados().Any(function(l){return libro._canal_libro._alias == l._canal_libro._alias;
-                                                   })) return;
-        this._librosEncontrados.push(libro);    
         
-        this._router.conectarBidireccionalmenteCon(libro);
-        libro.dibujarEn(this._panel_libros);      
+        if(this.librosEncontrados().Any(function(vl){return vLibro.equals(vl);})) return;
+        this._librosEncontrados.push(vLibro);    
+        
+        this._router.conectarBidireccionalmenteCon(vLibro);
+        vLibro.dibujarEn(this._panel_libros);      
     },
     librosEncontrados : function() {
         return Enumerable.From(this._librosEncontrados);
@@ -91,7 +91,7 @@ NodoVistaDeEdicionDeLibro.prototype = {
         this._input_autor.val(this._autor);
         this._input_titulo.val(this._titulo);
         
-        this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
+        this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libroActualizado"),
                                    this.actualizar.bind(this));
     },  
     onCambiosEnInput: function(){
@@ -117,5 +117,9 @@ NodoVistaDeEdicionDeLibro.prototype = {
     },
     recibirMensaje: function(un_mensaje){
         this._portal.recibirMensaje(un_mensaje);
-    } 
+    },
+    equals: function(obj){
+        if(!(obj instanceof NodoVistaDeEdicionDeLibro)) return false;
+        return this._canal_libro.equals(obj._canal_libro);
+    }
 };

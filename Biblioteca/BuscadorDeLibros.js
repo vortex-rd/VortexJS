@@ -49,8 +49,7 @@ var libreriaBuscadorDelibros = {
                                                           titulo: mensaje.titulo,
                                                           canalLibro: canal_libro
                                                         });
-                if(this.librosEncontrados().Any(function(l){return libro._canal_libro._alias== l._canal_libro._alias;
-                                                           })) return;
+                if(this.librosEncontrados().Any(function(l){return libro.equals(l); })) return;
                 this._librosEncontrados.push(libro);    
         
                 this._router.conectarBidireccionalmenteCon(libro);
@@ -88,7 +87,7 @@ var libreriaBuscadorDelibros = {
                 this._label_autor.text(this._autor);
                 this._label_titulo.text(this._titulo);
                 
-                this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libro"),
+                this._portal.pedirMensajes(new FiltroXClaveValor("tipoDeMensaje", "vortexComm.biblioteca.libroActualizado"),
                                            this.actualizar.bind(this));
             },  
             actualizar: function(libro){
@@ -103,7 +102,11 @@ var libreriaBuscadorDelibros = {
             },
             recibirMensaje: function(un_mensaje){
                 this._portal.recibirMensaje(un_mensaje);
-            } 
+            },
+            equals: function(obj){
+                if(!(obj instanceof NodoVistaDeEdicionDeLibro)) return false;
+                return this._canal_libro.equals(obj._canal_libro);
+            }
         };
     }
 };

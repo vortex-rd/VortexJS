@@ -31,8 +31,6 @@ NodoBiblioteca.prototype = {
         this.agregarLibro(libro);
     },
     agregarLibro : function(un_nodo_libro) {
-        if(this.libros().Any(function(l){return ComparadorDeFiltros.compararFiltros(un_nodo_libro._canal_control.alias, l._canal_control.alias);
-                                                           })) return;
         this._libros.push(un_nodo_libro);
         this._router.conectarBidireccionalmenteCon(un_nodo_libro);
         un_nodo_libro.enviarLibro();        

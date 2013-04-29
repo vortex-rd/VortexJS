@@ -16,7 +16,7 @@ var NodoPortalBidiMonoFiltro = function(aliasPortal){
 };
 NodoPortalBidiMonoFiltro.prototype = {
     publicarFiltros : function(){
-        this._pata.publicarFiltro(this._pedido.filtro);
+        this._pata.publicarFiltro(this._pedido.filtro.simplificar());
     },
     enviarMensaje : function(un_mensaje){
 		this._pata.recibirMensaje(un_mensaje);

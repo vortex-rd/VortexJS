@@ -19,7 +19,7 @@ NodoRouter.prototype = {
             filtrosParaLaPata.push(p.filtroRecibido());
         });
         if(filtrosParaLaPata.length>0){
-            var filtroAPublicarALaPata = new FiltroOR(filtrosParaLaPata);
+            var filtroAPublicarALaPata = new FiltroOR(filtrosParaLaPata).simplificar();
             pata.publicarFiltro(filtroAPublicarALaPata);
         }
     },
@@ -35,7 +35,7 @@ NodoRouter.prototype = {
         });
     },
     recibirMensaje : function (un_mensaje) {	
-        console.log('mensaje recibido en ' + this._aliasRouter, un_mensaje);
+        //console.log('mensaje recibido en ' + this._aliasRouter, un_mensaje);
         this.enviarMensajeATodasLasPatas(un_mensaje);        
     },
     conectarCon : function (un_receptor) {

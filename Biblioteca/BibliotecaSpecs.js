@@ -44,7 +44,7 @@ test.describe_1 = function(){
                 test.un_router.conectarBidireccionalmenteCon(test.nodo_vista_biblioteca);
                 test.un_router.conectarBidireccionalmenteCon(test.nodo_buscador);      
             }); 
-            waits(150);
+            waits(250);
         });
         
         describe("Agrego el libro walden 2 a la biblioteca", function() { 
@@ -64,7 +64,7 @@ test.describe_1_1 = function(){
             test.input_titulo_del_alta_de_libros.val("Walden 2");
             test.boton_agregar_del_alta_de_libros.click();
         }); 
-        waits(100);        
+        waits(200);        
     });  
     it("La biblioteca deberia tener un libro", function() {
         runs(function() { 

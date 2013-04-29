@@ -528,6 +528,7 @@ test.describe_1_1_1_3_1_1_1_1_1_1_1_1_1 = function(){
         waitsFor(function() {   
             return  test.portal_1.filtroDeSalida().evaluarMensaje({tipoDeMensaje:'1'});
         });
+        waits(20);
     });        
     describe("Envio un mensaje de tipo 1 desde el portal 1", function() {
        test.describe_1_1_1_3_1_1_1_1_1_1_1_1_1_1();
@@ -726,7 +727,6 @@ describe("Filtros", function() {
         un_filtro_false = new FiltroFalse();
         un_filtro_por_clave1_valor1 = new FiltroXClaveValor('Clave1', 'Valor1');
         un_filtro_por_clave2_valor2 = new FiltroXClaveValor('Clave2', 'Valor2');
-        un_des_serializador = new DesSerializadorDeFiltros();
     
     });
     
@@ -751,8 +751,8 @@ describe("Filtros", function() {
     });
     
     it("5 - Al serializar y desserializar un filtro deberia seguir comportandose igual", function() {
-        var filtroSerializado = un_filtro_por_clave1_valor1.Serializar();
-        var filtroDesSerializado = un_des_serializador.DesSerializarFiltro(filtroSerializado);
+        var filtroSerializado = un_filtro_por_clave1_valor1.serializar();
+        var filtroDesSerializado = DesSerializadorDeFiltros.desSerializarFiltro(filtroSerializado);
         
         expect(un_filtro_por_clave1_valor1.evaluarMensaje({'Clave1':'Valor1'})).toEqual(true);
         expect(un_filtro_por_clave1_valor1.evaluarMensaje({'Clave2':'Valor2'})).toEqual(false);
@@ -760,7 +760,20 @@ describe("Filtros", function() {
         expect(filtroDesSerializado.evaluarMensaje({'Clave2':'Valor2'})).toEqual(false);
     });
     
-    it("6 - Si en un filtro AND pongo otro filtro AND deberian quedar los filtros del segundo al mismo nivel que los del primero", function() {
+    it("6 - Si simplifico una AND de un solo filtro deberia quedarme el filtro de adentro de la AND como resultado", function() {
+        var filtro_1 = new FiltroXClaveValor("clave1", 1);
+        var filtro_and_1 = new FiltroAND([filtro_1]);
+        
+        expect(ComparadorDeFiltros.compararFiltros(filtro_and_1.simplificar(), filtro_1));
+    });
+    
+    it("7 - Si simplifico una OR de un solo filtro deberia quedarme el filtro de adentro de la OR como resultado", function() {
+        var filtro_1 = new FiltroXClaveValor("clave1", 1);
+        var filtro_or_1 = new FiltroOR([filtro_1]);
+        
+        expect(ComparadorDeFiltros.compararFiltros(filtro_or_1.simplificar(), filtro_1));
+    });
+    it("8 - Si en un filtro AND pongo otro filtro AND y simplifico el primero deberian quedar los filtros del segundo al mismo nivel que los del primero", function() {
         var filtro_1 = new FiltroXClaveValor("clave1", 1);
         var filtro_2 = new FiltroXClaveValor("clave2", 2);
         var filtro_3 = new FiltroXClaveValor("clave3", 3);
@@ -768,6 +781,6 @@ describe("Filtros", function() {
         var filtro_and_2 = new FiltroAND([filtro_1, filtro_2]);
         var filtro_and_1 = new FiltroAND([filtro_and_2, filtro_3]);
         
-        expect(filtro_and_1.filtros.length).toEqual(3);
+        expect(filtro_and_1.simplificar().filtros.length).toEqual(3);
     });
 });

@@ -41,8 +41,7 @@ PataConectora.prototype = {
 	},
     recibirPublicacionDeFiltro : function(una_publicacion){
         if(!this.elMensajeEsParaEstaPata(una_publicacion)) return;
-        var desSerializador = new DesSerializadorDeFiltros();
-        this._filtroRecibido = desSerializador.DesSerializarFiltro(una_publicacion.filtro);
+        this._filtroRecibido = DesSerializadorDeFiltros.desSerializarFiltro(una_publicacion.filtro).simplificar();
         this.onFiltroRecibidoModificado();
     },
     enviarPedidoDeIdRemoto : function(){
@@ -95,7 +94,7 @@ PataConectora.prototype = {
         if(ComparadorDeFiltros.compararFiltros(filtro, this._filtroEnviado)) return;
         var publicacionDeFiltro = {
 			tipoDeMensaje : "Vortex.Filtro.Publicacion",
-            filtro: filtro.Serializar()
+            filtro: filtro.serializar()
 		}
 		var mensaje_enviado = this.enviarMensajePropio(publicacionDeFiltro);
         //console.log("Pata del Nodo " + mensaje_enviado.id_mensaje_vortex.id_del_emisor + " envia filtro:", mensaje_enviado); //log

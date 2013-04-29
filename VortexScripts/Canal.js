@@ -24,21 +24,24 @@ Canal.prototype = {
     },
     getSubCanal: function(alias, filtro, transformacion){
         return new Canal(alias, 
-                         new FiltroAND([this._filtro, filtro]), 
+                         new FiltroAND([this._filtro, filtro]).simplificar(), 
                          new TrafoCompuesta([this._trafo, transformacion]));
     },
     serializar: function(){
         return {alias: this._alias,
-                filtro: this._filtro.Serializar(), 
+                filtro: this._filtro.serializar(), 
                 trafo: this._trafo.serializar()
                 };
     },
     desSerializar: function(canal_serializado){
         this._alias = canal_serializado.alias;
-        var desSerializadorFiltros = new DesSerializadorDeFiltros();
-        this._filtro = desSerializadorFiltros.DesSerializarFiltro(canal_serializado.filtro);
-        var desSerializadorTrafos = new DesSerializadorDeTrafos();
-        this._trafo = desSerializadorTrafos.DesSerializarTrafo(canal_serializado.trafo);
+        this._filtro = DesSerializadorDeFiltros.desSerializarFiltro(canal_serializado.filtro);
+        this._trafo = DesSerializadorDeTrafos.desSerializarTrafo(canal_serializado.trafo);
+    },
+    equals: function(obj){
+        if(!(obj instanceof Canal)) return false;
+        return this._filtro.evaluarMensaje(obj._trafo.transformarMensaje({})) &&
+               obj._filtro.evaluarMensaje(this._trafo.transformarMensaje({})) ;
     }
 }
 
@@ -54,3 +57,7 @@ CanalNulo.prototype = {
         return un_mensaje;
     }
 };
+
+var ComparadorDeCanales = {
+
+}

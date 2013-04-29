@@ -22,7 +22,19 @@ NodoLibro.prototype = {
         this._titulo = libro.titulo;
         
         this.hacerPedidoDeBusquedas();
-        this.enviarLibro();
+        this.libroActualizado();
+    },
+    libroActualizado: function(){
+         var mensaje = {tipoDeMensaje: "vortexComm.biblioteca.libroActualizado", 
+                                    autor: this._autor,
+                                    titulo: this._titulo,
+                                    canalLibro: this._canal_control.serializar()};
+        this._portal_control.enviarMensaje(mensaje);
+        var otro_mensaje = {tipoDeMensaje: "vortexComm.biblioteca.libroActualizado", 
+                                    autor: this._autor,
+                                    titulo: this._titulo,
+                                    canalLibro: this._canal_control.serializar()};
+        this._portal_busquedas.enviarMensaje(otro_mensaje);  
     },
     hacerPedidoDeBusquedas: function(){
         var self = this;
@@ -48,14 +60,14 @@ NodoLibro.prototype = {
                                     autor: this._autor,
                                     titulo: this._titulo,
                                     canalLibro: this._canal_control.serializar()};
-        if(portal !== undefined){portal.enviarMensaje(mensaje);
-                                return}
+        if( portal !== undefined) {portal.enviarMensaje(mensaje); 
+                                    return;}
         this._portal_control.enviarMensaje(mensaje);
         var otro_mensaje = {tipoDeMensaje: "vortexComm.biblioteca.libro", 
                                     autor: this._autor,
                                     titulo: this._titulo,
                                     canalLibro: this._canal_control.serializar()};
-        this._portal_busquedas.enviarMensaje(otro_mensaje);        
+        this._portal_busquedas.enviarMensaje(otro_mensaje);  
     }
 };
 

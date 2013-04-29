@@ -20,7 +20,7 @@ NodoPortalConCanal.prototype = {
         this._listaPedidos.forEach(function(p){
             filtros.push(p.filtro);
         });
-        var filtroMergeado = new FiltroOR(filtros);
+        var filtroMergeado = new FiltroOR(filtros).simplificar();
 
         this._pata.publicarFiltro(this._canal.estamparFiltro(filtroMergeado));
     },
