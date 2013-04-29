@@ -1,0 +1,124 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        
+        <title>Vendedor de buscador de libros</title>
+        <link rel="stylesheet" href="../jQueryUI/css/redmond/jquery-ui-1.9.1.custom.css" />
+        <style>
+            #plantillas{
+                display:none;
+            }
+        </style>
+        
+        <style id="estiloBuscadorDeLibros">
+            .libro_encontrado_en_buscador{
+                list-style:none;    
+            }
+            
+            .libro_encontrado_en_buscador:hover{
+                background-color: Orange;    
+            }
+            
+            .autor_de_libro_encontrado{
+                display: inline-block;
+                font-weight:bold;
+            }
+            
+            .titulo_de_libro_encontrado{
+                display: inline-block;
+            }
+            
+            .lista_de_libros_encontrados_del_buscador_de_libros{
+                padding:5px;
+                margin:0px;
+            }
+            
+            .input_de_busqueda_del_buscador_de_libros
+            {
+                display: block;
+                width:100%;
+            }
+        </style>
+	</head>
+	
+	<body>		
+        <div id="panel_principal">
+        
+        </div>	
+
+        <div id="plantillas">
+	       <li id="plantilla_libro_encontrado_en_buscador" class="libro_encontrado_en_buscador">
+                <div id="autor_de_libro_encontrado" class="autor_de_libro_encontrado">
+                </div>:
+                <div id="titulo_de_libro_encontrado" class="titulo_de_libro_encontrado">
+                </div>   
+            </li>        
+            <div id="plantilla_buscador_de_libros" class="buscador_de_libros">
+		        <div id="controles_del_buscador_de_libros" class="controles_del_buscador_de_libros">   
+                    <input type="text" id="input_de_busqueda_del_buscador_de_libros" class="input_de_busqueda_del_buscador_de_libros"/>			  
+		        </div>
+                <ul id="lista_de_libros_encontrados_del_buscador_de_libros" class="lista_de_libros_encontrados_del_buscador_de_libros">
+		        </ul>
+	        </div>      
+        </div>
+    </body>
+    
+    <script type="text/javascript" src="../linq/linq.js"></script> 
+    <script type="text/javascript" src="../JQuery/jquery-1.9.1.js"></script> 
+    <script type="text/javascript" src="../jQueryUI/js/jquery-ui-1.9.1.custom.js"></script>
+    <script type="text/javascript" src="../VortexScripts/Vortex.js"></script>
+    <script type="text/javascript" src="../VortexScripts/FiltrosYTransformaciones.js"></script>
+    <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/GeneradorDeIdMensaje.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoMultiplexor.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidi.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidiMonoFiltro.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoRouter.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/PataConectora.js"></script>     
+    <script type="text/javascript" src="BuscadorDeLibros.js"></script>    
+    
+    <script type="text/javascript" >            
+        $(function () { 
+            var router =  new NodoRouter("principal"); 
+            
+            var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');             
+            router.conectarBidireccionalmenteCon(clienteHTTP);
+            
+            
+            var panel_principal = $('#panel_principal');
+            var plantillas = $('#plantillas');
+            var UI_buscador = plantillas.find('#plantilla_buscador_de_libros').clone();
+            var plantilla_libro_encontrado = plantillas.find('#plantilla_libro_encontrado_en_buscador');
+
+            var portal_ventas = new NodoPortalBidi("portal ventas");
+            portal_ventas.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.pedidoDeAplicacion"),
+                                                        new FiltroXClaveValor("id", 'buscadorDeLibros')]),
+                                        function(){
+                                            portal_ventas.enviarMensaje({tipoDeMensaje:"vortexComm.market.aplicacion",
+                                                                         script: scriptNodoBuscadorDelibros.script(),
+                                                                         version: 0.1,  
+                                                                         id:"buscadorDeLibros",
+                                                                         nombre: 'Buscador de Libros',
+                                                                         clase: 'NodoBuscadorDeLibros',
+                                                                         cfg:{   UI: UI_buscador[0].outerHTML,
+                                                                                plantilla_libro: plantilla_libro_encontrado[0].outerHTML
+                                                                            },
+                                                                         estilo: $("#estiloBuscadorDeLibros")[0].outerHTML
+                                                                        });
+                                        }
+                                    );    
+            portal_ventas.pedirMensajes(new FiltroAND([new FiltroXClaveValor("tipoDeMensaje", "vortexComm.market.busquedaDeAplicaciones"),
+                                                        new FiltroXClaveValor("nombre", 'Buscador de Libros')]),
+                                                                   function(){
+                                            portal_ventas.enviarMensaje({tipoDeMensaje:"vortexComm.market.resumenAplicacion",
+                                                                        idApp:"buscadorDeLibros",
+                                                                         nombre: 'Buscador de Libros'
+                                                                        });
+                                        }
+                        );  
+            router.conectarBidireccionalmenteCon(portal_ventas);  
+        });
+    </script >
+    
+</html>
