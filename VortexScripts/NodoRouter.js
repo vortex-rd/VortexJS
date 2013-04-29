@@ -35,7 +35,7 @@ NodoRouter.prototype = {
         });
     },
     recibirMensaje : function (un_mensaje) {	
-        console.log('mensaje recibido en ' + this._aliasRouter, un_mensaje);
+        //console.log('mensaje recibido en ' + this._aliasRouter, un_mensaje);
         this.enviarMensajeATodasLasPatas(un_mensaje);        
     },
     conectarCon : function (un_receptor) {

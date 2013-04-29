@@ -94,18 +94,28 @@
 
 #control_usuario .control_hola{
 	width: 50%;
-	
 }
 
-.control_usuario_desc{
+
+#control_usuario .control_usuario_desc{
 	width: 50%;
 }
 
-
-.control_usuario_edit{
-    border:none;
+#control_usuario input{
+    border: none;
+	
 	color: #FFDC73;
+	background-color: transparent;
 }
+
+
+#control_usuario input.editable{
+    
+	color: #FFDC73;
+	background-color:black;
+}
+
+
 
 
 #administrador .subAdministrador
@@ -204,6 +214,8 @@
 	width: 100%;
 	border: none;
 	color: black;
+	background-color: transparent;
+	
 	
 }
 
@@ -268,9 +280,14 @@
 	bottom:0;
 	
 	background-color: white;
-	
+	/*
 	overflow-y:auto;
     overflow-x:auto;
+	*/
+}
 
+input.editable{
+	background-color: black;
+	color: #FFDC73;
 }
 

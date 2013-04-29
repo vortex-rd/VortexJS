@@ -1,17 +1,21 @@
 var chat = {
+	//documenta intereface de options, y puede tener valores default
 	options: {
 		UI			: null,
 		conjunto	: null,
 		persistidor	: null,
 		contexto	: null
 	},
-	dibujarEn: function(panel){
-        panel.append(this.options.UI);
-    },
+	///////
+	
+	
 	
 	
 	//constructor
 	start: function(options){
+		
+		
+		
 		var self = this;
 		self.chat(options);
 	},
@@ -20,24 +24,29 @@ var chat = {
 	chat: function(options){
 		
 		
+		
 		var self = this;
 		
 		$.extend(true, self.options, options);
 		
 		//contructor del padre
-		/*self.gadget(options);*/
-		//contructor del padre:fin
+		//self.gadget(options);
+		
+		
+		
+		
 		
 		
 		self.conjuntoMensajeDeChat = self.options.conjunto.getSubConjunto();
 		self.conjuntoMensajeDeChat.agregarFiltroEntrada(new FiltroXClaveValor("tipoDeMensaje", "MensajeDeChat"));
 		self.conjuntoMensajeDeChat.agregarTrafoSalida(new TrafoXClaveValor("tipoDeMensaje", "MensajeDeChat"));
-		self.conjuntoMensajeDeChat.pedirMensajes( function (mensaje){
+		self.conjuntoMensajeDeChat.pedirMensajes(function (mensaje){
 				self.recibirMensaje(mensaje);
 		});
 		
 		
 		self.txtMensaje = self.options.UI.find('.txtMensaje');
+		
 		self.contenedorMensajes = self.options.UI.find('.contenedorMensajes');
 		
 		
@@ -46,23 +55,13 @@ var chat = {
 		});
 		
 		
-		
-		
-		
-		
-		//resetTxtMensaje
-		self.txtMensaje.val('');
-		self.txtMensaje.attr('rows', 1);
-		self.txtMensaje.height(20);
-	
-		//ajustarAltoContenedorMensajes
-		var _bottom;
-		_bottom = '';
-		_bottom+= self.contenedorMensajes.parent().height();
-		_bottom-= self.contenedorMensajes.parent().find('.txtMensaje').position().top;
-		self.contenedorMensajes.css('bottom', _bottom);
-		
+		self.ajustarAltoContenedorMensajes();
 		self.txtMensaje.focus();
+		
+		
+		
+		self.usuarios.push(options.contexto.getParametro('NombreDeUsuario'));
+		
 		
 	},
 	//constructor:fin
@@ -71,6 +70,10 @@ var chat = {
 	usuarios: new Array(),
 	
 	recibirMensaje: function(mensaje){
+		
+		
+		console.log("mensaje", mensaje);
+		
 		
 		var self = this;
 		
@@ -110,6 +113,8 @@ var chat = {
 			
 			
 			var idUsuario=-1;
+			
+			
 			//busco el usuario en el array
 			for (var i = 0; self.usuarios[i]; i++) {
 				if (self.usuarios[i] == mensaje.usuario) {
@@ -140,8 +145,7 @@ var chat = {
 		
 		
 		
-		//scrollearContenedorMensajes
-		$contenedorMensajes.animate({ scrollTop: $contenedorMensajes.prop("scrollHeight") }, 'fast');
+		
 		
 		
 		if (window.webkitNotifications.checkPermission() == 0) {
@@ -151,6 +155,28 @@ var chat = {
 		}
 	},
 	
+	scrollearContenedorMensajes: function(){
+		
+		var self = this;
+		self.contenedorMensajes.animate({ scrollTop: self.contenedorMensajes.prop("scrollHeight") }, 'fast');
+	},
+	
+	ajustarAltoContenedorMensajes: function(){
+		var self = this;
+		var _bottom;
+		_bottom = '';
+		
+		_bottom+= self.contenedorMensajes.parent().height();
+		_bottom-= self.txtMensaje.position().top;
+		self.contenedorMensajes.css('bottom', _bottom);
+	},
+	resetTxtMensaje: function(){
+		var self = this;
+		self.txtMensaje.val('');
+		self.txtMensaje.attr('rows', 1);
+		self.txtMensaje.height(20);
+	},
+	
 	eventoKeyUp: function(e){
 		if (window.event) e = window.event; 
 		
@@ -158,8 +184,8 @@ var chat = {
 		
 		//var sender = e.srcElement? e.srcElement : e.target; 
 
-		var $txtMensaje = self.options.UI.find('.txtMensaje');
-		var $contenedorMensajes = self.options.UI.find('.contenedorMensajes');
+		var $txtMensaje = self.txtMensaje;
+		var $contenedorMensajes = self.contenedorMensajes;
 		
 		var code = (e.keyCode ? e.keyCode : e.which);
 		if (code == 13){
@@ -179,26 +205,13 @@ var chat = {
 				
 				//Así veo el mio
 				var mensajeYo =  $.extend({}, mensaje);
-				
 				mensajeYo.usuario="Yo";
 				self.recibirMensaje(mensajeYo);
 				//
 				
 				
-				//resetTxtMensaje
-				$txtMensaje.val('');
-				$txtMensaje.attr('rows', 1);
-				$txtMensaje.height(20);
-				
-				
-				//ajustarAltoContenedorMensajes
-				var _bottom;
-				_bottom = '';
-				_bottom+= self.options.UI.parent().height();
-				_bottom-= $txtMensaje.position().top;
-				$contenedorMensajes.css('bottom', _bottom);
-				
-				
+				self.resetTxtMensaje();
+				self.ajustarAltoContenedorMensajes();
 				
 				return false;
 			}
@@ -226,19 +239,11 @@ var chat = {
 		}
 		
 		
-		//ajustarAltoContenedorMensajes
-		var _bottom;
-		_bottom = '';
-		_bottom+= self.options.UI.parent().height();
-		_bottom-= $txtMensaje.position().top;
-		$contenedorMensajes.css('bottom', _bottom);
+		self.ajustarAltoContenedorMensajes();
 		
-		
-		//scrollearContenedorMensajes
-		$contenedorMensajes.animate({ scrollTop: $contenedorMensajes.prop("scrollHeight") }, 'fast');
+		self.scrollearContenedorMensajes();
 			
 	}
 	
-	
-}
-/*chat = $.extend(true,{}, gadget, chat);*/
+};
+//chat = $.extend(true,{}, gadget, chat);

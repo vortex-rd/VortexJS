@@ -61,9 +61,9 @@ var NodoClienteHTTP = function (url) {
             "proximaEsperaMinima": 0,
             "proximaEsperaMaxima": 300000
         }
-        if (bandejaSalidaAux.lenght > 0) {
-            console.log("enviando:", bandejaSalidaAux);
-        }
+        //if (bandejaSalidaAux.lenght > 0) {
+        //    console.log("enviando:", bandejaSalidaAux);
+        //}
         $.ajax({
             type: "POST",
             url: url + '/session/' + idSesion,
@@ -77,7 +77,7 @@ var NodoClienteHTTP = function (url) {
                 var mensajesRecibidos = $.parseJSON(responseData).contenidos;
 
                 mensajesRecibidos.forEach(function (element, index, array) {
-                    console.log("mensaje recibido:", element);
+                    //console.log("mensaje recibido:", element);
                     receptor.recibirMensaje(element);
                 });
 

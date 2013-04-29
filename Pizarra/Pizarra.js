@@ -13,6 +13,8 @@ var pizarra = {
 	
 	//constructor
 	start: function(options){
+		
+		
 		var self = this;
 		self.pizarra(options);
 	},
@@ -23,6 +25,8 @@ var pizarra = {
 		var self = this;
 		
 		$.extend(true, self.options, options);
+		
+		
 		
 		
 		//contructor del padre
@@ -144,6 +148,6 @@ var pizarra = {
 	}
 	
 	
-}
-pizarra = $.extend(true,{}, gadget, pizarra);
+};
+//pizarra = $.extend(true,{}, gadget, pizarra);
 
