@@ -87,7 +87,6 @@
 
     <script type="text/javascript" >            
         $(function () { 
-            $.globalEval(libreriaBuscadorDelibros.script());
             var id_usuario = getIdObjeto();
             var canal_usuario = new Canal("usuario", 
                                            new FiltroXClaveValor("Usuario", id_usuario) , 
@@ -105,7 +104,7 @@
             
             var router =  new NodoRouter("principal"); 
             
-            var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex');             
+            var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex', 100);             
             router.conectarBidireccionalmenteCon(clienteHTTP);
             var nodo_biblioteca_1 = new NodoBiblioteca({canalControl: canal_biblio_1,
                                                       canalBusquedas: canal_haciendo});           

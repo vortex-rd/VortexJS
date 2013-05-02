@@ -7,7 +7,7 @@
 }
 
 .libro_encontrado_en_buscador:hover{
-    background-color: Orange;    
+    background-color: Green;    
 }
 
 .autor_de_libro_encontrado{
@@ -48,7 +48,6 @@
 	overflow: hidden;
 	
 	border: solid 1px;
-	border-color: #FFC617;
 	border-color: #FFC617;
 	
 	background-color: rgb(255,255,255);
