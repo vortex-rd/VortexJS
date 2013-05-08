@@ -1,0 +1,109 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        
+        <title>Prueba Biblioteca</title>
+		<link rel="stylesheet" href="Biblioteca.css" type="text/css">
+        <link rel="stylesheet" href="../jQueryUI/css/redmond/jquery-ui-1.9.1.custom.css" />
+	</head>
+	
+	<body>		
+        <div id="panel_principal">
+        
+        </div>	
+
+        <div id="plantillas">
+	       <li id="plantilla_libro_encontrado_en_buscador" class="libro_encontrado_en_buscador">
+                <div id="autor_de_libro_encontrado" class="autor_de_libro_encontrado">
+                </div>:
+                <div id="titulo_de_libro_encontrado" class="titulo_de_libro_encontrado">
+                </div>   
+            </li>
+            <li id="plantilla_vista_edicion_de_libro" class="vista_edicion_de_libro">
+                <input type="text" id="autor_de_libro_en_edicion" class="autor_de_libro_en_edicion"/>
+                <input type="text" id="titulo_de_libro_en_edicion" class="titulo_de_libro_en_edicion"/>
+            </li>
+            <div id="plantilla_biblioteca" class="biblioteca">
+                <div id="controles_de_la_vista_de_biblioteca" class="controles_de_la_vista_de_biblioteca"> 
+                    <div>
+                        Autor:<input type="text" id="input_nombre_autor_del_alta_de_libros" class="input_nombre_autor_del_alta_de_libros"/>			
+                    </div>
+                    <div>
+                        Titulo:<input type="text" id="input_titulo_del_alta_de_libros" class="input_titulo_del_alta_de_libros"/>			
+                    </div>
+                    <button id="boton_agregar_del_alta_de_libros" class="boton_agregar_del_alta_de_libros">
+                        +       
+                    </button>
+
+                    <button id="boton_refrescar_del_alta_de_libros" class="boton_refrescar_del_alta_de_libros">
+                        refrescar       
+                    </button>
+
+                    <ul id="panel_libros_en_vista_de_libros" class="panel_libros_en_vista_de_libros">
+                    </ul>
+                </div>
+	        </div>         
+        </div>
+    </body>
+    
+    <script type="text/javascript" src="../linq/linq.js"></script> 
+    <script type="text/javascript" src="../JQuery/jquery-1.9.1.js"></script> 
+    <script type="text/javascript" src="../jQueryUI/js/jquery-ui-1.9.1.custom.js"></script>
+    <script type="text/javascript" src="../VortexScripts/Vortex.js"></script>
+    <script type="text/javascript" src="../VortexScripts/FiltrosYTransformaciones.js"></script>
+    <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/GeneradorDeIdMensaje.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoMultiplexor.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidi.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidiMonoFiltro.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoRouter.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/PataConectora.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/Canal.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalConCanal.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidiMonoFiltroConCanal.js"></script> 
+    <script type="text/javascript" src="../VortexComm/gadget.js"></script> 
+    <script type="text/javascript" src="Biblioteca.js"></script>    
+    <script type="text/javascript" src="VistaDeBiblioteca.js"></script>    
+    <script type="text/javascript" src="Libro.js"></script>    
+    <script type="text/javascript" src="BuscadorDeLibros.js"></script>    
+
+    
+
+    <script type="text/javascript" >            
+        $(function () { 
+            var id_usuario = getIdObjeto();
+            var canal_usuario = new Canal("usuario", 
+                                           new FiltroXClaveValor("Usuario", id_usuario) , 
+                                           new TrafoXClaveValor("Usuario", id_usuario));
+            var canal_biblioteca = canal_usuario.getSubCanal("MiBiblioteca", 
+                                               new FiltroXClaveValor("Biblioteca", 1) , 
+                                               new TrafoXClaveValor("Biblioteca", 1));
+            
+            var canal_haciendo = new Canal("Haciendo", 
+                                               new FiltroXClaveValor("Canal", "Haciendo") , 
+                                               new TrafoXClaveValor("Canal", "Haciendo"));
+            
+            var router =  new NodoRouter("principal"); 
+            
+            var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex', 100);             
+            router.conectarBidireccionalmenteCon(clienteHTTP);
+            var nodo_biblioteca = new NodoBiblioteca({canalControl: canal_biblioteca,
+                                                      canalBusquedas: canal_haciendo});           
+            router.conectarBidireccionalmenteCon(nodo_biblioteca);
+            
+            
+            var panel_principal = $('#panel_principal');
+            var plantillas = $('#plantillas');
+            var UI_biblioteca = plantillas.find('#plantilla_biblioteca').clone();
+            var plantilla_vista_edicion_de_libro = plantillas.find('#plantilla_vista_edicion_de_libro');
+            
+            var nodo_vista_biblioteca = new NodoVistaDeBiblioteca({UI:UI_biblioteca, 
+                                                                   plantilla_libro:plantilla_vista_edicion_de_libro,
+                                                                   canalControl: canal_biblioteca});
+            router.conectarBidireccionalmenteCon(nodo_vista_biblioteca);
+            
+            nodo_vista_biblioteca.dibujarEn(panel_principal);
+        });
+    </script>
+</html>
