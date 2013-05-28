@@ -4,7 +4,8 @@
         
         <title>Prueba Biblioteca</title>
 		<link rel="stylesheet" href="Biblioteca.css" type="text/css">
-        <link rel="stylesheet" href="../jQueryUI/css/redmond/jquery-ui-1.9.1.custom.css" />
+<!--        <link rel="stylesheet" href="../jQueryUI/css/redmond/jquery-ui-1.9.1.custom.css" />-->
+        <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
 	</head>
 	
 	<body>		
@@ -24,31 +25,42 @@
                 <input type="text" id="titulo_de_libro_en_edicion" class="titulo_de_libro_en_edicion"/>
             </li>
             <div id="plantilla_biblioteca" class="biblioteca">
-                <div id="controles_de_la_vista_de_biblioteca" class="controles_de_la_vista_de_biblioteca"> 
-                    <div>
-                        Autor:<input type="text" id="input_nombre_autor_del_alta_de_libros" class="input_nombre_autor_del_alta_de_libros"/>			
+                <div id="controles_de_la_vista_de_biblioteca" class="form-horizontal"> 
+                    <div class="control-group">
+                        <label class="control-label span1" for="input_nombre_autor_del_alta_de_libros">
+                            Autor:
+                        </label>
+                         <div class="controls">
+                            <input type="text" id="input_nombre_autor_del_alta_de_libros" class="span3"/>			
+                        </div>
                     </div>
-                    <div>
-                        Titulo:<input type="text" id="input_titulo_del_alta_de_libros" class="input_titulo_del_alta_de_libros"/>			
+                    <div class="control-group">
+                        <label class="control-label span1" for="input_titulo_del_alta_de_libros">
+                            Titulo:
+                        </label>
+                        <div class="controls">
+                            <input type="text" id="input_titulo_del_alta_de_libros" class="span4"/>
+                        </div>
                     </div>
-                    <button id="boton_agregar_del_alta_de_libros" class="boton_agregar_del_alta_de_libros">
-                        +       
-                    </button>
-
-                    <button id="boton_refrescar_del_alta_de_libros" class="boton_refrescar_del_alta_de_libros">
-                        refrescar       
-                    </button>
-
-                    <ul id="panel_libros_en_vista_de_libros" class="panel_libros_en_vista_de_libros">
-                    </ul>
-                </div>
+                     <div class="control-group">
+                        <div class="controls">
+                            <input id="boton_agregar_del_alta_de_libros" type="button" class="btn" value="+"/>                    
+                            <input id="boton_refrescar_del_alta_de_libros" type="button" class="btn" value="refrescar"/>
+                        </div>
+                    </div>
+                 </div>
+                <ul id="panel_libros_en_vista_de_libros" class="panel_libros_en_vista_de_libros">
+                </ul>
+               
 	        </div>         
         </div>
     </body>
     
     <script type="text/javascript" src="../linq/linq.js"></script> 
     <script type="text/javascript" src="../JQuery/jquery-1.9.1.js"></script> 
-    <script type="text/javascript" src="../jQueryUI/js/jquery-ui-1.9.1.custom.js"></script>
+<!--    <script type="text/javascript" src="../jQueryUI/js/jquery-ui-1.9.1.custom.js"></script>-->
+    <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../bootstrap/js/bootstrap-responsive.min.js"></script>
     <script type="text/javascript" src="../VortexScripts/Vortex.js"></script>
     <script type="text/javascript" src="../VortexScripts/FiltrosYTransformaciones.js"></script>
     <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
