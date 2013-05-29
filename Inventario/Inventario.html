@@ -1,57 +1,115 @@
-
-<!-- saved from url=(0063)file:///F:/Proyectos/Vortex/VortexJS/TareasJS/Trunk/Tareas.html -->
+<!DOCTYPE HTML>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
         
-        <title>Tareas</title>
-		<link rel="stylesheet" href="Inventario.css" type="text/css">
-        <link rel="stylesheet" href="../jQueryUI/css/redmond/jquery-ui-1.9.1.custom.css" />
+        <title>Prueba Biblioteca</title>
+		<link rel="stylesheet" href="Biblioteca.css" type="text/css">
+<!--        <link rel="stylesheet" href="../jQueryUI/css/redmond/jquery-ui-1.9.1.custom.css" />-->
+        <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
 	</head>
 	
 	<body>		
-        <div id="panelPrincipal">
+        <div id="panel_principal">
         
         </div>	
 
-        <div id="prototipos">
-            <li id="protoRepCosa" class="rep_tarea">
-                <div class="tarea_contraida_controles">
-                    <div class="tarea_contraida_label">
-                    </div>
-                </div>
-                <div class="tarea_expandida_controles">
-                    <input class="tarea_expandida_nombre">
-                    <textarea class="tarea_expandida_descripcion">                        
-                    </textarea>
-                </div>        
+        <div id="plantillas">
+	       <li id="plantilla_libro_encontrado_en_buscador" class="libro_encontrado_en_buscador">
+                <div id="autor_de_libro_encontrado" class="autor_de_libro_encontrado">
+                </div>:
+                <div id="titulo_de_libro_encontrado" class="titulo_de_libro_encontrado">
+                </div>   
             </li>
-
-            <div id="protoPanelTarea" class="panel_tareas">
-		        <div class="panel_tareas_botonera">                   
-                    <div class="panel_tareas_nombre_panel">
-                    </div>			
-			        <button class="panel_tareas_boton_add_tarea">
-				        +        
-			        </button>   
-		        </div>
-                <ul class="panel_tareas_lista_tareas">
-		        </ul>
-	        </div>	
-
-            <div id="protoKanbanBoard" class="kanban_board">
-				
-            </div>
+            <li id="plantilla_vista_edicion_de_libro" class="vista_edicion_de_libro">
+                <input type="text" id="autor_de_libro_en_edicion" class="autor_de_libro_en_edicion"/>
+                <input type="text" id="titulo_de_libro_en_edicion" class="titulo_de_libro_en_edicion"/>
+            </li>
+            <div id="plantilla_biblioteca" class="biblioteca">
+                <div id="panel_alta_de_libro"> 
+                    <div>
+                        <label class="span1">
+                            Autor:
+                        </label>                     
+                        <input type="text" id="input_nombre_autor_del_alta_de_libros" class="span4"/>	
+                    </div>
+                    <div>
+                        <label class="control-label span1" for="input_titulo_del_alta_de_libros">
+                            Titulo:
+                        </label>                            
+                        <input type="text" id="input_titulo_del_alta_de_libros" class="span4"/>
+                    </div>
+                    <div class="span2">
+                        <input id="boton_agregar_del_alta_de_libros" type="button" class="btn" value="+"/>                    
+                        <input id="boton_refrescar_del_alta_de_libros" type="button" class="btn" value="refrescar"/>
+                    </div>
+                 </div>
+                <ul id="panel_libros_en_vista_de_libros" class="panel_libros_en_vista_de_libros">
+                </ul>               
+	        </div>         
         </div>
-        
-        <script type="text/javascript" src="../jQuery/jquery-1.8.2.js"></script>
-        <script type="text/javascript" src="../jQueryUI/js/jquery-ui-1.9.1.custom.js"></script>
-        <script type="text/javascript" src="../VortexScripts/Vortex.js"></script> 
-        <script type="text/javascript" src="inventario.js"></script> 
-		<script type="text/javascript" >
-			$(function () {
-				router = new NodoRouter();
-				var inventario = new Inventario(router);
-			});
-		</script>
-</body></html>
+    </body>
+    
+    <script type="text/javascript" src="../linq/linq.js"></script> 
+    <script type="text/javascript" src="../JQuery/jquery-1.9.1.js"></script> 
+<!--    <script type="text/javascript" src="../jQueryUI/js/jquery-ui-1.9.1.custom.js"></script>-->
+    <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../bootstrap/js/bootstrap-responsive.min.js"></script>
+    <script type="text/javascript" src="../VortexScripts/Vortex.js"></script>
+    <script type="text/javascript" src="../VortexScripts/FiltrosYTransformaciones.js"></script>
+    <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/GeneradorDeIdMensaje.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoMultiplexor.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidi.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidiMonoFiltro.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoRouter.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/PataConectora.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/Canal.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalConCanal.js"></script> 
+    <script type="text/javascript" src="../VortexScripts/NodoPortalBidiMonoFiltroConCanal.js"></script> 
+    <script type="text/javascript" src="../VortexComm/gadget.js"></script> 
+    <script type="text/javascript" src="Biblioteca.js"></script>    
+    <script type="text/javascript" src="VistaDeBiblioteca.js"></script>    
+    <script type="text/javascript" src="Libro.js"></script>    
+    <script type="text/javascript" src="BuscadorDeLibros.js"></script>    
+
+    
+
+    <script type="text/javascript" >            
+        $(function () { 
+            var id_usuario = getIdObjeto();
+            var canal_usuario = new Canal("usuario", 
+                                           new FiltroXClaveValor("Usuario", id_usuario) , 
+                                           new TrafoXClaveValor("Usuario", id_usuario));
+            var canal_biblioteca = canal_usuario.getSubCanal("MiBiblioteca", 
+                                               new FiltroXClaveValor("Biblioteca", 1) , 
+                                               new TrafoXClaveValor("Biblioteca", 1));
+            
+            var canal_haciendo = new Canal("Haciendo", 
+                                               new FiltroXClaveValor("Canal", "Haciendo") , 
+                                               new TrafoXClaveValor("Canal", "Haciendo"));
+            
+            var router =  new NodoRouter("principal"); 
+            
+            var clienteHTTP = new NodoClienteHTTP('http://kfgodel.info:62626/vortex', 100);             
+            router.conectarBidireccionalmenteCon(clienteHTTP);
+            var nodo_biblioteca = new NodoBiblioteca({canalControl: canal_biblioteca,
+                                                      canalBusquedas: canal_haciendo});           
+            router.conectarBidireccionalmenteCon(nodo_biblioteca);
+            
+            
+            var panel_principal = $('#panel_principal');
+            var plantillas = $('#plantillas');
+            var UI_biblioteca = plantillas.find('#plantilla_biblioteca').clone();
+            var plantilla_vista_edicion_de_libro = plantillas.find('#plantilla_vista_edicion_de_libro');
+            
+            var nodo_vista_biblioteca = new NodoVistaDeBiblioteca({UI:UI_biblioteca, 
+                                                                   plantilla_libro:plantilla_vista_edicion_de_libro,
+                                                                   canalControl: canal_biblioteca});
+            router.conectarBidireccionalmenteCon(nodo_vista_biblioteca);
+            
+            nodo_vista_biblioteca.dibujarEn(panel_principal);
+        });
+    </script>
+</html>
