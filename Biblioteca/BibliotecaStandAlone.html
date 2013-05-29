@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -25,33 +26,26 @@
                 <input type="text" id="titulo_de_libro_en_edicion" class="titulo_de_libro_en_edicion"/>
             </li>
             <div id="plantilla_biblioteca" class="biblioteca">
-                <div id="controles_de_la_vista_de_biblioteca" class="form-horizontal"> 
-                    <div class="control-group">
-                        <label class="control-label span1" for="input_nombre_autor_del_alta_de_libros">
+                <div id="panel_alta_de_libro"> 
+                    <div>
+                        <label class="span1">
                             Autor:
-                        </label>
-                         <div class="controls">
-                            <input type="text" id="input_nombre_autor_del_alta_de_libros" class="span3"/>			
-                        </div>
+                        </label>                     
+                        <input type="text" id="input_nombre_autor_del_alta_de_libros" class="span4"/>	
                     </div>
-                    <div class="control-group">
+                    <div>
                         <label class="control-label span1" for="input_titulo_del_alta_de_libros">
                             Titulo:
-                        </label>
-                        <div class="controls">
-                            <input type="text" id="input_titulo_del_alta_de_libros" class="span4"/>
-                        </div>
+                        </label>                            
+                        <input type="text" id="input_titulo_del_alta_de_libros" class="span4"/>
                     </div>
-                     <div class="control-group">
-                        <div class="controls">
-                            <input id="boton_agregar_del_alta_de_libros" type="button" class="btn" value="+"/>                    
-                            <input id="boton_refrescar_del_alta_de_libros" type="button" class="btn" value="refrescar"/>
-                        </div>
+                    <div class="span2">
+                        <input id="boton_agregar_del_alta_de_libros" type="button" class="btn" value="+"/>                    
+                        <input id="boton_refrescar_del_alta_de_libros" type="button" class="btn" value="refrescar"/>
                     </div>
                  </div>
                 <ul id="panel_libros_en_vista_de_libros" class="panel_libros_en_vista_de_libros">
-                </ul>
-               
+                </ul>               
 	        </div>         
         </div>
     </body>
