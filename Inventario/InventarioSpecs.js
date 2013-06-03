@@ -1,20 +1,15 @@
 var test = {};
 
 test.describe_1 = function () {
-    describe("Creo un nodo inventario y un nodo administrador de cosas conectados a un router.", function () {
+    describe("Creo un nodo inventario y un nodo alta de cosas conectados a un router.", function () {
         beforeEach(function () {
-            runs(function () {
-                test.plantilla_cosa_encontrada = $("<div>");
-                test.plantilla_cosa_encontrada.append($("<div id='nombre'>"));
-                test.plantilla_cosa_encontrada.append($("<div id='descripcion'>"));
-                
-                test.plantilla_administrador_de_cosas = $("<div id='plantilla_administrador_de_cosas'>");
-                test.plantilla_administrador_de_cosas.append($("<input id='input_nombre_en_alta'>"));
-                test.plantilla_administrador_de_cosas.append($("<input id='input_descripcion_en_alta'>"));
-                test.plantilla_administrador_de_cosas.append($("<button id='boton_agregar_en_alta'>"));
-                test.plantilla_administrador_de_cosas.append($("<input id='input_de_busqueda'>"));
-                test.plantilla_administrador_de_cosas.append($("<ul id='panel_lista_de_cosas_encontradas'>"));
-                test.ui_administrador = test.plantilla_administrador_de_cosas.clone();
+            runs(function () {                
+                test.plantilla_alta_de_cosas = $("<div id='plantilla_alta_de_cosas'>");
+                test.plantilla_alta_de_cosas.append($("<input id='input_nombre'>"));
+                test.plantilla_alta_de_cosas.append($("<input id='input_descripcion'>"));
+                test.plantilla_alta_de_cosas.append($("<button id='boton_agregar'>"));
+                test.plantilla_alta_de_cosas.append($("<input id='estado_alta'>"));
+                test.ui_alta = test.plantilla_alta_de_cosas.clone();
                 
                 test.un_router = new NodoRouter("1");
                 test.canal_control = new Canal("MiInventario",
@@ -26,10 +21,8 @@ test.describe_1 = function () {
                 
                 test.nodo_inventario = new NodoInventario({canalControl: test.canal_control,
                                                           canalBusquedas: test.canal_busquedas});
-                test.nodo_administrador_de_cosas = new NodoAdministradorDeCosas({ UI: test.ui_administrador,
-                                                                plantillaCosaEncontrada: test.plantilla_cosa_encontrada,
-                                                                canalControl: test.canal_control,
-                                                                canalBusquedas: test.canal_busquedas});
+                test.nodo_alta = new NodoAltaDeCosa({   ui: test.ui_alta,
+                                                        canalControl: test.canal_control});
             
                 test.un_router.conectarBidireccionalmenteCon(test.nodo_inventario);
                 test.un_router.conectarBidireccionalmenteCon(test.nodo_administrador_de_cosas);
