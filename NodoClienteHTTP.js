@@ -7,23 +7,19 @@ var NodoClienteHTTP = function (url, intervalo_polling) {
     var idSesion;
     var intervaloPolling = (intervalo_polling === undefined)? 1500 : intervalo_polling;;
     var intervaloPedidoIdSesion = 5000;
-    var idEmisor = Math.floor((Math.random() * 10000) + 1).toString();
-    var numeroSecuencia = 0;
     var bandejaSalida = [];
     //arranca con un receptor que no hace nada
     var receptor = {
         recibirMensaje: function (un_mensaje) { }
     };
 
+    this._generadorDeIdMensaje = new GeneradorDeIdMensaje();
+    
     this.recibirMensaje = function (un_mensaje) {
-
-        numeroSecuencia++;
-        var idMensaje = {
-            "id_del_emisor": idEmisor,
-            "numero_secuencia": numeroSecuencia
-        };
-
-        un_mensaje["id_mensaje_vortex"] = idMensaje;
+        if(un_mensaje.id_mensaje_vortex === undefined)
+           { 
+                this._generadorDeIdMensaje.ponerIdAlMensaje(un_mensaje);        
+           }
 
         bandejaSalida.push(un_mensaje);
     }
