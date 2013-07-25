@@ -13,14 +13,7 @@ var NodoClienteHTTP = function (url, intervalo_polling) {
         recibirMensaje: function (un_mensaje) { }
     };
 
-    this._generadorDeIdMensaje = new GeneradorDeIdMensaje();
-    
     this.recibirMensaje = function (un_mensaje) {
-        if(un_mensaje.id_mensaje_vortex === undefined)
-           { 
-                this._generadorDeIdMensaje.ponerIdAlMensaje(un_mensaje);        
-           }
-
         bandejaSalida.push(un_mensaje);
     }
 
@@ -56,8 +49,8 @@ var NodoClienteHTTP = function (url, intervalo_polling) {
             "contenidos": bandejaSalidaAux,
             "proximaEsperaMinima": 0,
             "proximaEsperaMaxima": 300000
-        }
-        if (bandejaSalidaAux.lenght > 0) {
+        };
+        if (bandejaSalidaAux.length > 0) {
             console.log("enviando:", bandejaSalidaAux);
         }
         $.ajax({
