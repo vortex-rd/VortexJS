@@ -15,4 +15,6 @@ var GeneradorDeIdMensaje = function(){
         };
         un_mensaje.id_mensaje_vortex = idMensaje;
 	}
-}
+};
+
+if(typeof(require) != "undefined"){ exports.clase = GeneradorDeIdMensaje;}

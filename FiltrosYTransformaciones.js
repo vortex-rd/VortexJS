@@ -30,6 +30,9 @@ var DesSerializadorDeFiltros = {
 		filtro.desSerializar(un_filtro_serializado);
 		return filtro;
 	}
+};
+if(typeof(require) != "undefined"){
+    exports.DesSerializadorDeFiltros = DesSerializadorDeFiltros;
 }
 
 var FiltroXClaveValor = function (clave, valor) {
@@ -51,6 +54,7 @@ FiltroXClaveValor.prototype = {
 	},
     simplificar: function(){return this;}
 };
+if(typeof(require) != "undefined"){ exports.FiltroXClaveValor = FiltroXClaveValor;}
 
 var DesSerializadorDeTrafos = {
 	desSerializarTrafo : function(una_trafo_serializada){
@@ -67,7 +71,8 @@ var DesSerializadorDeTrafos = {
 		trafo.desSerializar(una_trafo_serializada);
 		return trafo;
 	}
-}
+};
+if(typeof(require) != "undefined"){ exports.DesSerializadorDeTrafos = DesSerializadorDeTrafos;}
 
 var TrafoXClaveValor = function (clave, valor) {
 	this.clave = clave;
@@ -88,6 +93,7 @@ TrafoXClaveValor.prototype = {
 		this.valor = una_trafo_serializada.valor; 
 	}
 };
+if(typeof(require) != "undefined"){ exports.TrafoXClaveValor = TrafoXClaveValor;}
 
 var TrafoCompuesta = function(trafos){
     this.trafos = (trafos === undefined)? [] : trafos;
@@ -113,6 +119,7 @@ TrafoCompuesta.prototype = {
 		}
 	}
 };
+if(typeof(require) != "undefined"){ exports.TrafoCompuesta = TrafoCompuesta;}
 
 var FiltroAND = function (_filtros) {
 	this.filtros = (_filtros === undefined)? [] : _filtros;
@@ -165,6 +172,7 @@ FiltroAND.prototype = {
         return new FiltroAND(filtros_sin_true);
     }
 };
+if(typeof(require) != "undefined"){ exports.FiltroAND = FiltroAND;}
 
 var FiltroOR = function (_filtros) {
 	this.filtros = (_filtros === undefined)? [] : _filtros;
@@ -217,9 +225,10 @@ FiltroOR.prototype = {
         return new FiltroOR(filtros_sin_false);
     }
 };
-        
+if(typeof(require) != "undefined"){ exports.FiltroOR = FiltroOR;}
+
 var FiltroDesconocido = function(){
-}
+};
 FiltroDesconocido.prototype = {
 	evaluarMensaje : function (un_mensaje) {
         return undefined;
@@ -234,10 +243,11 @@ FiltroDesconocido.prototype = {
 	desSerializar : function(un_filtro_serializado){
 	},
     simplificar: function(){return this;}
-}
+};
+if(typeof(require) != "undefined"){ exports.FiltroDesconocido = FiltroDesconocido;}
 
 var FiltroTrue = function(){
-}
+};
 FiltroTrue.prototype = {
 	evaluarMensaje : function (un_mensaje) {
         return true;
@@ -252,17 +262,19 @@ FiltroTrue.prototype = {
 	desSerializar : function(un_filtro_serializado){
 	},
     simplificar: function(){return this;}
-}
+};
+if(typeof(require) != "undefined"){ exports.FiltroTrue = FiltroTrue;}
 
 var ComparadorDeFiltros = {
     compararFiltros : function(filtro1, filtro2){
         if(filtro1 === undefined || filtro2 === undefined) return false;
         return JSON.stringify(filtro1.serializar()) == JSON.stringify( filtro2.serializar());
     }
-}
-    
+};
+if(typeof(require) != "undefined"){ exports.ComparadorDeFiltros = ComparadorDeFiltros;}
+
 var FiltroFalse = function(){
-}
+};
 FiltroFalse.prototype = {
 	evaluarMensaje : function (un_mensaje) {
         return false;
@@ -277,4 +289,5 @@ FiltroFalse.prototype = {
 	desSerializar :function(un_filtro_serializado){
 	},
     simplificar: function(){return this;}
-}
+};
+if(typeof(require) != "undefined"){ exports.FiltroFalse = FiltroFalse;}

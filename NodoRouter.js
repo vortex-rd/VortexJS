@@ -3,7 +3,15 @@ Vortex by Vortex Group is licensed under a Creative Commons Reconocimiento 3.0 U
 To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.0/
 Project URL: https://sourceforge.net/p/vortexnet
 */
-            
+
+
+if(typeof(require) != "undefined"){
+    var GeneradorDeIdMensaje = require("./GeneradorDeIdMensaje").clase;
+    var PataConectora = require("./PataConectora").clase;
+    var FiltroOR = require("./FiltrosYTransformaciones").FiltroOR;
+    var FiltroAND = require("./FiltrosYTransformaciones").FiltroAND;
+}
+
 var NodoRouter = function(aliasRouter){
     this._patas = [];
 	this._proximoIdPata = 0;	
@@ -35,7 +43,6 @@ NodoRouter.prototype = {
         });
     },
     recibirMensaje : function (un_mensaje) {	
-        //console.log('mensaje recibido en ' + this._aliasRouter, un_mensaje);
         this.enviarMensajeATodasLasPatas(un_mensaje);        
     },
     conectarCon : function (un_receptor) {
@@ -61,3 +68,7 @@ NodoRouter.prototype = {
         return conectado;
     }
 };  
+
+if(typeof(require) != "undefined"){
+    exports.clase = NodoRouter;
+}

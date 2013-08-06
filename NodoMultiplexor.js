@@ -17,3 +17,5 @@ var NodoMultiplexor = function(){
         receptores.push(un_receptor);
     }
 }
+
+if(typeof(require) != "undefined"){ exports.clase = NodoMultiplexor;}

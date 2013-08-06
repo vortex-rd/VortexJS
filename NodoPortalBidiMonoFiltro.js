@@ -4,6 +4,11 @@ To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.
 Project URL: https://sourceforge.net/p/vortexnet
 */
 
+if(typeof(require) != "undefined"){
+    var PataConectora = require("./PataConectora").clase;
+    var FiltroOR = require("./FiltrosYTransformaciones").FiltroOR;
+    var FiltroAND = require("./FiltrosYTransformaciones").FiltroAND;
+}
 
 var NodoPortalBidiMonoFiltro = function(aliasPortal){
     this._pedido = { filtro: new FiltroFalse(), callback: function(){}};
@@ -47,3 +52,5 @@ NodoPortalBidiMonoFiltro.prototype = {
         return this._pata.filtroRecibido();
     }
 };
+
+if(typeof(require) != "undefined"){ exports.clase = NodoPortalBidiMonoFiltro;}
