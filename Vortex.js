@@ -10,7 +10,9 @@ if(typeof(require) != "undefined"){
     exports.PataConectora = require("./PataConectora").clase;
     exports.FiltrosYTransformaciones = require("./FiltrosYTransformaciones");
     exports.NodoMultiplexor = require("./NodoMultiplexor").clase;
+    exports.NodoRouter = require("./NodoRouter").clase;
     exports.NodoPortalBidi = require("./NodoPortalBidi").clase;
     exports.NodoPortalBidiMonoFiltro = require("./NodoPortalBidiMonoFiltro").clase;
     exports.NodoConectorSocket = require("./NodoConectorSocket").clase;    
+    exports.NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;    
 }
