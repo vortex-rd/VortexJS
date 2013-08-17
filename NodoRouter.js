@@ -69,6 +69,8 @@ NodoRouter.prototype = {
     }
 };  
 
+NodoRouter.instancia = new NodoRouter("singleton");
+
 if(typeof(require) != "undefined"){
     exports.clase = NodoRouter;
 }

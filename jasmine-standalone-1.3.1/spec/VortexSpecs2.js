@@ -19,6 +19,9 @@ test.describe_1 = function(){
         describe("Tengo un router con 2 portales conectados bidireccionalmente", function(){
             test.describe_1_1();
         }); 
+        describe("Tengo 2 routers singleton", function(){
+            test.describe_1_2();
+        }); 
     });
 };
 
@@ -104,5 +107,24 @@ test.describe_1_1_1_1_2 = function(){
             expect(test.mensaje_de_tipo_1_recibido_en_portal_1).toBeTruthy(); 
         });
     });     
+};
+
+test.describe_1_2 = function(){
+    beforeEach(function() {
+        runs(function() { 
+            test.router_singleton1 = NodoRouter.instancia;   
+            test.router_singleton2 = NodoRouter.instancia;   
+            test.portal_1 = new NodoPortalBidi("1"); 
+            test.portal_2 = new NodoPortalBidi("2"); 
+            test.router_singleton1.conectarBidireccionalmenteCon(test.portal_1);
+            test.router_singleton1.conectarBidireccionalmenteCon(test.portal_2);
+        });
+    });
+    
+    it("Los dos routers deberian ser la misma instancia", function() {
+        runs(function() { 
+            expect(test.router_singleton1===test.router_singleton2).toBeTruthy(); 
+        });
+    });  
 };
 test.describe_1();
