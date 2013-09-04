@@ -461,10 +461,11 @@ test.describe_1_1_1_3_1_1_1_1_1 = function(){
                     test.router_1.conectadoBidireccionalmenteEnTodasSusPatas();
         });
     });        
-    it("El portal 2 deberia recibir una publicacion de filtros y su filtro de salida dejar pasar los mensajes del tipo 1", function() {        
-        esperarAQueLlegueMensajeEn(test.portal_2, "Vortex.Filtro.Publicacion", "No llego el filtro");         
-        runs(function() {
-            expect(test.portal_2.filtroDeSalida().evaluarMensaje({tipoDeMensaje:'1'})).toBeTruthy();          
+    it("El portal 2 deberia recibir una publicacion de filtros y su filtro de salida solo deberia dejar pasar mensajes del tipo 1", function() {        
+        esperarAQueLlegueMensajeEn(test.portal_2, "Vortex.Filtro.Publicacion", "No llego el filtro");
+        runs(function () {
+            expect(ComparadorDeFiltros.compararFiltros(test.portal_2.filtroDeSalida(), test.filtro_de_mensajes_del_tipo_1)).toBeTruthy();      
+            //expect(test.portal_2.filtroDeSalida().evaluarMensaje({tipoDeMensaje:'1'})).toBeTruthy();          
         });
     });      
     describe("Espero a que llegue el filtro del portal 1 al portal 2", function() {
