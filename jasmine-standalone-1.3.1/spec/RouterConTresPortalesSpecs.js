@@ -40,12 +40,12 @@ describe("3 portales conectados bidireccionalmente a un router", function() {
         });
     });   
     it("Los filtros de salida y de entrada de todos los portales deberian establecerse en filtros de tipo FALSE ya que ninguno pidio mensajes", function() {
-        waits(0);        
-        waitsFor(function() {
-                return  ComparadorDeFiltros.compararFiltros(test.portal_1.filtroDeSalida(), new FiltroFalse()) &&
-                        ComparadorDeFiltros.compararFiltros(test.portal_2.filtroDeSalida(), new FiltroFalse()) &&
-                        ComparadorDeFiltros.compararFiltros(test.portal_3.filtroDeSalida(), new FiltroFalse());
-        }, "No se propagaron correctamente los filtros", 500);       
+        waits(100);   
+        runs(function() { 
+            expect(ComparadorDeFiltros.compararFiltros(test.portal_1.filtroDeSalida(), new FiltroFalse())).toBeTruthy(); 
+            expect(ComparadorDeFiltros.compararFiltros(test.portal_2.filtroDeSalida(), new FiltroFalse())).toBeTruthy(); 
+            expect(ComparadorDeFiltros.compararFiltros(test.portal_3.filtroDeSalida(), new FiltroFalse())).toBeTruthy(); 
+        });    
     });    
 });
         

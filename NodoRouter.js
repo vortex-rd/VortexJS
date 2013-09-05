@@ -57,7 +57,6 @@ NodoRouter.prototype.conectarCon = function(un_receptor) {
     nuevaPata.onFiltroRecibidoModificado = function(){
         self.mergearYEnviarFiltros();
     };
-    this.mergearFiltrosParaUnaPata(nuevaPata);
 };
 
 NodoRouter.prototype.conectarBidireccionalmenteCon = function(un_nodo) {
