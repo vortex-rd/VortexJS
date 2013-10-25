@@ -3,7 +3,8 @@ Vortex by Vortex Group is licensed under a Creative Commons Reconocimiento 3.0 U
 To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.0/
 Project URL: https://sourceforge.net/p/vortexnet
 */
-var NodoClienteHTTP = function (url, intervalo_polling) {
+var NodoClienteHTTP = function (url, intervalo_polling, verbose) {
+    this.verbose = verbose || false;
     var idSesion;
     var intervaloPolling = (intervalo_polling === undefined)? 1500 : intervalo_polling;;
     var intervaloPedidoIdSesion = 5000;
@@ -29,7 +30,7 @@ var NodoClienteHTTP = function (url, intervalo_polling) {
             },
             success: function (responseData, textStatus, jqXHR) {
                 idSesion = responseData;
-                console.log("idSesion:", idSesion);
+                if(_this.verbose)console.log("idSesion:", idSesion);
                 setTimeout(enviarYRecibirMensajes, intervaloPolling);
             },
 
@@ -51,7 +52,7 @@ var NodoClienteHTTP = function (url, intervalo_polling) {
             "proximaEsperaMaxima": 300000
         };
         if (bandejaSalidaAux.length > 0) {
-            console.log("enviando:", bandejaSalidaAux);
+            if(_this.verbose)console.log("enviando:", bandejaSalidaAux);
         }
         $.ajax({
             type: "POST",
@@ -66,7 +67,7 @@ var NodoClienteHTTP = function (url, intervalo_polling) {
                 var mensajesRecibidos = $.parseJSON(responseData).contenidos;
 
                 mensajesRecibidos.forEach(function (element, index, array) {
-                    console.log("mensaje recibido:", element);
+                    if(_this.verbose)console.log("mensaje recibido:", element);
                     receptor.recibirMensaje(element);
                 });
 
