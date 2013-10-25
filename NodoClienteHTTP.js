@@ -4,6 +4,7 @@ To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.
 Project URL: https://sourceforge.net/p/vortexnet
 */
 var NodoClienteHTTP = function (url, intervalo_polling, verbose) {
+    var _this = this;
     this.verbose = verbose || false;
     var idSesion;
     var intervaloPolling = (intervalo_polling === undefined)? 1500 : intervalo_polling;;
