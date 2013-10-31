@@ -23,7 +23,7 @@ NodoClienteHTTP.prototype.start = function () {
     this.pedirIdSesion();
 };
 
-NodoClienteHTTP.prototype.pedirIdSesion() {
+NodoClienteHTTP.prototype.pedirIdSesion = function() {
     var _this = this;
     $.ajax({
         type: "POST",
@@ -44,7 +44,7 @@ NodoClienteHTTP.prototype.pedirIdSesion() {
     });
 }
 
-NodoClienteHTTP.prototype.enviarYRecibirMensajes = function() {
+NodoClienteHTTP.prototype.enviarYRecibirMensajes = function () {
     var _this = this;
     var bandejaSalidaAux = [];
     bandejaSalidaAux = this.bandejaSalidaAux.concat(bandejaSalida);
@@ -75,21 +75,21 @@ NodoClienteHTTP.prototype.enviarYRecibirMensajes = function() {
                 _this.receptor.recibirMensaje(element);
             });
 
-            setTimeout(function(){_this.enviarYRecibirMensajes;}, intervaloPolling);
+            setTimeout(function () { _this.enviarYRecibirMensajes; }, intervaloPolling);
         },
 
         error: function (request, error) {
             console.log("error Al Enviar/Recibir Mensajes:", error);
-            setTimeout(function(){_this.pedirIdSesion;}, _this.intervaloPedidoIdSesion);
+            setTimeout(function () { _this.pedirIdSesion; }, _this.intervaloPedidoIdSesion);
             _this.bandejaSalida = _this.bandejaSalida.concat(bandejaSalidaAux);
         }
     });
-}
+};
 
 NodoClienteHTTP.prototype.recibirMensaje = function (un_mensaje) {
     this.bandejaSalida.push(un_mensaje);
-}
+};
 
 NodoClienteHTTP.prototype.conectarCon = function (un_receptor) {
     this.receptor = un_receptor;
-}
+};
