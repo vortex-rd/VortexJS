@@ -34,12 +34,12 @@ NodoClienteHTTP.prototype.pedirIdSesion = function() {
         success: function (responseData, textStatus, jqXHR) {
             _this.idSesion = responseData;
             if (_this.verbose) console.log("idSesion:", _this.idSesion);
-            setTimeout(function(){_this.enviarYRecibirMensajes;}, _this.intervaloPolling);
+            setTimeout(function(){_this.enviarYRecibirMensajes();}, _this.intervaloPolling);
         },
 
         error: function (request, error) {
             console.log("errorAlPedirSesion:", error);
-            setTimeout(function(){_this.pedirIdSesion;}, _this.intervaloPedidoIdSesion);
+            setTimeout(function () { _this.pedirIdSesion(); }, _this.intervaloPedidoIdSesion);
         }
     });
 }
@@ -47,7 +47,7 @@ NodoClienteHTTP.prototype.pedirIdSesion = function() {
 NodoClienteHTTP.prototype.enviarYRecibirMensajes = function () {
     var _this = this;
     var bandejaSalidaAux = [];
-    bandejaSalidaAux = this.bandejaSalidaAux.concat(bandejaSalida);
+    bandejaSalidaAux = bandejaSalidaAux.concat(this.bandejaSalida);
     this.bandejaSalida = [];
 
     var datosSalida = {
@@ -75,12 +75,12 @@ NodoClienteHTTP.prototype.enviarYRecibirMensajes = function () {
                 _this.receptor.recibirMensaje(element);
             });
 
-            setTimeout(function () { _this.enviarYRecibirMensajes; }, intervaloPolling);
+            setTimeout(function () { _this.enviarYRecibirMensajes(); }, _this.intervaloPolling);
         },
 
         error: function (request, error) {
             console.log("error Al Enviar/Recibir Mensajes:", error);
-            setTimeout(function () { _this.pedirIdSesion; }, _this.intervaloPedidoIdSesion);
+            setTimeout(function () { _this.pedirIdSesion(); }, _this.intervaloPedidoIdSesion);
             _this.bandejaSalida = _this.bandejaSalida.concat(bandejaSalidaAux);
         }
     });
