@@ -27,13 +27,13 @@ NodoClienteHTTP.prototype.pedirIdSesion = function() {
     var _this = this;
     $.ajax({
         type: "POST",
-        url: url + '/create',
+        url: _this.url + '/create',
         xhrFields: {
             withCredentials: false
         },
         success: function (responseData, textStatus, jqXHR) {
-            idSesion = responseData;
-            if (_this.verbose) console.log("idSesion:", idSesion);
+            _this.idSesion = responseData;
+            if (_this.verbose) console.log("idSesion:", _this.idSesion);
             setTimeout(function(){_this.enviarYRecibirMensajes;}, _this.intervaloPolling);
         },
 
@@ -60,7 +60,7 @@ NodoClienteHTTP.prototype.enviarYRecibirMensajes = function () {
     }
     $.ajax({
         type: "POST",
-        url: url + '/session/' + idSesion,
+        url: _this.url + '/session/' + _this.idSesion,
         xhrFields: {
             withCredentials: false
         },
