@@ -1,7 +1,7 @@
 Vortex.JS
 ==================
 
-Implementación del protocolo de comunicaciones Vortex para Javascript.
+Implementación del protocolo de comunicaciones Vortex en JavaScript para node.js y browsers.
 
 ## Para que sirve
 La función de vortex es la de permitir la comunicación entre sistemas informáticos sin importar el lenguaje de programación, el canal de comunicación utilizado, o el protocolo físico necesario para la transmisión real de información.
@@ -9,15 +9,20 @@ Esta función se logra a través de la manipulación de los componentes para cre
 
 ## Como funciona
 Primero se debe definir la topología de una red, esto se logra conectando distintos nodos entre si.
-La interfaz básica de un nodo es:
--conectarCon(un_nodo)
+Todo nodo tiene el método:
+```
+conectarCon(un_nodo)
+```
 Método utilizado para conectar unidireccionalmente un nodo con otro. 
 Para que la conexión entre 2 nodos sea bidireccional se deberán conectar unidireccionalmente entre si:
-
+```
 nodo1.conectarCon(nodo2);
 nodo2.conectarCon(nodo1);
-
--recibirMensaje(un_mensaje)
+```
+Todos los nodos también implementan el método:
+```
+recibirMensaje(un_mensaje)
+```
 Método utilizado por los nodos para mandarse mensajes entre si.
 
 ## Los nodos principales de Vortex son:
@@ -25,10 +30,14 @@ Método utilizado por los nodos para mandarse mensajes entre si.
 ### El portal:
 Es la frontera y el punto de acceso a una red Vortex.
 Permite inyectar mensajes a la red con el método 
--enviarMensaje(un_mensaje)
+```
+enviarMensaje(un_mensaje)
+```
 
 También permite recibir mensajes de la red llamando al método
--pedirMensajes(filtro, callback)
+```
+pedirMensajes(filtro, callback)
+```
 Cuando se recibe un mensaje que pasa por el filtro se ejecuta el callback pasado.
 Al pedir mensajes a un portal, éste envía (publica) el filtro al nodo que tiene conectado.
 También recibe publicaciones de filtros de la red a través de su nodo vecino.
@@ -48,11 +57,14 @@ Existen otros nodos que sirven para enviar mensajes por distintos medios.
 Se conecta via ajax con una url, crea una sesión y periódicamente envía los mensajes que tiene en su bandeja de salida y recibe los mensajes del servidor remoto.
 
 ### NodoSesionHTTPServer
-Es el que administra la sesión y los mensajes de un cliente en el server (se comunica uno a uno con el NodoClienteHTTP
+Es el que administra la sesión y los mensajes de un cliente en el server (se comunica uno a uno con el NodoClienteHTTP)
 
+### NodoConectorSocket
+Conecta via WebSockets (usa Socket.io)
 
 ## Ejemplo de uso
 
+```
 var portal_1 = new NodoPortalBidi();
 var portal_2 = new NodoPortalBidi();
 
@@ -70,6 +82,10 @@ portal_1.pedirMensajes(filtro, function(mensaje){
 });
 
 portal_2.enviarMensaje({tipoDeMensaje:'prueba'});
+
+```
+## Tests
+[tests](http://jlurgo.github.io/VortexJS/jasmine-standalone-1.3.1/SpecRunner.html)
 
 ## Licencia
 
