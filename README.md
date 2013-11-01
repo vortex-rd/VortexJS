@@ -22,7 +22,7 @@ Método utilizado por los nodos para mandarse mensajes entre si.
 
 ## Los nodos principales de Vortex son:
 
-# El portal:
+### El portal:
 Es la frontera y el punto de acceso a una red Vortex.
 Permite inyectar mensajes a la red con el método 
 -enviarMensaje(un_mensaje)
@@ -34,7 +34,7 @@ Al pedir mensajes a un portal, éste envía (publica) el filtro al nodo que tien
 También recibe publicaciones de filtros de la red a través de su nodo vecino.
 Si al enviar un mensaje por un portal este no pasa por los filtros recibidos por el portal el mensaje se descarta.
 
-# El Router:
+### El Router:
 Sirve como nexo entre portales y otros routers.
 Conectando routers entre si se define la topología de una red vortex.
 El router se encarga de reenviar los mensajes que recibe a los nodos que tiene conectados.
@@ -44,10 +44,10 @@ El router está interesado en recibir todos los mensajes que quieren recibir sus
 ## Adaptadores varios:
 Existen otros nodos que sirven para enviar mensajes por distintos medios.
 
-# NodoClienteHTTP:
+### NodoClienteHTTP:
 Se conecta via ajax con una url, crea una sesión y periódicamente envía los mensajes que tiene en su bandeja de salida y recibe los mensajes del servidor remoto.
 
-# NodoSesionHTTPServer
+### NodoSesionHTTPServer
 Es el que administra la sesión y los mensajes de un cliente en el server (se comunica uno a uno con el NodoClienteHTTP
 
 
