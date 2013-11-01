@@ -1,70 +1,79 @@
-balanced-dashboard
+Vortex.JS
 ==================
 
-The Balanced Dashboard
+Implementación del protocolo de comunicaciones Vortex para Javascript.
 
-[![Build Status](https://travis-ci.org/balanced/balanced-dashboard.png?branch=master)](https://travis-ci.org/balanced/balanced-dashboard)
+## Para que sirve
+La función de vortex es la de permitir la comunicación entre sistemas informáticos sin importar el lenguaje de programación, el canal de comunicación utilizado, o el protocolo físico necesario para la transmisión real de información.
+Esta función se logra a través de la manipulación de los componentes para crear redes por las cuales circulan mensajes.
 
-## What
+## Como funciona
+Primero se debe definir la topología de una red, esto se logra conectando distintos nodos entre si.
+La interfaz básica de un nodo es:
+-conectarCon(un_nodo)
+Método utilizado para conectar unidireccionalmente un nodo con otro. 
+Para que la conexión entre 2 nodos sea bidireccional se deberán conectar unidireccionalmente entre si:
 
-Welcome to the Balanced Dashboard.
+nodo1.conectarCon(nodo2);
+nodo2.conectarCon(nodo1);
 
-As an open company we want to put as much of our company in the public view as
-possible. We're creating our new dashboard as a javascript application that
-anyone can fork, comment on, contribute to, or generally tinker with.
+-recibirMensaje(un_mensaje)
+Método utilizado por los nodos para mandarse mensajes entre si.
 
-## Why
+## Los nodos principales de Vortex son:
 
-Found a spelling mistake? Want to run your own version with customised
-functionality? Jump in and contribute!
+# El portal:
+Es la frontera y el punto de acceso a una red Vortex.
+Permite inyectar mensajes a la red con el método 
+-enviarMensaje(un_mensaje)
 
-## How
+También permite recibir mensajes de la red llamando al método
+-pedirMensajes(filtro, callback)
+Cuando se recibe un mensaje que pasa por el filtro se ejecuta el callback pasado.
+Al pedir mensajes a un portal, éste envía (publica) el filtro al nodo que tiene conectado.
+También recibe publicaciones de filtros de la red a través de su nodo vecino.
+Si al enviar un mensaje por un portal este no pasa por los filtros recibidos por el portal el mensaje se descarta.
 
-### Running locally
+# El Router:
+Sirve como nexo entre portales y otros routers.
+Conectando routers entre si se define la topología de una red vortex.
+El router se encarga de reenviar los mensajes que recibe a los nodos que tiene conectados.
+También se encarga de recibir publicaciones de filtros de sus nodos vecinos, de combinar los filtros y republicarlos al resto de los nodos.
+El router está interesado en recibir todos los mensajes que quieren recibir sus nodos vecinos.
 
-You will need node installed as a development dependency. See
-[node's site](http://nodejs.org/) for help with that.
+## Adaptadores varios:
+Existen otros nodos que sirven para enviar mensajes por distintos medios.
 
-1. `npm install -g grunt-cli`
-2. `npm install`
-3. Build - `grunt`
-4. To view in a browser - [http://localhost:9876/build/dev.html](http://localhost:9876/build/dev.html)
-5. To run unit tests at the command line `grunt test`
-6. To run unit tests in a browser - [http://localhost:9876/build/test/runner.html](http://localhost:9876/build/test/runner.html)
-7. To browser the dashboard running against test fixture data - [http://localhost:9876/build/test/fixturebrowser.html](http://localhost:9876/build/test/fixturebrowser.html)
-8. To run browser tests `grunt itest`
+# NodoClienteHTTP:
+Se conecta via ajax con una url, crea una sesión y periódicamente envía los mensajes que tiene en su bandeja de salida y recibe los mensajes del servidor remoto.
 
-### Building and Deploying
+# NodoSesionHTTPServer
+Es el que administra la sesión y los mensajes de un cliente en el server (se comunica uno a uno con el NodoClienteHTTP
 
-1. To build everything `grunt build`
-2. To deploy to S3 `grunt deploy`
 
-**Note**: To build, you need to have binary dependendencies installed for [grunt-img](https://github.com/heldr/grunt-img). See the project page for how to set that up. If you have a Mac and use homebrew, you can run this to install them:
+## Ejemplo de uso
 
-		brew install optipng jpeg
+var portal_1 = new NodoPortalBidi();
+var portal_2 = new NodoPortalBidi();
 
-**Note**: In order to deploy to S3, you must have the appropriate `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables set
+var router = new NodoRouter();
 
-### Contributing
+portal_1.conectarCon(router);
+router.conectarCon(portal_1);
 
-You can contribute to this project in one of two ways:
+portal_2.conectarCon(router);
+router.conectarCon(portal_2);
 
-1. Browse our issues, comment on proposals, report bugs.
-2. Clone the balanced-dashboard repo, make some changes according to our
-   development guidelines and issue a pull-request with your changes.
+var filtro = new FiltroPorClaveValor('tipoDeMensaje', 'prueba');
+portal_1.pedirMensajes(filtro, function(mensaje){
+    alert("mensaje de prueba recibido en portal 1");
+});
 
-Not sure where to start? Look for issues tagged [`n00b`](https://github.com/balanced/balanced-dashboard/issues?labels=n00b&state=open), these are tasks
-that should be able to be completed in an hour or two and require minimal
-knowledge of the balanced-dashboard application.
+portal_2.enviarMensaje({tipoDeMensaje:'prueba'});
 
-### Development guidelines
+## Licencia
 
-1. Fork it (`git clone git://github.com/balanced/balanced-dashboard.git`)
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Write your code **and unit tests**
-4. Ensure all tests still pass (`grunt test`)
-5. Ensure that your new code has test coverage (check out report/coverage/index.html after running tests)
-6. Verify your code (`grunt verify`) (uses [JSHint](https://github.com/jshint/jshint/) and [JSBeautify](https://github.com/einars/js-beautify) to do linting and check style guidelines)
-7. Commit your changes (`git commit -am 'Add some feature'`)
-8. Push to the branch (`git push origin my-new-feature`)
-9. Create new [pull request](https://help.github.com/articles/using-pull-requests)
+Vortex by Vortex Group is licensed under a Creative Commons Reconocimiento 3.0 Unported License.
+To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.0/
+Project URL: https://sourceforge.net/p/vortexnet
+
