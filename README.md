@@ -79,7 +79,7 @@ router.conectarCon(portal_1);
 portal_2.conectarCon(router);
 router.conectarCon(portal_2);
 
-var filtro = new FiltroPorClaveValor('tipoDeMensaje', 'prueba');
+var filtro = new FiltroXClaveValor('tipoDeMensaje', 'prueba');
 portal_1.pedirMensajes(filtro, function(mensaje){
     alert("mensaje de prueba recibido en portal 1");
 });
