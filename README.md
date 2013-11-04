@@ -3,7 +3,8 @@ Vortex.JS
 
 Implementación del protocolo de comunicaciones Vortex en JavaScript para node.js y browsers.
 
-[implementación en Java](https://github.com/kfgodel/vortex)
+### Otras implementaciones:
+implementación en Java: https://github.com/kfgodel/vortex
 
 ## Para que sirve
 La función de vortex es la de permitir la comunicación entre sistemas informáticos sin importar el lenguaje de programación, el canal de comunicación utilizado, o el protocolo físico necesario para la transmisión real de información.
