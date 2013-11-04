@@ -1,18 +1,47 @@
 <!doctype html>
 <html>
-  <head>
-   <title>title</title>
+    <head>
+        <title>title</title>
+    </head>
+    <body>
+        <div id="contador_de_mensajes">
+            
+        </div>
+    </body>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
     <script type="text/javascript" src="Vortex.js"></script>
     <script type="text/javascript" src="FiltrosYTransformaciones.js"></script>
     <script type="text/javascript" src="NodoClienteHTTP.js"></script> 
-   <script>
-       var clienteHTTP1 = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 100, true);
-       var clienteHTTP2 = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 100, true);
+    <script type="text/javascript" src="NodoPortalBidi.js"></script> 
+    <script type="text/javascript" src="GeneradorDeIdMensaje.js"></script> 
+    <script type="text/javascript" src="PataConectora.js"></script> 
+    <script type="text/javascript" src="ClonadorDeObjetos.js"></script> 
+    <script>
+        $(document).ready(function(){
+           var clienteHTTP1 = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 100, true);
+           var clienteHTTP2 = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 100, true);
 
-       clienteHTTP1.recibirMensaje({tipoDeMensaje:'test.clienteHTTP'});            
-   </script>
-    </head>
-  <body>
-  </body>
+           var portal1 = new NodoPortalBidi();
+           var portal2 = new NodoPortalBidi();
+
+           portal1.conectarBidireccionalmenteCon(clienteHTTP1);
+           portal2.conectarBidireccionalmenteCon(clienteHTTP2);
+
+           var div_contador = $('#contador_de_mensajes');
+           var mensajes_recibidos = 0;
+           div_contador.text(mensajes_recibidos.toString());
+
+           portal2.pedirMensajes(new FiltroXClaveValor('tipoDeMensaje', 'pruebaHTTP'),
+           function(mensaje){
+                mensajes_recibidos+=1;
+                div_contador.text(mensajes_recibidos.toString());
+           });
+
+           for (var i = 0; i < 1000; i++) {
+                portal1.enviarMensaje({
+                    tipoDeMensaje: 'pruebaHTTP'
+                });
+           }
+       });
+    </script>
 </html>
