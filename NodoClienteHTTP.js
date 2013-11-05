@@ -3,11 +3,11 @@ Vortex by Vortex Group is licensed under a Creative Commons Reconocimiento 3.0 U
 To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.0/
 Project URL: https://sourceforge.net/p/vortexnet
 */
-var NodoClienteHTTP = function (url, intervalo_polling, verbose) {
+var NodoClienteHTTP = function (url, intervalo_polling, verbose, mensajes_por_paquete) {
     this.url = url;
     this.intervalo_polling = (intervalo_polling === undefined) ? 1500 : intervalo_polling;
     this.verbose = verbose || false;
-
+    this.mensajes_por_paquete = mensajes_por_paquete || 100;
     this.start();
 };
 
@@ -46,9 +46,13 @@ NodoClienteHTTP.prototype.pedirIdSesion = function() {
 
 NodoClienteHTTP.prototype.enviarYRecibirMensajes = function () {
     var _this = this;
+    var cant_mensajes_a_enviar;
     var bandejaSalidaAux = [];
-    bandejaSalidaAux = bandejaSalidaAux.concat(this.bandejaSalida);
-    this.bandejaSalida = [];
+
+    cant_mensajes_a_enviar = this.bandejaSalida.length;
+    if (cant_mensajes_a_enviar >= this.mensajes_por_paquete) cant_mensajes_a_enviar = this.mensajes_por_paquete;
+
+    bandejaSalidaAux = this.bandejaSalida.splice(0, cant_mensajes_a_enviar);
 
     var datosSalida = {
         "contenidos": bandejaSalidaAux,
@@ -75,13 +79,15 @@ NodoClienteHTTP.prototype.enviarYRecibirMensajes = function () {
                 _this.receptor.recibirMensaje(element);
             });
 
-            setTimeout(function () { _this.enviarYRecibirMensajes(); }, _this.intervaloPolling);
+            setTimeout(function () {
+                _this.enviarYRecibirMensajes();
+            }, _this.intervaloPolling);
         },
 
         error: function (request, error) {
             console.log("error Al Enviar/Recibir Mensajes:", error);
             setTimeout(function () { _this.pedirIdSesion(); }, _this.intervaloPedidoIdSesion);
-            _this.bandejaSalida = _this.bandejaSalida.concat(bandejaSalidaAux);
+            _this.bandejaSalida = bandejaSalidaAux.concat(_this.bandejaSalida);
         }
     });
 };
