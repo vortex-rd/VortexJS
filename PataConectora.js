@@ -11,6 +11,7 @@ if(typeof(require) != "undefined"){
     var FiltroAND = require("./FiltrosYTransformaciones").FiltroAND;
     var DesSerializadorDeFiltros = require("./FiltrosYTransformaciones").DesSerializadorDeFiltros;
     var ComparadorDeFiltros = require("./FiltrosYTransformaciones").ComparadorDeFiltros;
+    var ClonadorDeObjetos = require("./ClonadorDeObjetos").clase;
 }
 
 var PataConectora = function(idLocalPata, generadorDeIdMensaje, aliasNodo){
