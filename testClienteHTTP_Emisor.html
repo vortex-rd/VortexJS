@@ -22,7 +22,8 @@
     <script type="text/javascript" src="ClonadorDeObjetos.js"></script> 
     <script>
         $(document).ready(function () {
-            var clienteHTTP = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true);
+            //var clienteHTTP = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true);
+            var clienteHTTP = new NodoClienteHTTP('http://localhost:3000', 10, true, 1000);
             var portal = new NodoPortalBidi();
             portal.conectarBidireccionalmenteCon(clienteHTTP);
 
@@ -30,7 +31,7 @@
             var mensajes_enviados = 0;
 
             $('#btn_start').click(function () {
-                for (var i = 0; i < 50; i++) {
+                for (var i = 0; i < 2000; i++) {
                     portal.enviarMensaje({
                         tipoDeMensaje: 'pruebaHTTP'
                     });

@@ -25,7 +25,8 @@
             var mensajes_recibidos = 0;
             div_contador.text(mensajes_recibidos.toString());
 
-            var clienteHTTP = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true);
+            //var clienteHTTP = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true);
+            var clienteHTTP = new NodoClienteHTTP('http://localhost:3000', 10, true);
             var portal = new NodoPortalBidi();
             portal.conectarBidireccionalmenteCon(clienteHTTP);
             portal.pedirMensajes(new FiltroXClaveValor('tipoDeMensaje', 'pruebaHTTP'),
