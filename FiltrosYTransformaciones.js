@@ -52,7 +52,11 @@ FiltroXClaveValor.prototype = {
 		this._clave = un_filtro_serializado.clave; 
 		this._valor = un_filtro_serializado.valor; 
 	},
-    simplificar: function(){return this;}
+    simplificar: function(){return this;},
+    equals: function(otro_filtro){
+        if(!(otro_filtro instanceof FiltroXClaveValor)) return false;
+        return this._clave == otro_filtro._clave && this._valor == otro_filtro._valor;
+    }
 };
 if(typeof(require) != "undefined"){ exports.FiltroXClaveValor = FiltroXClaveValor;}
 
@@ -169,7 +173,30 @@ FiltroAND.prototype = {
         }
         if(filtros_sin_true.length==1) return filtros_sin_true[0];
         if(filtros_sin_true.length==0) return new FiltroFalse;
-        return new FiltroAND(filtros_sin_true);
+        return new FiltroAND(filtros_sin_true).eliminarDuplicados();
+    },
+    eliminarDuplicados: function(){
+        var filtro_sin_duplicados = new FiltroAND();
+        for(var i=0; i<this.filtros.length; i++){
+            if(!filtro_sin_duplicados.incluyeElFiltro(this.filtros[i])){
+                filtro_sin_duplicados.filtros.push(this.filtros[i]);
+            }
+		}
+        return filtro_sin_duplicados;
+    },
+    incluyeElFiltro: function(un_filtro){
+        for(var i=0; i<this.filtros.length; i++){
+            if(this.filtros[i].equals(un_filtro)) return true;
+		}
+        return false;
+    },
+    equals: function(otro_filtro){
+        if(!(otro_filtro instanceof FiltroAND)) return false;
+        if(otro_filtro.filtros.length != this.filtros.length) return false;
+        for(var i=0; i<this.filtros.length; i++){
+            if(!otro_filtro.incluyeElFiltro(this.filtros[i])) return false;
+		}
+        return true;
     }
 };
 if(typeof(require) != "undefined"){ exports.FiltroAND = FiltroAND;}
@@ -222,7 +249,30 @@ FiltroOR.prototype = {
         }
         if(filtros_sin_false.length==1) return filtros_sin_false[0];
         if(filtros_sin_false.length==0) return new FiltroFalse;
-        return new FiltroOR(filtros_sin_false);
+        return new FiltroOR(filtros_sin_false).eliminarDuplicados();
+    },
+    eliminarDuplicados: function(){
+        var filtro_sin_duplicados = new FiltroOR();
+        for(var i=0; i<this.filtros.length; i++){
+            if(!filtro_sin_duplicados.incluyeElFiltro(this.filtros[i])){
+                filtro_sin_duplicados.filtros.push(this.filtros[i]);
+            }
+		}
+        return filtro_sin_duplicados;
+    },
+    incluyeElFiltro: function(un_filtro){
+        for(var i=0; i<this.filtros.length; i++){
+            if(this.filtros[i].equals(un_filtro)) return true;
+		}
+        return false;
+    },
+    equals: function(otro_filtro){
+        if(!(otro_filtro instanceof FiltroOR)) return false;
+        if(otro_filtro.filtros.length != this.filtros.length) return false;
+        for(var i=0; i<this.filtros.length; i++){
+            if(!otro_filtro.incluyeElFiltro(this.filtros[i])) return false;
+		}
+        return true;
     }
 };
 if(typeof(require) != "undefined"){ exports.FiltroOR = FiltroOR;}
@@ -261,7 +311,10 @@ FiltroTrue.prototype = {
 	},	
 	desSerializar : function(un_filtro_serializado){
 	},
-    simplificar: function(){return this;}
+    simplificar: function(){return this;},
+    equals: function(otro_filtro){
+        return (otro_filtro instanceof FiltroTrue);
+    }
 };
 if(typeof(require) != "undefined"){ exports.FiltroTrue = FiltroTrue;}
 
@@ -288,6 +341,9 @@ FiltroFalse.prototype = {
 	},	
 	desSerializar :function(un_filtro_serializado){
 	},
-    simplificar: function(){return this;}
+    simplificar: function(){return this;},
+    equals: function(otro_filtro){
+        return (otro_filtro instanceof FiltroFalse);
+    }
 };
 if(typeof(require) != "undefined"){ exports.FiltroFalse = FiltroFalse;}

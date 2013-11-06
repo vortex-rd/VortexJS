@@ -78,4 +78,117 @@ describe("Filtros", function() {
         var filtro_or_1 = new FiltroOR([]);        
         expect(ComparadorDeFiltros.compararFiltros(filtro_or_1.simplificar(), un_filtro_false)).toBeTruthy();
     });
+    
+    it("11 - Un filtro TRUE deberia ser igual a otro filtro TRUE", function() {
+        expect(new FiltroTrue().equals(new FiltroTrue())).toBeTruthy();
+    });
+    
+    it("12 - Un filtro TRUE deberia ser distinto a un filtro FALSE", function() {
+        expect(new FiltroTrue().equals(new FiltroFalse())).toBeFalsy();
+    });
+    
+    it("13 - Un filtro FALSE deberia ser igual a otro filtro FALSE", function() {
+        expect(new FiltroFalse().equals(new FiltroFalse())).toBeTruthy();
+    });
+    
+    it("14 - Un filtro Equals deberia ser igual a otro filtro Equals con mismo clave-valor", function() {
+        expect(new FiltroXClaveValor("clave1", 1).equals(new FiltroXClaveValor("clave1", 1))).toBeTruthy();
+    });
+    
+    it("15 - Un filtro Equals deberia ser distinto a otro filtro Equals con mismo clave-valor", function() {
+        expect(new FiltroXClaveValor("clave1", 1).equals(new FiltroXClaveValor("clave1", 2))).toBeFalsy();
+    });
+    
+    it("16 - Un filtro AND deberia ser igual a otro filtro AND con los mismos elementos en cualquier orden", function() {
+        var filtro_1 = new FiltroXClaveValor("clave1", 1);
+        var filtro_2 = new FiltroXClaveValor("clave2", 2);
+        var filtro_3 = new FiltroXClaveValor("clave1", 1);
+        var filtro_4 = new FiltroXClaveValor("clave2", 2);
+        
+        var filtro_and_1 = new FiltroAND([filtro_1, filtro_2]);
+        var filtro_and_2 = new FiltroAND([filtro_4, filtro_3]);
+        
+        expect(filtro_and_1.equals(filtro_and_2)).toBeTruthy();
+    });
+    
+    it("17 - Un filtro AND deberia ser distinto a otro filtro AND con distintos elementos", function() {
+        var filtro_1 = new FiltroXClaveValor("clave1", 1);
+        var filtro_2 = new FiltroXClaveValor("clave2", 2);
+        var filtro_3 = new FiltroXClaveValor("clave1", 2);
+        var filtro_4 = new FiltroXClaveValor("clave2", 2);
+        
+        var filtro_and_1 = new FiltroAND([filtro_1, filtro_2]);
+        var filtro_and_2 = new FiltroAND([filtro_4, filtro_3]);
+        
+        expect(filtro_and_1.equals(filtro_and_2)).toBeFalsy();
+    });
+    
+    it("18 - Un filtro OR deberia ser igual a otro filtro OR con los mismos elementos en cualquier orden", function() {
+        var filtro_1 = new FiltroXClaveValor("clave1", 1);
+        var filtro_2 = new FiltroXClaveValor("clave2", 2);
+        var filtro_3 = new FiltroXClaveValor("clave1", 1);
+        var filtro_4 = new FiltroXClaveValor("clave2", 2);
+        
+        var filtro_or_1 = new FiltroOR([filtro_1, filtro_2]);
+        var filtro_or_2 = new FiltroOR([filtro_4, filtro_3]);
+        
+        expect(filtro_or_1.equals(filtro_or_2)).toBeTruthy();
+    });
+    
+    it("19 - Un filtro OR deberia ser distinto a otro filtro OR con distintos elementos", function() {
+        var filtro_1 = new FiltroXClaveValor("clave1", 1);
+        var filtro_2 = new FiltroXClaveValor("clave2", 2);
+        var filtro_3 = new FiltroXClaveValor("clave1", 2);
+        var filtro_4 = new FiltroXClaveValor("clave2", 2);
+        
+        var filtro_or_1 = new FiltroOR([filtro_1, filtro_2]);
+        var filtro_or_2 = new FiltroOR([filtro_4, filtro_3]);
+        
+        expect(filtro_or_1.equals(filtro_or_2)).toBeFalsy();
+    });
+    
+    it("20 - Si simplifico una OR con un filtro TRUE dentro de sus filtros deberia quedar un filtro TRUE como resultado", function() {
+        var un_filtro_or = new FiltroOR([new FiltroTrue(), new FiltroXClaveValor("clave1", 1)]);               
+        expect(un_filtro_or.simplificar().equals(un_filtro_true)).toBeTruthy();
+    });
+    
+    it("21 - Al simplificar una OR se deberian descartar los filtros repetidos", function() {
+        
+        var un_filtro_or = new FiltroOR([new FiltroXClaveValor("clave1", 1), 
+                                         new FiltroXClaveValor("clave1", 1),
+                                         new FiltroXClaveValor("clave2", 2)]);
+        
+        var otro_filtro_or = new FiltroOR([new FiltroXClaveValor("clave1", 1),
+                                           new FiltroXClaveValor("clave2", 2)]);
+        
+        expect(un_filtro_or.simplificar().equals(otro_filtro_or)).toBeTruthy();
+        expect(un_filtro_or.simplificar().equals(un_filtro_or)).toBeFalsy();
+    });
+    
+    it("22 - Al simplificar una AND se deberian descartar los filtros repetidos", function() {
+        
+        var un_filtro_and = new FiltroAND([new FiltroXClaveValor("clave1", 1), 
+                                          new FiltroXClaveValor("clave1", 1),
+                                          new FiltroXClaveValor("clave2", 2)]);
+        
+        var otro_filtro_and = new FiltroAND([new FiltroXClaveValor("clave1", 1),
+                                             new FiltroXClaveValor("clave2", 2)]);
+        
+        expect(un_filtro_and.simplificar().equals(otro_filtro_and)).toBeTruthy();
+        expect(un_filtro_and.simplificar().equals(un_filtro_and)).toBeFalsy();
+    });
+    
+    it("23 - Al simplificar una OR se deberian descartar los filtros que son subconjunto de otro", function() {        
+        var un_filtro_and = new FiltroAND([new FiltroXClaveValor("clave1", 1),
+                                             new FiltroXClaveValor("clave2", 2)]);
+        
+        var un_filtro_or = new FiltroOR([un_filtro_and, 
+                                         new FiltroXClaveValor("clave1", 1),
+                                         new FiltroXClaveValor("clave3", 3)]);
+        
+        var otro_filtro_or = new FiltroOR([new FiltroXClaveValor("clave1", 1),
+                                           new FiltroXClaveValor("clave3", 3)]);  
+                                         
+        expect(un_filtro_or.simplificar().equals(otro_filtro_or)).toBeTruthy();
+    });
 });
