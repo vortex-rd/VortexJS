@@ -247,9 +247,10 @@ FiltroOR.prototype = {
             if(filtros_acumulados_simplificados[i] instanceof FiltroTrue) return filtros_acumulados_simplificados[i]; 
             if(!(filtros_acumulados_simplificados[i] instanceof FiltroFalse)) filtros_sin_false.push(filtros_acumulados_simplificados[i]); 
         }
-        if(filtros_sin_false.length==1) return filtros_sin_false[0];
-        if(filtros_sin_false.length==0) return new FiltroFalse;
-        return new FiltroOR(filtros_sin_false).eliminarDuplicados();
+        var filtro_a_devolver = new FiltroOR(filtros_sin_false).eliminarDuplicados();
+        if(filtro_a_devolver.filtros.length==1) return filtros_sin_false[0];
+        if(filtro_a_devolver.filtros.length==0) return new FiltroFalse();
+        return filtro_a_devolver;
     },
     eliminarDuplicados: function(){
         var filtro_sin_duplicados = new FiltroOR();
@@ -317,14 +318,6 @@ FiltroTrue.prototype = {
     }
 };
 if(typeof(require) != "undefined"){ exports.FiltroTrue = FiltroTrue;}
-
-var ComparadorDeFiltros = {
-    compararFiltros : function(filtro1, filtro2){
-        if(filtro1 === undefined || filtro2 === undefined) return false;
-        return JSON.stringify(filtro1.serializar()) == JSON.stringify( filtro2.serializar());
-    }
-};
-if(typeof(require) != "undefined"){ exports.ComparadorDeFiltros = ComparadorDeFiltros;}
 
 var FiltroFalse = function(){
 };
