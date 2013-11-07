@@ -40,22 +40,28 @@ var FiltroXClaveValor = function (clave, valor) {
 	this._valor = valor;
 };
 FiltroXClaveValor.prototype = {
-    evaluarMensaje : function (un_mensaje) {
+    evaluarMensaje: function (un_mensaje) {
         return un_mensaje[this._clave] == this._valor;
     },
-	serializar : function(){
-		return {'tipo': 'EQ',
-				'clave': this._clave, 
-				'valor': this._valor};
-	},
-	desSerializar : function(un_filtro_serializado){
-		this._clave = un_filtro_serializado.clave; 
-		this._valor = un_filtro_serializado.valor; 
-	},
-    simplificar: function(){return this;},
-    equals: function(otro_filtro){
-        if(!(otro_filtro instanceof FiltroXClaveValor)) return false;
+    serializar: function () {
+        return { 'tipo': 'EQ',
+            'clave': this._clave,
+            'valor': this._valor
+        };
+    },
+    desSerializar: function (un_filtro_serializado) {
+        this._clave = un_filtro_serializado.clave;
+        this._valor = un_filtro_serializado.valor;
+    },
+    simplificar: function () { return this; },
+    equals: function (otro_filtro) {
+        if (!(otro_filtro instanceof FiltroXClaveValor)) return false;
         return this._clave == otro_filtro._clave && this._valor == otro_filtro._valor;
+    },
+    unionCon: function (un_filtro) {
+        if (this.equals(un_filtro)) return this;
+        if (un_filtro instanceof FiltroXClaveValor) return new FiltroOR([this, un_filtro]);
+        return un_filtro.unionCon(this);
     }
 };
 if(typeof(require) != "undefined"){ exports.FiltroXClaveValor = FiltroXClaveValor;}
@@ -197,6 +203,10 @@ FiltroAND.prototype = {
             if(!otro_filtro.incluyeElFiltro(this.filtros[i])) return false;
 		}
         return true;
+    },
+    unionCon: function (un_filtro) {
+        if(this.incluyeElFiltro(un_filtro)) return un_filtro;
+        return new FiltroOR([new FiltroAND(this.filtros), un_filtro]);
     }
 };
 if(typeof(require) != "undefined"){ exports.FiltroAND = FiltroAND;}
@@ -204,74 +214,65 @@ if(typeof(require) != "undefined"){ exports.FiltroAND = FiltroAND;}
 var FiltroOR = function (_filtros) {
 	this.filtros = (_filtros === undefined)? [] : _filtros;
 };
-FiltroOR.prototype = {    
-    evaluarMensaje : function (un_mensaje) {
+FiltroOR.prototype = {
+    evaluarMensaje: function (un_mensaje) {
         var valorRetorno = false;
-		for(var i=0; i<this.filtros.length; i++){
-			var evaluacion = this.filtros[i].evaluarMensaje(un_mensaje);
-			if (evaluacion == true) { 
-				return true;
-			}
-			if (evaluacion === undefined) { 
-				valorRetorno = undefined;
-			}
-		}
+        for (var i = 0; i < this.filtros.length; i++) {
+            var evaluacion = this.filtros[i].evaluarMensaje(un_mensaje);
+            if (evaluacion == true) {
+                return true;
+            }
+            if (evaluacion === undefined) {
+                valorRetorno = undefined;
+            }
+        }
         return valorRetorno;
     },
-	serializar: function(){
-		var ret = {	'tipo': 'OR',
-					'filtros': []};
-		for(var i=0; i<this.filtros.length; i++){
-			ret.filtros.push(this.filtros[i].serializar());
-		}		
-		return ret;
-	},	
-	desSerializar: function(un_filtro_serializado){
-		for(var i=0; i<un_filtro_serializado.filtros.length; i++){
-			this.filtros.push(DesSerializadorDeFiltros.desSerializarFiltro(un_filtro_serializado.filtros[i]));
-		}
-	},
-    simplificar: function(){
-        var filtros_acumulados_simplificados = [];
-        for(var i=0; i<this.filtros.length; i++){
-			if(this.filtros[i] instanceof FiltroOR){
-                for(var j=0; j<this.filtros[i].filtros.length; j++){
-                    filtros_acumulados_simplificados.push(this.filtros[i].filtros[j].simplificar());
-                }
-            }else{
-                filtros_acumulados_simplificados.push(this.filtros[i].simplificar());
-            }
-		}
-        var filtros_sin_false = [];
-        for(var i=0; i<filtros_acumulados_simplificados.length; i++){
-            if(filtros_acumulados_simplificados[i] instanceof FiltroTrue) return filtros_acumulados_simplificados[i]; 
-            if(!(filtros_acumulados_simplificados[i] instanceof FiltroFalse)) filtros_sin_false.push(filtros_acumulados_simplificados[i]); 
+    serializar: function () {
+        var ret = { 'tipo': 'OR',
+            'filtros': []
+        };
+        for (var i = 0; i < this.filtros.length; i++) {
+            ret.filtros.push(this.filtros[i].serializar());
         }
-        if(filtros_sin_false.length==1) return filtros_sin_false[0];
-        if(filtros_sin_false.length==0) return new FiltroFalse;
-        return new FiltroOR(filtros_sin_false).eliminarDuplicados();
+        return ret;
     },
-    eliminarDuplicados: function(){
-        var filtro_sin_duplicados = new FiltroOR();
-        for(var i=0; i<this.filtros.length; i++){
-            if(!filtro_sin_duplicados.incluyeElFiltro(this.filtros[i])){
-                filtro_sin_duplicados.filtros.push(this.filtros[i]);
+    desSerializar: function (un_filtro_serializado) {
+        for (var i = 0; i < un_filtro_serializado.filtros.length; i++) {
+            this.filtros.push(DesSerializadorDeFiltros.desSerializarFiltro(un_filtro_serializado.filtros[i]));
+        }
+    },
+    simplificar: function () {
+        var union_de_filtros = new FiltroFalse();
+        for (var i = 0; i < this.filtros.length; i++) {
+            union_de_filtros = union_de_filtros.unionCon(this.filtros[i]);
+        }
+        return union_de_filtros;
+    },
+    unionCon: function (un_filtro) {
+        var filtros = [];
+        filtros = filtros.concat(this.filtros);
+        if (un_filtro instanceof FiltroOR) {
+            filtros = filtros.concat(un_filtro.filtros);
+        }
+        if (!this.incluyeElFiltro(un_filtro)) filtros.push(un_filtro);
+        return new FiltroOR(filtros);
+    },
+    incluyeElFiltro: function (un_filtro) {
+        for (var i = 0; i < this.filtros.length; i++) {
+            if (this.filtros[i].equals(un_filtro)) return true;
+            if (un_filtro instanceof FiltroAND) {
+                
             }
-		}
-        return filtro_sin_duplicados;
-    },
-    incluyeElFiltro: function(un_filtro){
-        for(var i=0; i<this.filtros.length; i++){
-            if(this.filtros[i].equals(un_filtro)) return true;
-		}
+        }
         return false;
     },
-    equals: function(otro_filtro){
-        if(!(otro_filtro instanceof FiltroOR)) return false;
-        if(otro_filtro.filtros.length != this.filtros.length) return false;
-        for(var i=0; i<this.filtros.length; i++){
-            if(!otro_filtro.incluyeElFiltro(this.filtros[i])) return false;
-		}
+    equals: function (otro_filtro) {
+        if (!(otro_filtro instanceof FiltroOR)) return false;
+        if (otro_filtro.filtros.length != this.filtros.length) return false;
+        for (var i = 0; i < this.filtros.length; i++) {
+            if (!otro_filtro.incluyeElFiltro(this.filtros[i])) return false;
+        }
         return true;
     }
 };
@@ -311,9 +312,14 @@ FiltroTrue.prototype = {
 	},	
 	desSerializar : function(un_filtro_serializado){
 	},
-    simplificar: function(){return this;},
+	simplificar: function () {
+	    return this;
+    },
     equals: function(otro_filtro){
         return (otro_filtro instanceof FiltroTrue);
+    },
+    unionCon: function (un_filtro) {
+        return this;
     }
 };
 if(typeof(require) != "undefined"){ exports.FiltroTrue = FiltroTrue;}
@@ -329,21 +335,24 @@ if(typeof(require) != "undefined"){ exports.ComparadorDeFiltros = ComparadorDeFi
 var FiltroFalse = function(){
 };
 FiltroFalse.prototype = {
-	evaluarMensaje : function (un_mensaje) {
+    evaluarMensaje: function (un_mensaje) {
         return false;
-    },    
-    onChange : function(observador){
+    },
+    onChange: function (observador) {
         this._observador = observador;
-    },    
-    serializar : function(){
-		var ret = {	'tipo': 'FALSE'};
-		return ret;
-	},	
-	desSerializar :function(un_filtro_serializado){
-	},
-    simplificar: function(){return this;},
-    equals: function(otro_filtro){
+    },
+    serializar: function () {
+        var ret = { 'tipo': 'FALSE' };
+        return ret;
+    },
+    desSerializar: function (un_filtro_serializado) {
+    },
+    simplificar: function () { return this; },
+    equals: function (otro_filtro) {
         return (otro_filtro instanceof FiltroFalse);
+    },
+    unionCon: function (un_filtro) {
+        return un_filtro;
     }
 };
 if(typeof(require) != "undefined"){ exports.FiltroFalse = FiltroFalse;}

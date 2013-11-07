@@ -49,14 +49,14 @@ describe("Filtros", function() {
         var filtro_1 = new FiltroXClaveValor("clave1", 1);
         var filtro_and_1 = new FiltroAND([filtro_1]);
         
-        expect(ComparadorDeFiltros.compararFiltros(filtro_and_1.simplificar(), filtro_1)).toBeTruthy();
+        expect(filtro_and_1.simplificar().equals(filtro_1)).toBeTruthy();
     });
     
     it("7 - Si simplifico una OR de un solo filtro deberia quedarme el filtro de adentro de la OR como resultado", function() {
         var filtro_1 = new FiltroXClaveValor("clave1", 1);
         var filtro_or_1 = new FiltroOR([filtro_1]);
         
-        expect(ComparadorDeFiltros.compararFiltros(filtro_or_1.simplificar(), filtro_1)).toBeTruthy();
+        expect(filtro_or_1.simplificar().equals(filtro_1)).toBeTruthy();
     });
     it("8 - Si en un filtro AND pongo otro filtro AND y simplifico el primero deberian quedar los filtros del segundo al mismo nivel que los del primero", function() {
         var filtro_1 = new FiltroXClaveValor("clave1", 1);
@@ -71,12 +71,12 @@ describe("Filtros", function() {
     
     it("9 - Si simplifico una AND vacia deberia quedarme un filtro FALSE como resultado", function() {
         var filtro_and_1 = new FiltroAND([]);        
-        expect(ComparadorDeFiltros.compararFiltros(filtro_and_1.simplificar(), un_filtro_false)).toBeTruthy();
+        expect(filtro_and_1.simplificar().equals(un_filtro_false)).toBeTruthy();
     });
     
     it("10 - Si simplifico una OR vacia deberia quedarme un filtro FALSE como resultado", function() {
         var filtro_or_1 = new FiltroOR([]);        
-        expect(ComparadorDeFiltros.compararFiltros(filtro_or_1.simplificar(), un_filtro_false)).toBeTruthy();
+        expect(filtro_or_1.simplificar().equals(un_filtro_false)).toBeTruthy();
     });
     
     it("11 - Un filtro TRUE deberia ser igual a otro filtro TRUE", function() {
@@ -190,5 +190,62 @@ describe("Filtros", function() {
                                            new FiltroXClaveValor("clave3", 3)]);  
                                          
         expect(un_filtro_or.simplificar().equals(otro_filtro_or)).toBeTruthy();
+    });
+
+    it("24 - Al simplificar un arbol de OR debería dar como resultado una OR con todo al mismo nivel y sin repetidos", function () {
+        var filtro_or_1 = new FiltroOR([ new FiltroXClaveValor("clave1", 1),
+                                         new FiltroXClaveValor("clave2", 2),
+                                         new FiltroXClaveValor("clave3", 3)]);
+
+        var filtro_or_2 = new FiltroOR([ new FiltroXClaveValor("clave3", 3),
+                                         new FiltroXClaveValor("clave4", 4)]);
+
+        var filtro_or_3 = new FiltroOR([filtro_or_1, filtro_or_2]);
+
+        var filtro_or_4 = new FiltroOR([ new FiltroXClaveValor("clave1", 1),
+                                         new FiltroXClaveValor("clave2", 2),
+                                         new FiltroXClaveValor("clave3", 3),
+                                         new FiltroXClaveValor("clave4", 4)]);
+
+        expect(filtro_or_3.simplificar().equals(filtro_or_4)).toBeTruthy();
+    });
+
+    it("25 - Al simplificar un arbol de AND debería dar como resultado una AND con todo al mismo nivel", function () {
+        var filtro_and_1 = new FiltroAND([new FiltroXClaveValor("clave1", 1),
+                                         new FiltroXClaveValor("clave2", 2)]);
+
+        var filtro_and_2 = new FiltroAND([new FiltroXClaveValor("clave3", 3),
+                                         new FiltroXClaveValor("clave4", 4)]);
+
+        var filtro_and_3 = new FiltroAND([filtro_and_1, filtro_and_2]);
+
+        var filtro_and_4 = new FiltroAND([new FiltroXClaveValor("clave1", 1),
+                                         new FiltroXClaveValor("clave2", 2),
+                                         new FiltroXClaveValor("clave3", 3),
+                                         new FiltroXClaveValor("clave4", 4)]);
+
+        expect(filtro_and_1.simplificar().equals(filtro_and_4)).toBeTruthy();
+    });
+
+    it("26 - ", function () {
+        var filtro = new FiltroOR([ new FiltroXClaveValor("clave1", 1),
+                                    new FiltroXClaveValor("clave1", 1),
+                                    new FiltroFalse(),                                    
+                                    new FiltroOR([
+                                        new FiltroXClaveValor("clave1", 1),
+                                        new FiltroXClaveValor("clave3", 3)
+                                        ]),
+                                    new FiltroAND([
+                                        new FiltroXClaveValor("clave1", 1),
+                                        new FiltroXClaveValor("clave4", 4)
+                                        ]),
+                                    new FiltroXClaveValor("clave2", 2)
+                                   ]);
+        var resultado_esperado = new FiltroOR([
+                                    new FiltroXClaveValor("clave1", 1),
+                                    new FiltroXClaveValor("clave2", 2),
+                                    new FiltroXClaveValor("clave3", 3)                                   
+                                   ]);
+        expect(filtro.simplificar().equals(resultado_esperado)).toBeTruthy();
     });
 });
