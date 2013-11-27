@@ -6,51 +6,46 @@ Project URL: https://sourceforge.net/p/vortexnet
 
 if(typeof(require) != "undefined"){
     var GeneradorDeIdMensaje = require("./GeneradorDeIdMensaje").clase;
-    var PataConectora = require("./PataConectora").clase;
+    var NodoMultiplexor = require("./NodoMultiplexor").clase;
     var FiltroOR = require("./FiltrosYTransformaciones").FiltroOR;
     var FiltroAND = require("./FiltrosYTransformaciones").FiltroAND;
+    var FiltroXClaveValor = require("./FiltrosYTransformaciones").FiltroXClaveValor;
 }
 
 var NodoPortalBidi = function(aliasPortal){
-    this._listaPedidos = [];
-    this._pata = new PataConectora(0, new GeneradorDeIdMensaje());
-    this._alias_portal = "portal " + aliasPortal;
-};
-
-NodoPortalBidi.prototype.publicarFiltros = function(){
-    var filtros = [];
-    this._listaPedidos.forEach(function(p){
-        filtros.push(p.filtro);
-    });
-    var filtroMergeado = new FiltroOR(filtros).simplificar();
-    this._pata.publicarFiltro(filtroMergeado);
+    var _this = this;
+    this.receptor = new ReceptorNulo();
+    
+    this.muxEntrada = new NodoMultiplexor();
+    
+    this.muxEntrada.conectarCon(new NodoConsumidorCondicional(new FiltroXClaveValor("tipoDeMensaje", "Vortex.IdRemoto.Pedido"), 
+                                                  function(pedido){_this.recibirPedidoDeIdRemoto(pedido)}));
+    this.muxEntrada.conectarCon(new NodoConsumidorCondicional(new FiltroXClaveValor("tipoDeMensaje", "Vortex.IdRemoto.Respuesta"), 
+                                                  function(respuesta){_this.recibirRespuestaAPedidoDeIdRemoto(respuesta)}));
+    this.muxEntrada.conectarCon(new NodoConsumidorCondicional(new FiltroXClaveValor("tipoDeMensaje", "Vortex.IdRemoto.Confirmacion"), 
+                                                  function(confirmacion){_this.recibirConfirmacionDePedidoDeIdRemoto(confirmacion)}));    
+    this.muxEntrada.conectarCon(new NodoConsumidorCondicional(new FiltroXClaveValor("tipoDeMensaje", "Vortex.IdRemoto.ReConfirmacion"), 
+                                                  function(reconfirmacion){_this.recibirReConfirmacionDePedidoDeIdRemoto(reconfirmacion)}));    
+    this.muxEntrada.conectarCon(new NodoConsumidorCondicional(new FiltroXClaveValor("tipoDeMensaje", "Vortex.Filtro.Publicacion"), 
+                                                  function(publicacion){_this.recibirPublicacionDeFiltro(publicacion)}));
+    
+    this.nodoFiltroDeSalida = new NodoFiltro();
 };
 
 NodoPortalBidi.prototype.enviarMensaje = function(un_mensaje){
-    this._pata.recibirMensaje(un_mensaje);
+    
 };
 
-NodoPortalBidi.prototype.pedirMensajes = function( filtro, callback){
-    this._listaPedidos.push({ "filtro": filtro, "callback": callback});
-    this.publicarFiltros();
+NodoPortalBidi.prototype.pedirMensajes = function(un_filtro, un_callback){
+    this.muxEntrada.conectarCon(new NodoConsumidorCondicional(un_filtro, un_callback));
 };
 
 NodoPortalBidi.prototype.recibirMensaje = function(un_mensaje) {
-    //console.log('mensaje recibido en ' + this._alias_portal, un_mensaje);
-    if(un_mensaje.tipoDeMensaje.slice(0, "Vortex.".length) == "Vortex."){
-        this._pata.recibirMensaje(un_mensaje);
-        return;
-    }   
-    this._listaPedidos.forEach(function (pedido) {					
-        if(pedido.filtro.evaluarMensaje(un_mensaje)){
-            pedido.callback(un_mensaje);
-        }
-    });	        
+    this.muxEntrada.recibirMensaje(un_mensaje);
 };
 
 NodoPortalBidi.prototype.conectarCon = function(un_receptor){
-    //this.publicarFiltros();
-    this._pata.conectarCon(un_receptor);
+    this.receptor = un_receptor;
 };
 
 NodoPortalBidi.prototype.conectarBidireccionalmenteCon = function (otro_nodo) {
@@ -59,11 +54,11 @@ NodoPortalBidi.prototype.conectarBidireccionalmenteCon = function (otro_nodo) {
 };
 
 NodoPortalBidi.prototype.conectadoBidireccionalmente = function(){
-    return this._pata.conectadaBidireccionalmente();
+    
 };
 
 NodoPortalBidi.prototype.filtroDeSalida = function(){
-    return this._pata.filtroRecibido();
+    
 };
 
 if(typeof(require) != "undefined"){ exports.clase = NodoPortalBidi;}
