@@ -2,7 +2,7 @@ var ReceptorNulo = function(){
     
 };
 
-ReceptorNulo.prototype.recibirMensaje(un_mensaje){
+ReceptorNulo.prototype.recibirMensaje = function(un_mensaje){
     
 };
 
