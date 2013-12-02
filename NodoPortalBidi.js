@@ -58,7 +58,21 @@ NodoPortalBidi.prototype.conectadoBidireccionalmente = function(){
 };
 
 NodoPortalBidi.prototype.filtroDeSalida = function(){
-    
+    return this.nodoFiltroDeSalida.filtro;
+};
+
+NodoPortalBidi.prototype.recibirPedidoDeIdRemoto = function(un_pedido){		
+    var respuesta = {
+        tipoDeMensaje : "Vortex.IdRemoto.Respuesta",
+        idLocalAlEmisor : this._idLocal,
+        idPedidoOriginal : un_pedido.id_mensaje_vortex
+    }
+    this.enviarMensajePropio(respuesta);
+};
+        
+NodoPortalBidi.prototype.recibirPublicacionDeFiltro = function(una_publicacion){
+    this.nodoFiltroDeSalida.filtro = DesSerializadorDeFiltros.desSerializarFiltro(una_publicacion.filtro);
+    this.onFiltroRecibidoModificado();
 };
 
 if(typeof(require) != "undefined"){ exports.clase = NodoPortalBidi;}
