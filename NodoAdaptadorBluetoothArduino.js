@@ -1,3 +1,9 @@
+if(typeof(require) != "undefined"){
+    var NodoConectorBluetooth = require("./NodoConectorBluetooth").clase;
+    var NodoPortalBidi = require("./NodoPortalBidi").clase;
+    var FiltroTrue = require("./FiltrosYTransformaciones").FiltroTrue;
+}
+
 var NodoAdaptadorBluetoothArduino = function(opt){
     $.extend(true, this, opt);
     this.start();
@@ -34,3 +40,7 @@ NodoAdaptadorBluetoothArduino.prototype.conectarCon = function(otro_nodo){
 NodoAdaptadorBluetoothArduino.prototype.recibirMensaje = function(un_mensaje){
     this.portal.recibirMensaje(un_mensaje);
 };
+
+if(typeof(require) != "undefined"){
+    exports.clase = NodoAdaptadorBluetoothArduino;
+}
