@@ -2,7 +2,7 @@ var NodoConectorBluetooth = function(opt){
     $.extend(true, this, opt);
     var _this = this;
     setTimeout(function(){
-        //_this.conectarPorBluetooth();
+        _this.conectarPorBluetooth();
     }, 1000);   
 };
 
@@ -10,7 +10,7 @@ NodoConectorBluetooth.prototype.recibirMensaje = function(mensaje){
     var caracteres = [];
     caracteres = caracteres.concat(JSON.stringify(mensaje).split(''));
     caracteres.push('\n');
-    //bluetoothSerial.write(caracteres.join(""));
+    bluetoothSerial.write(caracteres.join(""));
 };
 
 NodoConectorBluetooth.prototype.conectarCon = function(otro_nodo){
