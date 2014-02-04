@@ -17,3 +17,38 @@ if(typeof(require) != "undefined"){
     exports.NodoConectorSocket = require("./NodoConectorSocket").clase;    
     exports.NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;    
 }
+
+var Vortex = Vx = vX = vx = {
+    start:function(opt){
+        $.extend(true, this, opt);
+        this.router = new NodoRouter();
+        this.portales = [];
+    },
+    conectarPorHTTP: function(p){
+        this.adaptadorHTTP = new NodoClienteHTTP(p.url, p.intervalo_polling, this.verbose, p.mensajes_por_paquete);
+        this.router.conectarBidireccionalmenteCon(this.adaptadorHTTP);
+    },
+    conectarPorWebSockets: function(p){
+        var socket = io.connect(p.url);    
+        this.adaptadorWebSockets = new NodoConectorSocket(socket);    
+        this.router.conectarBidireccionalmenteCon(this.adaptadorWebSockets);
+    },
+    conectarPorBluetoothConArduino: function(p){
+        this.adaptadorArduino = new NodoAdaptadorBluetoothArduino(p);
+        this.router.conectarBidireccionalmenteCon(this.adaptadorArduino);
+    },
+    pedirMensajes: function(p){
+        var portal = new NodoPortalBidi();
+        portal.conectarBidireccionalmenteCon(this.router);        
+        portal.pedirMensajes(p.filtro, p.callback); 
+        this.portales.push(portal);
+        return this.portales.length - 1; //devuelvo id del portal/pedido para que el cliente pueda darlos de baja
+    },
+    enviarMensaje:function(mensaje){
+        this.router.recibirMensaje(mensaje);
+    }    
+};
+
+if(typeof(require) != "undefined"){
+    exports.Vortex = Vortex;
+}
