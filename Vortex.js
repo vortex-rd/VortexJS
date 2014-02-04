@@ -6,16 +6,11 @@ Project URL: https://sourceforge.net/p/vortexnet
 
 
 if(typeof(require) != "undefined"){
-    exports.GeneradorDeIdMensaje = require("./GeneradorDeIdMensaje").clase;
-    exports.ClonadorDeObjetos = require("./ClonadorDeObjetos").clase;
-    exports.PataConectora = require("./PataConectora").clase;
-    exports.FiltrosYTransformaciones = require("./FiltrosYTransformaciones");
-    exports.NodoMultiplexor = require("./NodoMultiplexor").clase;
-    exports.NodoRouter = require("./NodoRouter").clase;
-    exports.NodoPortalBidi = require("./NodoPortalBidi").clase;
-    exports.NodoPortalBidiMonoFiltro = require("./NodoPortalBidiMonoFiltro").clase;
-    exports.NodoConectorSocket = require("./NodoConectorSocket").clase;    
-    exports.NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;    
+    var NodoRouter = require("./NodoRouter").clase;
+    var NodoClienteHTTP = require("./NodoClienteHTTP").clase;
+    var NodoConectorSocket = require("./NodoConectorSocket").clase;
+    var NodoAdaptadorBluetoothArduino = require("./NodoAdaptadorBluetoothArduino").clase;
+    var NodoPortalBidi = require("./NodoPortalBidi").clase;
 }
 
 var Vortex = Vx = vX = vx = {
@@ -50,5 +45,15 @@ var Vortex = Vx = vX = vx = {
 };
 
 if(typeof(require) != "undefined"){
+    exports.GeneradorDeIdMensaje = require("./GeneradorDeIdMensaje").clase;
+    exports.ClonadorDeObjetos = require("./ClonadorDeObjetos").clase;
+    exports.PataConectora = require("./PataConectora").clase;
+    exports.FiltrosYTransformaciones = require("./FiltrosYTransformaciones");
+    exports.NodoMultiplexor = require("./NodoMultiplexor").clase;
+    exports.NodoRouter = NodoRouter;
+    exports.NodoPortalBidi = NodoPortalBidi;
+    exports.NodoPortalBidiMonoFiltro = require("./NodoPortalBidiMonoFiltro").clase;
+    exports.NodoConectorSocket = require("./NodoConectorSocket").clase;    
+    exports.NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;    
     exports.Vortex = Vortex;
 }
