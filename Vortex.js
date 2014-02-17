@@ -6,17 +6,24 @@ Project URL: https://sourceforge.net/p/vortexnet
 
 
 if(typeof(require) != "undefined"){
-    var NodoRouter = require("./NodoRouter").clase;
-    var NodoClienteHTTP = require("./NodoClienteHTTP").clase;
-    var NodoConectorSocket = require("./NodoConectorSocket").clase;
-    var NodoAdaptadorBluetoothArduino = require("./NodoAdaptadorBluetoothArduino").clase;
-    var NodoPortalBidi = require("./NodoPortalBidi").clase;
+    exports.GeneradorDeIdMensaje = require("./GeneradorDeIdMensaje").clase;
+    exports.ClonadorDeObjetos = require("./ClonadorDeObjetos").clase;
+    exports.PataConectora = require("./PataConectora").clase;
+    exports.FiltrosYTransformaciones = require("./FiltrosYTransformaciones");
+    exports.NodoMultiplexor = require("./NodoMultiplexor").clase;
+    exports.NodoRouter = require("./NodoRouter").clase;
+    exports.NodoPortalBidi = require("./NodoPortalBidi").clase;
+    exports.NodoPortalBidiMonoFiltro = require("./NodoPortalBidiMonoFiltro").clase;
+    exports.NodoConectorSocket = require("./NodoConectorSocket").clase;    
+    exports.NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;    
 }
 
 var Vortex = Vx = vX = vx = {
     start:function(opt){
         $.extend(true, this, opt);
         this.router = new NodoRouter();
+        this.claveRSAComun = cryptico.generateRSAKey("VORTEXCAPO", 1024);                               //ATA
+        this.clavePublicaComun = cryptico.publicKeyString(this.claveRSAComun);                          //PINGO
         this.portales = [];
     },
     conectarPorHTTP: function(p){
@@ -25,7 +32,7 @@ var Vortex = Vx = vX = vx = {
     },
     conectarPorWebSockets: function(p){
         var socket = io.connect(p.url);    
-        this.adaptadorWebSockets = new NodoConectorSocket(socket);    
+        this.adaptadorWebSockets = new NodoConectorSocket(socket, this.verbose);    
         this.router.conectarBidireccionalmenteCon(this.adaptadorWebSockets);
     },
     conectarPorBluetoothConArduino: function(p){
@@ -33,27 +40,42 @@ var Vortex = Vx = vX = vx = {
         this.router.conectarBidireccionalmenteCon(this.adaptadorArduino);
     },
     pedirMensajes: function(p){
-        var portal = new NodoPortalBidi();
+        var portal = new NodoPortalBidi("portal" + this.portales.length);
         portal.conectarBidireccionalmenteCon(this.router);        
         portal.pedirMensajes(p.filtro, p.callback); 
         this.portales.push(portal);
         return this.portales.length - 1; //devuelvo id del portal/pedido para que el cliente pueda darlos de baja
     },
+    pedirMensajesSeguros: function(p, claveRSA){
+        var _this = this;
+        return this.pedirMensajes({
+            filtro:p.filtro,
+            callback: function(mensaje){                
+                var clave = _this.claveRSAComun;
+                if(mensaje.para) clave = claveRSA;
+        
+                var desencriptado = cryptico.decrypt(mensaje.datos, clave);
+                if(desencriptado.status == "success" && desencriptado.signature != "forged"){
+                    mensaje.datos = JSON.parse(desencriptado.plaintext);
+                    p.callback(mensaje);
+                }                    
+            }
+        })
+    },
     enviarMensaje:function(mensaje){
+        this.router.recibirMensaje(mensaje);
+    },
+    enviarMensajeSeguro:function(mensaje, claveRSA){
+        var mi_clave_privada = undefined;
+        var su_clave_publica = this.clavePublicaComun;
+        if(mensaje.de) mi_clave_privada = claveRSA;
+        if(mensaje.para) su_clave_publica = mensaje.para;
+        mensaje.datos = cryptico.encrypt(JSON.stringify(mensaje.datos), su_clave_publica, mi_clave_privada).cipher
+        
         this.router.recibirMensaje(mensaje);
     }    
 };
 
 if(typeof(require) != "undefined"){
-    exports.GeneradorDeIdMensaje = require("./GeneradorDeIdMensaje").clase;
-    exports.ClonadorDeObjetos = require("./ClonadorDeObjetos").clase;
-    exports.PataConectora = require("./PataConectora").clase;
-    exports.FiltrosYTransformaciones = require("./FiltrosYTransformaciones");
-    exports.NodoMultiplexor = require("./NodoMultiplexor").clase;
-    exports.NodoRouter = NodoRouter;
-    exports.NodoPortalBidi = NodoPortalBidi;
-    exports.NodoPortalBidiMonoFiltro = require("./NodoPortalBidiMonoFiltro").clase;
-    exports.NodoConectorSocket = require("./NodoConectorSocket").clase;    
-    exports.NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;    
     exports.Vortex = Vortex;
 }
