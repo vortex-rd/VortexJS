@@ -6,21 +6,30 @@ Project URL: https://sourceforge.net/p/vortexnet
 
 
 if(typeof(require) != "undefined"){
+    var NodoRouter = require("./NodoRouter").clase;
+    //var NodoClienteHTTP = require("./NodoClienteHTTP").clase;
+    var NodoConectorSocket = require("./NodoConectorSocket").clase;
+    var NodoPortalBidi = require("./NodoPortalBidi").clase;
+    var cryptico = require("cryptico");
+    var io = require('./socket.io');
+    
     exports.GeneradorDeIdMensaje = require("./GeneradorDeIdMensaje").clase;
     exports.ClonadorDeObjetos = require("./ClonadorDeObjetos").clase;
     exports.PataConectora = require("./PataConectora").clase;
     exports.FiltrosYTransformaciones = require("./FiltrosYTransformaciones");
     exports.NodoMultiplexor = require("./NodoMultiplexor").clase;
-    exports.NodoRouter = require("./NodoRouter").clase;
-    exports.NodoPortalBidi = require("./NodoPortalBidi").clase;
+    exports.NodoRouter = NodoRouter;
+    exports.NodoPortalBidi = NodoPortalBidi;
     exports.NodoPortalBidiMonoFiltro = require("./NodoPortalBidiMonoFiltro").clase;
-    exports.NodoConectorSocket = require("./NodoConectorSocket").clase;    
-    exports.NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;    
+    exports.NodoConectorSocket = NodoConectorSocket;    
+    //exports.NodoClienteHTTP = NodoClienteHTTP;    
+    exports.NodoSesionHttpServer = require("./NodoSesionHttpServer").clase;   
+    
 }
 
 var Vortex = Vx = vX = vx = {
     start:function(opt){
-        $.extend(true, this, opt);
+        this.verbose = opt.verbose;
         this.router = new NodoRouter();
         this.claveRSAComun = cryptico.generateRSAKey("VORTEXCAPO", 1024);                               //ATA
         this.clavePublicaComun = cryptico.publicKeyString(this.claveRSAComun);                          //PINGO
