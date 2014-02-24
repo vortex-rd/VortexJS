@@ -11,7 +11,7 @@ if(typeof(require) != "undefined"){
     var NodoConectorSocket = require("./NodoConectorSocket").clase;
     var NodoPortalBidi = require("./NodoPortalBidi").clase;
     var cryptico = require("cryptico");
-    var io = require('./socket.io');
+    var io = require('socket.io-client');
     
     exports.GeneradorDeIdMensaje = require("./GeneradorDeIdMensaje").clase;
     exports.ClonadorDeObjetos = require("./ClonadorDeObjetos").clase;
