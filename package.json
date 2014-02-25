@@ -1,6 +1,6 @@
 {
   "name": "vortexjs",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Port de Vortex a Javascript ",
   "main": "Vortex.js",
   "scripts": {
