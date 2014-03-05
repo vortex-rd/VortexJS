@@ -97,7 +97,60 @@ var Vortex = Vx = vX = vx = {
         mensaje.datos = cryptico.encrypt(JSON.stringify(mensaje.datos), su_clave_publica, mi_clave_privada).cipher
         
         this.router.recibirMensaje(mensaje);
-    }    
+    },
+	
+	send: function(opt){
+		if(opt.length==1){
+			opt = {
+				obj: opt
+			}
+		}
+		
+		if(!(opt.callback === undefined)){
+			
+			opt.obj.idResponse = 3213213215112; 	//TO DO: generar un numero random, encriptado, no se, lo que sea
+			
+			this.pedirMensajes({
+				filtro: {
+					idResponse: opt.obj.idResponse
+				},
+				callback: opt.callback
+			});
+			
+		}
+		
+		this.enviarMensaje(opt.obj);
+		
+	},
+	
+	when: function(p){
+		this.pedirMensajes(p);
+	},
+	
+	val:  function(opt){
+	
+		if(opt.length==1){
+			opt = {
+				obj: opt
+			}
+		}
+		
+		if(!(opt.callback === undefined)){
+			
+			opt.obj.idResponse = 3213213215112; 	//TO DO: generar un numero random, encriptado, no se, lo que sea
+			
+			this.pedirMensajes({
+				filtro: {
+					idResponse: opt.obj.idResponse
+				},
+				callback: opt.callback
+			});
+			
+		}
+		
+		this.enviarMensaje(opt.obj);
+	}
+	
 };
 
 if(typeof(require) != "undefined"){
