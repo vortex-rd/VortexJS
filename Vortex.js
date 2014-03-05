@@ -128,27 +128,39 @@ var Vortex = Vx = vX = vx = {
 	},
 	
 	val:  function(opt){
-	
 		if(opt.length==1){
 			opt = {
 				obj: opt
 			}
 		}
+		if(opt.length==2){
+			opt = {
+				obj: opt[0],
+				val: opt[1]
+			}
+		}
 		
-		if(!(opt.callback === undefined)){
+		
+		if(!(opt.val === undefined)){
 			
-			opt.obj.idResponse = 3213213215112; 	//TO DO: generar un numero random, encriptado, no se, lo que sea
+			opt.obj = opt.val; //TO DO si cacheo debería guardar ahi
+			
+			this.enviarMensaje(opt.obj);
+			
+		}else{
 			
 			this.pedirMensajes({
-				filtro: {
-					idResponse: opt.obj.idResponse
-				},
-				callback: opt.callback
+				//TO DO: meter sincronismo
+				filtro: opt.obj,
+				callback: function(obj){
+					opt.obj = obj;
+				}
 			});
 			
 		}
 		
-		this.enviarMensaje(opt.obj);
+		return opt.obj;
+		
 	}
 	
 };
