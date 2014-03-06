@@ -110,7 +110,7 @@ var Vortex = Vx = vX = vx = {
 			
 			opt.obj.idResponse = 3213213215112; 	//TO DO: generar un numero random, encriptado, no se, lo que sea
 			
-			this.pedirMensajes({
+			this.when({
 				filtro: {
 					idResponse: opt.obj.idResponse
 				},
