@@ -27,6 +27,7 @@ if(typeof(require) != "undefined"){
     
 }
 
+
 var Vortex = Vx = vX = vx = {
     start:function(opt){
         this.verbose = opt.verbose;
@@ -34,6 +35,9 @@ var Vortex = Vx = vX = vx = {
         this.claveRSAComun = cryptico.generateRSAKey("VORTEXCAPO", 1024);                               //ATA
         this.clavePublicaComun = cryptico.publicKeyString(this.claveRSAComun);                          //PINGO
         this.portales = [];
+		
+		this.dic = [];
+		
     },
     conectarPorHTTP: function(p){
         var _this = this;
@@ -114,7 +118,10 @@ var Vortex = Vx = vX = vx = {
 				filtro: {
 					idResponse: opt.obj.idResponse
 				},
-				callback: opt.callback
+				callback: function(obj){
+					// TO DO: despublicar filtro
+					opt.callback(obj);
+				}
 			});
 			
 		}
@@ -128,6 +135,7 @@ var Vortex = Vx = vX = vx = {
 	},
 	
 	val:  function(opt){
+		
 		if(opt.length==1){
 			opt = {
 				obj: opt
@@ -143,19 +151,23 @@ var Vortex = Vx = vX = vx = {
 		
 		if(!(opt.val === undefined)){
 			
-			opt.obj = opt.val; //TO DO si cacheo debería guardar ahi
+			opt.obj = opt.val; //TO DO: si cacheo debería guardar ahi
 			
 			this.enviarMensaje(opt.obj);
 			
 		}else{
 			
+			var flagArrive = false;
+			
 			this.pedirMensajes({
-				//TO DO: meter sincronismo
 				filtro: opt.obj,
 				callback: function(obj){
+					flagArrive = true;
 					opt.obj = obj;
 				}
 			});
+			
+			while(flagArrive){}
 			
 		}
 		
