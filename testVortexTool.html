@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+    <head>
+        <title>title</title>
+    </head>
+    <body>
+        <input type="button" id="btn_setCache" value="Ser cache"/>
+        <input type="button" id="btn_getCache" value="Get cache"/>
+        <div>
+            Mensajes Enviados: 
+        </div>
+        <div id="contador_de_mensajes">
+            
+        </div>
+    </body>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
+    
+	
+	<script type="text/javascript" src="FiltrosYTransformaciones.js"></script>
+    <script type="text/javascript" src="NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="ClonadorDeObjetos.js"></script> 
+    <script type="text/javascript" src="GeneradorDeIdMensaje.js"></script> 
+    <script type="text/javascript" src="NodoClienteHTTP.js"></script>  
+    <script type="text/javascript" src="NodoPortalBidi.js"></script> 
+    <script type="text/javascript" src="NodoPortalBidiMonoFiltro.js"></script> 
+    <script type="text/javascript" src="NodoRouter.js"></script> 
+    <script type="text/javascript" src="PataConectora.js"></script> 
+    <script type="text/javascript" src="NodoConectorSocket.js"></script>
+    <script type="text/javascript" src="socket.io.js"></script>
+    <script type="text/javascript" src="Vortex.js"></script> 
+	
+	
+    <script>
+        $(function() {
+            
+			vx.start({verbose:true});
+			
+			vx.conectarPorWebSockets({
+				url: 'https://router-vortex.herokuapp.com'
+			});
+			
+			
+			vx.when({
+				filtro: {
+					tipoMensaje: "test.vx.tool.pregunta"
+				},
+				callback: function(obj){
+					
+					console.log('me llegó una pregunta:   ', obj);
+					
+					vx.send({
+						tipoMensaje: "test.vx.tool.respuesta",
+						idResponse: obj.idResponse,
+						loco: "las cosas son un flash"
+					});
+				}
+			});
+			
+			vx.send({
+				tipoMensaje: "test.vx.tool.pregunta",
+				che: "que son las cosas?"
+			},function(obj){
+				console.log('respuesta a la pregunta:   ', obj.loco);
+			});
+			
+			
+			vx.cache({add: 'midato'});
+			
+			console.log('dato recien metido en la cache', vx.cache('midato'));
+			
+			vx.cache('midato', ['es', 'este']);
+			
+			console.log('dato en la cache actualizado localmente ', vx.cache('midato'));
+			
+			$('#btn_setCache').on('click', function(){
+				vx.send({
+					clave: 'midato',
+					valor: ['otro', 'dato', 'distinto']
+				});
+			});
+			
+			$('#btn_getCache').on('click', function(){
+				console.log('dato en la cache actualizado ', vx.cache('midato'));
+			});
+			
+        });
+    </script>
+</html>

@@ -134,29 +134,38 @@ var Vortex = Vx = vX = vx = {
 		this.pedirMensajes(p);
 	},
 	
-	val:  {
-		add: function(_filtro){
-			
+	cache: function(p){
+		//add
+		if(p.add !== undefined){
 			this.when({
-				filtro: _filtro,
+				filtro: {clave: p.add},
 				callback: function(obj){
-				
-					if(_filtro.evaluarMensaje === undefined) _filtro = new FiltroXEjemplo(_filtro);
-        
-					this.dic[_filtro.serializar()] = obj;
+					this.dic[obj.clave] = obj.valor;
 				}
 			});
-		},
-		set: function(_filtro, obj){
-			this.dic[_filtro.serializar()] = obj;
-			this.send(obj);
-		},
-		get: function(_filtro){
-			return this.dic[_filtro.serializar()];
+			return;
 		}
 		
+		
+		
+		//set
+		if(p.length == 2){
+			
+			var _clave = p[0];
+			var _valor = p[1];
+			
+			this.dic[_clave] = _valor;
+			this.send({
+				clave: _clave,
+				valor: _valor
+			});
+		}
+		
+		//get
+		if(p.length == 1){
+			return this.dic[p[0]];
+		}
 	}
-	
 };
 
 if(typeof(require) != "undefined"){
