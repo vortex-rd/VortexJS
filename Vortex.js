@@ -36,7 +36,7 @@ var Vortex = Vx = vX = vx = {
         this.clavePublicaComun = cryptico.publicKeyString(this.claveRSAComun);                          //PINGO
         this.portales = [];
 		
-		this.dic = [];
+		this.dic = {};
 		
     },
     conectarPorHTTP: function(p){
@@ -134,44 +134,26 @@ var Vortex = Vx = vX = vx = {
 		this.pedirMensajes(p);
 	},
 	
-	val:  function(opt){
-		
-		if(opt.length==1){
-			opt = {
-				obj: opt
-			}
-		}
-		if(opt.length==2){
-			opt = {
-				obj: opt[0],
-				val: opt[1]
-			}
-		}
-		
-		
-		if(!(opt.val === undefined)){
+	val:  {
+		add: function(_filtro){
 			
-			opt.obj = opt.val; //TO DO: si cacheo debería guardar ahi
-			
-			this.enviarMensaje(opt.obj);
-			
-		}else{
-			
-			var flagArrive = false;
-			
-			this.pedirMensajes({
-				filtro: opt.obj,
+			this.when({
+				filtro: _filtro,
 				callback: function(obj){
-					flagArrive = true;
-					opt.obj = obj;
+				
+					if(_filtro.evaluarMensaje === undefined) _filtro = new FiltroXEjemplo(_filtro);
+        
+					this.dic[_filtro.serializar()] = obj;
 				}
 			});
-			
-			while(flagArrive){}
-			
+		},
+		set: function(_filtro, obj){
+			this.dic[_filtro.serializar()] = obj;
+			this.send(obj);
+		},
+		get: function(_filtro){
+			return this.dic[_filtro.serializar()];
 		}
-		
-		return opt.obj;
 		
 	}
 	
