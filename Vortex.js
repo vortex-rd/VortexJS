@@ -103,20 +103,23 @@ var Vortex = Vx = vX = vx = {
         this.router.recibirMensaje(mensaje);
     },
 	
-	send: function(opt){
-		if(opt.length==1){
-			opt = {
-				obj: opt
-			}
+	send: function(){
+		
+		var opt = {
+			obj: arguments[0]
+		};
+		
+		if(arguments.length==2){
+			opt.callback = arguments[1];
 		}
 		
 		if(!(opt.callback === undefined)){
 			
 			opt.obj.idResponse = 3213213215112; 	//TO DO: generar un numero random, encriptado, no se, lo que sea
-			
 			this.when({
 				filtro: {
-					idResponse: opt.obj.idResponse
+					idResponse: opt.obj.idResponse,
+					respuesta: true
 				},
 				callback: function(obj){
 					// TO DO: despublicar filtro
@@ -126,6 +129,7 @@ var Vortex = Vx = vX = vx = {
 			
 		}
 		
+		opt.obj.pregunta = true;
 		this.enviarMensaje(opt.obj);
 		
 	},
@@ -134,36 +138,37 @@ var Vortex = Vx = vX = vx = {
 		this.pedirMensajes(p);
 	},
 	
-	cache: function(p){
+	cache: function(){
+		var _this = this;
+		
 		//add
-		if(p.add !== undefined){
+		if(arguments[0].add !== undefined){
 			this.when({
-				filtro: {clave: p.add},
+				filtro: {clave: arguments[0].add},
 				callback: function(obj){
-					this.dic[obj.clave] = obj.valor;
+					_this.dic[obj.clave] = obj.valor;
 				}
 			});
 			return;
 		}
 		
-		
-		
 		//set
-		if(p.length == 2){
+		if(arguments.length == 2){
 			
-			var _clave = p[0];
-			var _valor = p[1];
+			var _clave = arguments[0];
+			var _valor = arguments[1];
 			
 			this.dic[_clave] = _valor;
 			this.send({
+				tipoDeMensaje: "vortex.cache",
 				clave: _clave,
 				valor: _valor
 			});
 		}
 		
 		//get
-		if(p.length == 1){
-			return this.dic[p[0]];
+		if(arguments.length == 1){
+			return this.dic[arguments[0]];
 		}
 	}
 };

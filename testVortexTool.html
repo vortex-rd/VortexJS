@@ -1,21 +1,33 @@
-<!doctype html>
-<html>
-    <head>
-        <title>title</title>
-    </head>
-    <body>
-        <input type="button" id="btn_setCache" value="Ser cache"/>
-        <input type="button" id="btn_getCache" value="Get cache"/>
-        <div>
-            Mensajes Enviados: 
-        </div>
-        <div id="contador_de_mensajes">
-            
-        </div>
-    </body>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
-    
+<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">    
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Prueba de vx</title>
+	</head>
 	
+	<body>
+		<button id="btn_setCache">Set cache</button>
+		<button id="btn_getCache">Get cache</button>
+    </body>
+    
+    <div id="plantillas">
+        <div class="mercader_en_lista">
+            <div id="nombre"></div>
+        </div>
+        <div class="panel_inventario"></div>
+        <div class="producto_en_inventario">
+            <div id="nombre"></div>
+            <div id="btn_eliminar">x</div>
+        </div>        
+    </div>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+	<!--
+    <script type="text/javascript" src="underscore-min.js"></script> 
+    <script type="text/javascript" src="Alertify/alertify.min.js"></script> 
+    <script type="text/javascript" src="select2-3.4.5/select2.min.js"></script> 
+    -->
+    <script type="text/javascript" src="Cryptico.min.js"></script> 
 	
     <script type="text/javascript" src="FiltrosYTransformaciones.js"></script>
     <script type="text/javascript" src="NodoClienteHTTP.js"></script> 
@@ -29,61 +41,90 @@
     <script type="text/javascript" src="NodoConectorSocket.js"></script>
     <script type="text/javascript" src="socket.io.js"></script>
     <script type="text/javascript" src="Vortex.js"></script> 
-	
-	
+    
     <script>
         $(function() {
             
-			vx.start({verbose:true});
-			
+			vx.start({verbose:false});
+
 			vx.conectarPorWebSockets({
-				url: 'https://router-vortex.herokuapp.com'
-			});
+				url:'https://router-vortex.herokuapp.com' 
+			});   
 			
-			
+			//////Esto lo haría otro nodo lejano
 			vx.when({
 				filtro: {
-					tipoMensaje: "test.vx.tool.pregunta"
+					tipoDeMensaje: "test.vx.tool.pregunta"
 				},
 				callback: function(obj){
 					
-					console.log('me llegó una pregunta:   ', obj);
+					console.log('me llegó una pregunta: ', obj);
 					
 					vx.send({
-						tipoMensaje: "test.vx.tool.respuesta",
+						tipoDeMensaje: "test.vx.tool.respuesta",
 						idResponse: obj.idResponse,
+						respuesta: true,
 						loco: "las cosas son un flash"
 					});
 				}
 			});
+			/////////
 			
-			vx.send({
-				tipoMensaje: "test.vx.tool.pregunta",
-				che: "que son las cosas?"
-			},function(obj){
-				console.log('respuesta a la pregunta:   ', obj.loco);
-			});
+			setTimeout(function(){
+				
+				
+				/////Mensaje con respuesta
+				vx.send({
+					tipoDeMensaje: "test.vx.tool.pregunta",
+					che: "que son las cosas?"
+				},function(obj){
+					console.log('respuesta a la pregunta:', obj);
+				});
+				//////////
 			
 			
-			vx.cache({add: 'midato'});
+			}, 1000);
 			
-			console.log('dato recien metido en la cache', vx.cache('midato'));
 			
-			vx.cache('midato', ['es', 'este']);
 			
-			console.log('dato en la cache actualizado localmente ', vx.cache('midato'));
+			///cache
+			vx.cache({add: 'unalista'});
+			vx.cache({add: 'undato'});
+			
+			console.log('dato recien metido en la cache', vx.cache('unalista'));
+			
+			vx.cache('unalista', ['es', 'este']);
+			vx.cache('undato', 666);
+			
+			console.log('una lista en la cache actualizado localmente ', vx.cache('unalista'));
 			
 			$('#btn_setCache').on('click', function(){
+				event.preventDefault();
+				
 				vx.send({
-					clave: 'midato',
+					tipoDeMensaje: 'vortex.cache',
+					clave: 'unalista',
 					valor: ['otro', 'dato', 'distinto']
 				});
+				
+				vx.send({
+					tipoDeMensaje: 'vortex.cache',
+					clave: 'undato',
+					valor: 555
+				});
+				
 			});
 			
 			$('#btn_getCache').on('click', function(){
-				console.log('dato en la cache actualizado ', vx.cache('midato'));
+				event.preventDefault();
+				
+				console.log('una lista en la cache actualizado ', vx.cache('unalista'));
+				console.log('un dato en la cache actualizado ', vx.cache('undato'));
 			});
 			
+			////////////
         });
     </script>
+
+    <script type="text/javascript" src="phonegap.js"></script>
 </html>
