@@ -35,9 +35,7 @@ var Vortex = Vx = vX = vx = {
         this.claveRSAComun = cryptico.generateRSAKey("VORTEXCAPO", 1024);                               //ATA
         this.clavePublicaComun = cryptico.publicKeyString(this.claveRSAComun);                          //PINGO
         this.portales = [];
-		
-		this.dic = {};
-		
+	
     },
     conectarPorHTTP: function(p){
         var _this = this;
@@ -136,40 +134,6 @@ var Vortex = Vx = vX = vx = {
 	
 	when: function(p){
 		this.pedirMensajes(p);
-	},
-	
-	cache: function(){
-		var _this = this;
-		
-		//add
-		if(arguments[0].add !== undefined){
-			this.when({
-				filtro: {clave: arguments[0].add},
-				callback: function(obj){
-					_this.dic[obj.clave] = obj.valor;
-				}
-			});
-			return;
-		}
-		
-		//set
-		if(arguments.length == 2){
-			
-			var _clave = arguments[0];
-			var _valor = arguments[1];
-			
-			this.dic[_clave] = _valor;
-			this.send({
-				tipoDeMensaje: "vortex.cache",
-				clave: _clave,
-				valor: _valor
-			});
-		}
-		
-		//get
-		if(arguments.length == 1){
-			return this.dic[arguments[0]];
-		}
 	}
 };
 

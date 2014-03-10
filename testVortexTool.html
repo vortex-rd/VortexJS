@@ -17,25 +17,10 @@
 		
     </body>
     
-    <div id="plantillas">
-        <div class="mercader_en_lista">
-            <div id="nombre"></div>
-        </div>
-        <div class="panel_inventario"></div>
-        <div class="producto_en_inventario">
-            <div id="nombre"></div>
-            <div id="btn_eliminar">x</div>
-        </div>        
-    </div>
-    
+	
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-	<!--
-    <script type="text/javascript" src="underscore-min.js"></script> 
-    <script type="text/javascript" src="Alertify/alertify.min.js"></script> 
-    <script type="text/javascript" src="select2-3.4.5/select2.min.js"></script> 
-    -->
-    <script type="text/javascript" src="Cryptico.min.js"></script> 
+	<script type="text/javascript" src="Cryptico.min.js"></script> 
 	
     <script type="text/javascript" src="FiltrosYTransformaciones.js"></script>
     <script type="text/javascript" src="NodoClienteHTTP.js"></script> 
@@ -62,6 +47,82 @@
 			
 			
 			
+			var cache = function(){
+				
+				var _this = this;
+				
+				var setValor = function(clave, valor){
+					
+					console.log('set valorrrrrrrr');
+					
+					console.log(clave, valor);
+					console.log(_this.dic);
+					
+					console.log(_this.dic[clave]);
+					
+					var mensaje = _this.dic[clave].filtro;
+					mensaje.valor = _this.dic[clave].valor;
+					
+					vx.send(mensaje);
+				};
+				
+				
+				//add
+				var p = arguments[0];
+				
+				
+				//get
+				if(arguments.length == 1){
+					
+					var _filtro;
+					
+					if(( arguments[0].filtro !== undefined) || ( arguments[0].clave !== undefined)){
+						if( arguments[0].filtro === undefined){
+							_filtro = {
+								clave:  arguments[0].clave
+							};
+						}else{
+							_filtro =  arguments[0].filtro;
+						}
+						
+						
+						this.dic[ arguments[0].clave] = {
+							filtro: _filtro
+						};
+						
+						vx.when({
+							filtro: this.dic[ arguments[0].clave].filtro,
+							callback: function(obj){
+								_this.dic[obj.clave] = {
+									valor: obj.valor
+								};
+							}
+						});
+						
+						
+						
+						console.log('se seteo el dic en el load???????', dic)
+						
+						if( arguments[0].valor !== undefined){
+							setValor( arguments[0].clave,  arguments[0].valor);
+						}
+						/////
+						
+						return;
+						
+					}
+					
+					return this.dic[arguments[0]];
+				}
+				
+				//set
+				if(arguments.length == 2){
+					setValor(arguments[0], arguments[1]);
+				}
+				
+				
+			};
+						
 			
 			$('#btn_setRespondedor').on('click',function(){
 				//////Esto lo haria un nodo lejano que quiere responder cosas
@@ -118,40 +179,60 @@
 			
 			$('#btn_initCache').on('click', function(){
 				///cache
-				vx.cache({add: 'unalista'});
-				vx.cache({add: 'undato'});
+				cache({
+					clave: 'unalista',
+					valor: ['valor', 'de', 'inicializacion', 'opcional'],
+					filtro: {
+						tipoDeMensaje: 'vortex.cache',
+						clave: 'unalista',
+						de: 'fulano'
+					}
+				});
 				
-				console.log('dato recien metido en la cache', vx.cache('unalista'));
 				
-				vx.cache('unalista', ['es', 'este']);
-				vx.cache('undato', 666);
 				
-				console.log('una lista en la cache actualizado localmente ', vx.cache('unalista'));
+				///cache
+				cache({
+					clave: 'undato',
+					filtro: {
+						tipoDeMensaje: 'vortex.cache',
+						clave: 'unalista',
+						de: 'fulano'
+					}
+				});
+				
+				
+				console.log('dato recien metido en la cache', cache('unalista'));
+				
+				cache('unalista', ['es', 'este']);
+				cache('undato', 666);
+				
+				console.log('una lista en la cache actualizado localmente ', cache('unalista'));
 			});
 			
 			
 			$('#btn_setCache').on('click', function(){
 				event.preventDefault();
 				
+				
+				//esto es como si fuera un foraneo el que lo hizo
 				vx.send({
 					tipoDeMensaje: 'vortex.cache',
 					clave: 'unalista',
 					valor: ['otro', 'dato', 'distinto']
 				});
+				//
 				
-				vx.send({
-					tipoDeMensaje: 'vortex.cache',
-					clave: 'undato',
-					valor: 555
-				});
+				cache('undato', 777);
+				
 				
 			});
 			
 			$('#btn_getCache').on('click', function(){
 				event.preventDefault();
 				
-				console.log('una lista en la cache actualizado ', vx.cache('unalista'));
-				console.log('un dato en la cache actualizado ', vx.cache('undato'));
+				console.log('una lista en la cache actualizado ', cache('unalista'));
+				console.log('un dato en la cache actualizado ', cache('undato'));
 			});
 			
 			////////////
