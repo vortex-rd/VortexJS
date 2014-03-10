@@ -5,8 +5,16 @@
 	</head>
 	
 	<body>
+		<button id="btn_initCache">Inicializa cache</button>
 		<button id="btn_setCache">Set cache</button>
 		<button id="btn_getCache">Get cache</button>
+		
+		<button id="btn_setRespondedor">setear respondedor</button>
+		<button id="btn_sendConRespuesta">vx.send con respuesta</button>
+		<button id="btn_publicarFiltros">publicar filtros a la vieja usansa</button>
+		<button id="btn_enviarMensaje">enviar mensaje a la vieja usansa</button>
+		
+		
     </body>
     
     <div id="plantillas">
@@ -51,28 +59,34 @@
 				url:'https://router-vortex.herokuapp.com' 
 			});   
 			
-			//////Esto lo haría otro nodo lejano
-			vx.when({
-				filtro: {
-					tipoDeMensaje: "test.vx.tool.pregunta"
-				},
-				callback: function(obj){
-					
-					console.log('me llegó una pregunta: ', obj);
-					
-					vx.send({
-						tipoDeMensaje: "test.vx.tool.respuesta",
-						idResponse: obj.idResponse,
-						respuesta: true,
-						loco: "las cosas son un flash"
-					});
-				}
+			
+			
+			
+			
+			$('#btn_setRespondedor').on('click',function(){
+				//////Esto lo haria un nodo lejano que quiere responder cosas
+				vx.when({
+					filtro: {
+						tipoDeMensaje: "test.vx.tool.pregunta"
+					},
+					callback: function(obj){
+						
+						console.log('me llegó una pregunta: ', obj);
+						
+						vx.send({
+							tipoDeMensaje: "test.vx.tool.respuesta",
+							idResponse: obj.idResponse,
+							respuesta: true,
+							loco: "las cosas son un flash"
+						});
+					}
+				});
 			});
 			/////////
 			
-			setTimeout(function(){
-				
-				
+			
+			
+			$('#btn_sendConRespuesta').on('click',function(){
 				/////Mensaje con respuesta
 				vx.send({
 					tipoDeMensaje: "test.vx.tool.pregunta",
@@ -81,22 +95,40 @@
 					console.log('respuesta a la pregunta:', obj);
 				});
 				//////////
+			})
+				
+			$('#btn_publicarFiltros').on('click',function(){
+				vx.pedirMensajes({
+					filtro: {
+						tipoDeMensaje:"test.chota"
+					},
+					callback: function(mensaje){
+						console.log("llego: " + JSON.stringify(mensaje));
+					}
+				});
+			});
 			
+			$('#btn_enviarMensaje').on('click',function(){
+				vx.enviarMensaje({
+					tipoDeMensaje:"test.chota",
+					datun:"dale que baila"
+				});
+			});
+				
 			
-			}, 1000);
+			$('#btn_initCache').on('click', function(){
+				///cache
+				vx.cache({add: 'unalista'});
+				vx.cache({add: 'undato'});
+				
+				console.log('dato recien metido en la cache', vx.cache('unalista'));
+				
+				vx.cache('unalista', ['es', 'este']);
+				vx.cache('undato', 666);
+				
+				console.log('una lista en la cache actualizado localmente ', vx.cache('unalista'));
+			});
 			
-			
-			
-			///cache
-			vx.cache({add: 'unalista'});
-			vx.cache({add: 'undato'});
-			
-			console.log('dato recien metido en la cache', vx.cache('unalista'));
-			
-			vx.cache('unalista', ['es', 'este']);
-			vx.cache('undato', 666);
-			
-			console.log('una lista en la cache actualizado localmente ', vx.cache('unalista'));
 			
 			$('#btn_setCache').on('click', function(){
 				event.preventDefault();
