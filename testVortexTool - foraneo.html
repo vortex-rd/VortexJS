@@ -1,0 +1,83 @@
+<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">    
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Prueba de vx</title>
+	</head>
+	
+	<body>
+		<button id="btn_setRespondedor">setear respondedor</button>
+		<button id="btn_publicarFiltros">publicar filtros a la vieja usansa</button>
+		
+		
+    </body>
+    
+	
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="Cryptico.min.js"></script> 
+	
+    <script type="text/javascript" src="FiltrosYTransformaciones.js"></script>
+    <script type="text/javascript" src="NodoClienteHTTP.js"></script> 
+    <script type="text/javascript" src="ClonadorDeObjetos.js"></script> 
+    <script type="text/javascript" src="GeneradorDeIdMensaje.js"></script> 
+    <script type="text/javascript" src="NodoClienteHTTP.js"></script>  
+    <script type="text/javascript" src="NodoPortalBidi.js"></script> 
+    <script type="text/javascript" src="NodoPortalBidiMonoFiltro.js"></script> 
+    <script type="text/javascript" src="NodoRouter.js"></script> 
+    <script type="text/javascript" src="PataConectora.js"></script> 
+    <script type="text/javascript" src="NodoConectorSocket.js"></script>
+    <script type="text/javascript" src="socket.io.js"></script>
+    <script type="text/javascript" src="Vortex.js"></script> 
+    
+    <script>
+        $(function() {
+            
+			vx.start({verbose:false});
+
+			vx.conectarPorWebSockets({
+				url:'https://router-vortex.herokuapp.com' 
+			});   
+			
+			
+			
+			
+			$('#btn_setRespondedor').on('click',function(){
+				//////Esto lo haria un nodo lejano que quiere responder cosas
+				vx.when({
+					filtro: {
+						tipoDeMensaje: "test.vx.tool.datos.particulares"
+					},
+					callback: function(obj){
+						
+						console.log('me llegó una pregunta: ', obj);
+						
+						vx.send({
+							idRequest: obj.idRequest,
+							para: obj.de,
+							loco: "las cosas son un flash"
+						});
+					}
+				});
+			});
+			/////////
+			
+			
+			
+				
+			$('#btn_publicarFiltros').on('click',function(){
+				vx.pedirMensajes({
+					filtro: {
+						tipoDeMensaje:"test.chota"
+					},
+					callback: function(mensaje){
+						console.log("llego: " + JSON.stringify(mensaje));
+					}
+				});
+			});
+			
+			////////////
+        });
+    </script>
+
+    <script type="text/javascript" src="phonegap.js"></script>
+</html>

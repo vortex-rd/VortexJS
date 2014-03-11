@@ -35,7 +35,9 @@ var Vortex = Vx = vX = vx = {
         this.claveRSAComun = cryptico.generateRSAKey("VORTEXCAPO", 1024);                               //ATA
         this.clavePublicaComun = cryptico.publicKeyString(this.claveRSAComun);                          //PINGO
         this.portales = [];
-	
+		
+		this.lastRequest = 0;
+		
     },
     conectarPorHTTP: function(p){
         var _this = this;
@@ -103,6 +105,8 @@ var Vortex = Vx = vX = vx = {
 	
 	send: function(){
 		
+		var _this = this;
+		
 		var opt = {
 			obj: arguments[0]
 		};
@@ -113,27 +117,27 @@ var Vortex = Vx = vX = vx = {
 		
 		if(!(opt.callback === undefined)){
 			
-			opt.obj.idResponse = 3213213215112; 	//TO DO: generar un numero random, encriptado, no se, lo que sea
-			this.when({
+			opt.obj.idRequest = ++this.lastRequest;
+			var idPortal = this.when({
 				filtro: {
-					idResponse: opt.obj.idResponse,
-					respuesta: true
+					idRequest: opt.obj.idRequest,
+					para: opt.obj.de
 				},
 				callback: function(obj){
-					// TO DO: despublicar filtro
 					opt.callback(obj);
+					
+					_this.portales.splice(idPortal, 1);
 				}
 			});
 			
 		}
 		
-		opt.obj.pregunta = true;
 		this.enviarMensaje(opt.obj);
 		
 	},
 	
 	when: function(p){
-		this.pedirMensajes(p);
+		return this.pedirMensajes(p);
 	}
 };
 

@@ -9,9 +9,7 @@
 		<button id="btn_setCache">Set cache</button>
 		<button id="btn_getCache">Get cache</button>
 		
-		<button id="btn_setRespondedor">setear respondedor</button>
 		<button id="btn_sendConRespuesta">vx.send con respuesta</button>
-		<button id="btn_publicarFiltros">publicar filtros a la vieja usansa</button>
 		<button id="btn_enviarMensaje">enviar mensaje a la vieja usansa</button>
 		
 		
@@ -124,33 +122,13 @@
 			};
 						
 			
-			$('#btn_setRespondedor').on('click',function(){
-				//////Esto lo haria un nodo lejano que quiere responder cosas
-				vx.when({
-					filtro: {
-						tipoDeMensaje: "test.vx.tool.pregunta"
-					},
-					callback: function(obj){
-						
-						console.log('me llegó una pregunta: ', obj);
-						
-						vx.send({
-							tipoDeMensaje: "test.vx.tool.respuesta",
-							idResponse: obj.idResponse,
-							respuesta: true,
-							loco: "las cosas son un flash"
-						});
-					}
-				});
-			});
-			/////////
-			
 			
 			
 			$('#btn_sendConRespuesta').on('click',function(){
 				/////Mensaje con respuesta
 				vx.send({
-					tipoDeMensaje: "test.vx.tool.pregunta",
+					tipoDeMensaje: "test.vx.tool.datos.particulares",
+					de: 'yo1241412412414214143',	//<-- esta sería la clave publica mia
 					che: "que son las cosas?"
 				},function(obj){
 					console.log('respuesta a la pregunta:', obj);
@@ -158,17 +136,6 @@
 				//////////
 			})
 				
-			$('#btn_publicarFiltros').on('click',function(){
-				vx.pedirMensajes({
-					filtro: {
-						tipoDeMensaje:"test.chota"
-					},
-					callback: function(mensaje){
-						console.log("llego: " + JSON.stringify(mensaje));
-					}
-				});
-			});
-			
 			$('#btn_enviarMensaje').on('click',function(){
 				vx.enviarMensaje({
 					tipoDeMensaje:"test.chota",
