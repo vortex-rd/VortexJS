@@ -107,32 +107,37 @@ var Vortex = Vx = vX = vx = {
 		
 		var _this = this;
 		
-		var opt = {
-			obj: arguments[0]
-		};
+		var obj = arguments[0];
 		
-		if(arguments.length==2){
-			opt.callback = arguments[1];
+		if(arguments.length>=2){
+			var _callback = arguments[1];
+		
+		
+			if(!(_callback === undefined)){
+				
+				obj.idRequest = ++this.lastRequest;
+				var idPortal = this.when({
+					filtro: {
+						idRequest: obj.idRequest,
+						para: obj.de
+					},
+					callback: function(objRespuesta){
+						_callback(objRespuesta);
+						
+						_this.portales.splice(idPortal, 1);
+					}
+				});
+				
+			}
 		}
 		
-		if(!(opt.callback === undefined)){
-			
-			opt.obj.idRequest = ++this.lastRequest;
-			var idPortal = this.when({
-				filtro: {
-					idRequest: opt.obj.idRequest,
-					para: opt.obj.de
-				},
-				callback: function(obj){
-					opt.callback(obj);
-					
-					_this.portales.splice(idPortal, 1);
-				}
-			});
-			
-		}
 		
-		this.enviarMensaje(opt.obj);
+		if(arguments.length==3){
+			var claveRSA = arguments[3];
+			this.enviarMensajeSeguro(obj, claveRSA);
+		}else{
+			this.enviarMensaje(obj);
+		}
 		
 	},
 	
