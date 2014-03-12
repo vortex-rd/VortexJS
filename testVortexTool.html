@@ -153,7 +153,9 @@
 				vx.send({
 					tipoDeMensaje: "test.vx.tool.datos.particulares",
 					de: cryptico.publicKeyString(claveRSA),			//<-- esta serla clave publica mia
-					che: "que son las cosas seguras no?"
+					datos:{
+						che: "que son las cosas seguras no?"
+					}
 				},function(obj){
 					console.log('respuesta a la pregunta:', obj);
 				},
