@@ -131,39 +131,28 @@
 			
 			
 			
-			$('#btn_sendConRespuesta').on('click',function(){
-				/////Mensaje con respuesta
-				vx.send({
-					tipoDeMensaje: "test.vx.tool.datos.particulares",
-					de: 'yo1241412412414214143',	//<-- esta sería la clave publica mia
-					che: "que son las cosas?"
-				},function(obj){
-					console.log('respuesta a la pregunta:', obj);
-				});
-				//////////
-				
-				
-				
-			});
 			
 			$('#btn_sendConRespuestaSeguro').on('click',function(){
-				var claveRSA = cryptico.generateRSAKey('JOJOJOJIJIJI', 1024);
-			
+				
+				//vx.addKey se puede usar de ambas formas
+				
+				//var mi_claveRSA = cryptico.generateRSAKey('DonJoseTabuyo', 1024);
+				//var mi_clavePublica = vx.addKey(mi_claveRSA);
+				
+				var mi_clavePublica = vx.addKey('DonJoseTabuyo');
+				
 				/////Mensaje con respuesta
+				
 				vx.send({
 					tipoDeMensaje: "test.vx.tool.datos.particulares",
-					de: cryptico.publicKeyString(claveRSA),			//<-- esta serî¡ la clave publica mia
-					datos:{
+					de: mi_clavePublica,
+					datosEncriptados:{
 						che: "que son las cosas seguras no?"
 					}
 				},function(obj){
 					console.log('respuesta a la pregunta:', obj);
-				},
-					claveRSA
-				);
+				});
 				//////////
-				
-				
 				
 			});
 			

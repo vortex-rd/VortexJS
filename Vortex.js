@@ -35,6 +35,7 @@ var Vortex = Vx = vX = vx = {
         this.claveRSAComun = cryptico.generateRSAKey("VORTEXCAPO", 1024);                               //ATA
         this.clavePublicaComun = cryptico.publicKeyString(this.claveRSAComun);                          //PINGO
         this.portales = [];
+        this.keys = [];
 		
 		this.lastRequest = 0;
 		
@@ -82,9 +83,9 @@ var Vortex = Vx = vX = vx = {
                 var clave = _this.claveRSAComun;
                 if(mensaje.para) clave = claveRSA;
         
-                var desencriptado = cryptico.decrypt(mensaje.datos, clave);
+                var desencriptado = cryptico.decrypt(mensaje.datosEncriptados, clave);
                 if(desencriptado.status == "success" && desencriptado.signature != "forged"){
-                    mensaje.datos = JSON.parse(desencriptado.plaintext);
+                    mensaje.datosEncriptados = JSON.parse(desencriptado.plaintext);
                     p.callback(mensaje);
                 }                    
             }
@@ -98,10 +99,26 @@ var Vortex = Vx = vX = vx = {
         var su_clave_publica = this.clavePublicaComun;
         if(mensaje.de) mi_clave_privada = claveRSA;
         if(mensaje.para) su_clave_publica = mensaje.para;
-        mensaje.datos = cryptico.encrypt(JSON.stringify(mensaje.datos), su_clave_publica, mi_clave_privada).cipher
+        mensaje.datosEncriptados = cryptico.encrypt(JSON.stringify(mensaje.datosEncriptados), su_clave_publica, mi_clave_privada).cipher
         
         this.router.recibirMensaje(mensaje);
     },
+	
+	addKey: function(){
+		
+		var claveRSA = null;
+		if(typeof(arguments[0]) == 'object'){
+			claveRSA = arguments[0];
+		}else if(typeof(arguments[0]) == 'string'){
+			claveRSA = cryptico.generateRSAKey(arguments[0], 1024);
+		}
+		
+		
+		var clavePublica = cryptico.publicKeyString(claveRSA);
+		this.keys[clavePublica] = claveRSA;
+		
+		return clavePublica;
+	},
 	
 	send: function(){
 		
@@ -110,30 +127,21 @@ var Vortex = Vx = vX = vx = {
 		
 		
 		var obj = null;
+		
+		
 		var callback = null;
 		var claveRSA = null;
 		
 		obj = arguments[0];
 		
-		if(arguments.length>=2){
-			if(typeof(arguments[1])=='function'){
-				callback = arguments[1];
-			}else if(typeof(arguments[1])=='object'){
-				claveRSA = arguments[1];
-			}
-		}
-		
-		if(arguments.length>=3){
-			if(typeof(arguments[2])=='function'){
-				callback = arguments[2];
-			}else if(typeof(arguments[2])=='object'){
-				claveRSA = arguments[2];
-			}
+		if(arguments.length==2){
+			callback = arguments[1];
 		}
 		//////////
 		
 		
-		if(callback){
+		if(callback && obj.de){
+			
 			obj.idRequest = ++this.lastRequest;
 			
 			var idPortal = this.when({
@@ -149,8 +157,8 @@ var Vortex = Vx = vX = vx = {
 			});
 		}
 		
-		
-		if(claveRSA){
+		if(obj.de){
+			claveRSA = this.keys[obj.de];
 			this.enviarMensajeSeguro(obj, claveRSA);
 		}else{
 			this.enviarMensaje(obj);
