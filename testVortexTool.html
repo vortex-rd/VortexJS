@@ -10,6 +10,7 @@
 		<button id="btn_getCache">Get cache</button>
 		
 		<button id="btn_sendConRespuesta">vx.send con respuesta</button>
+		<button id="btn_sendConRespuestaSeguro">vx.send con respuesta segura</button>
 		<button id="btn_enviarMensaje">enviar mensaje a la vieja usansa</button>
 		
 		
@@ -124,6 +125,12 @@
 			
 			
 			
+			console.log('clave', cryptico.generateRSAKey('JOJOJOJIJIJI', 1024));
+			console.log('tipo clave', typeof(cryptico.generateRSAKey('JOJOJOJIJIJI', 1024)));
+			console.log('tipo function', typeof(function(){var a = 1;}));
+			
+			
+			
 			$('#btn_sendConRespuesta').on('click',function(){
 				/////Mensaje con respuesta
 				vx.send({
@@ -134,7 +141,31 @@
 					console.log('respuesta a la pregunta:', obj);
 				});
 				//////////
-			})
+				
+				
+				
+			});
+			
+			$('#btn_sendConRespuestaSeguro').on('click',function(){
+				var claveRSA = cryptico.generateRSAKey('JOJOJOJIJIJI', 1024);
+			
+				/////Mensaje con respuesta
+				vx.send({
+					tipoDeMensaje: "test.vx.tool.datos.particulares",
+					de: cryptico.publicKeyString(claveRSA),			//<-- esta serla clave publica mia
+					che: "que son las cosas seguras no?"
+				},function(obj){
+					console.log('respuesta a la pregunta:', obj);
+				},
+					claveRSA
+				);
+				//////////
+				
+				
+				
+			});
+			
+			
 				
 			$('#btn_enviarMensaje').on('click',function(){
 				vx.enviarMensaje({

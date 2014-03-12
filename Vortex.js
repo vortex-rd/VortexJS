@@ -107,33 +107,50 @@ var Vortex = Vx = vX = vx = {
 		
 		var _this = this;
 		
-		var obj = arguments[0];
+		
+		
+		var obj = null;
+		var callback = null;
+		var claveRSA = null;
+		
+		obj = arguments[0];
 		
 		if(arguments.length>=2){
-			var _callback = arguments[1];
-		
-		
-			if(!(_callback === undefined)){
-				
-				obj.idRequest = ++this.lastRequest;
-				var idPortal = this.when({
-					filtro: {
-						idRequest: obj.idRequest,
-						para: obj.de
-					},
-					callback: function(objRespuesta){
-						_callback(objRespuesta);
-						
-						_this.portales.splice(idPortal, 1);
-					}
-				});
-				
+			if(typeof(arguments[1])=='function'){
+				callback = arguments[1];
+			}else if(typeof(arguments[1])=='object'){
+				claveRSA = arguments[1];
 			}
 		}
 		
+		if(arguments.length>=3){
+			if(typeof(arguments[2])=='function'){
+				callback = arguments[2];
+			}else if(typeof(arguments[2])=='object'){
+				claveRSA = arguments[2];
+			}
+		}
+		//////////
 		
-		if(arguments.length==3){
-			var claveRSA = arguments[3];
+		
+		if(callback){
+			obj.idRequest = ++this.lastRequest;
+			
+			var idPortal = this.when({
+				filtro: {
+					idRequest: obj.idRequest,
+					para: obj.de
+				},
+				callback: function(objRespuesta){
+					callback(objRespuesta);
+					
+					_this.portales.splice(idPortal, 1);
+				}
+			});
+		}
+		
+		
+		if(claveRSA){
 			this.enviarMensajeSeguro(obj, claveRSA);
 		}else{
 			this.enviarMensaje(obj);
