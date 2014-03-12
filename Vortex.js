@@ -83,9 +83,9 @@ var Vortex = Vx = vX = vx = {
                 var clave = _this.claveRSAComun;
                 if(mensaje.para) clave = claveRSA;
         
-                var desencriptado = cryptico.decrypt(mensaje.datosEncriptados, clave);
+                var desencriptado = cryptico.decrypt(mensaje.datoSeguro, clave);
                 if(desencriptado.status == "success" && desencriptado.signature != "forged"){
-                    mensaje.datosEncriptados = JSON.parse(desencriptado.plaintext);
+                    mensaje.datoSeguro = JSON.parse(desencriptado.plaintext);
                     p.callback(mensaje);
                 }                    
             }
@@ -99,7 +99,7 @@ var Vortex = Vx = vX = vx = {
         var su_clave_publica = this.clavePublicaComun;
         if(mensaje.de) mi_clave_privada = claveRSA;
         if(mensaje.para) su_clave_publica = mensaje.para;
-        mensaje.datosEncriptados = cryptico.encrypt(JSON.stringify(mensaje.datosEncriptados), su_clave_publica, mi_clave_privada).cipher
+        mensaje.datoSeguro = cryptico.encrypt(JSON.stringify(mensaje.datoSeguro), su_clave_publica, mi_clave_privada).cipher
         
         this.router.recibirMensaje(mensaje);
     },
@@ -166,8 +166,13 @@ var Vortex = Vx = vX = vx = {
 		
 	},
 	
-	when: function(p){
-		return this.pedirMensajes(p);
+	when: function(){
+		if(arguments.length==1){
+			return this.pedirMensajes(arguments[0]);
+		}
+		if(arguments.length==2){
+			return this.pedirMensajesSeguros(arguments[0], arguments[1]);
+		}
 	}
 };
 

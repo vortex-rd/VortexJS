@@ -9,7 +9,6 @@
 		<button id="btn_setCache">Set cache</button>
 		<button id="btn_getCache">Get cache</button>
 		
-		<button id="btn_sendConRespuesta">vx.send con respuesta</button>
 		<button id="btn_sendConRespuestaSeguro">vx.send con respuesta segura</button>
 		<button id="btn_enviarMensaje">enviar mensaje a la vieja usansa</button>
 		
@@ -146,7 +145,7 @@
 				vx.send({
 					tipoDeMensaje: "test.vx.tool.datos.particulares",
 					de: mi_clavePublica,
-					datosEncriptados:{
+					datoSeguro:{
 						che: "que son las cosas seguras no?"
 					}
 				},function(obj){
