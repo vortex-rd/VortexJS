@@ -2,13 +2,20 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">    
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Prueba de vx</title>
+		<style>
+			div{
+				border: solid 1px;
+			}
+		</style>
+		
 	</head>
 	
 	<body>
-		<button id="btn_setRespondedor">setear respondedor</button>
-		<button id="btn_publicarFiltros">publicar filtros a la vieja usansa</button>
-		
-		
+		<div id="btn_setWhen">vx.when <b>(test.jt.vx.when)</b></div>
+		<div id="btn_setWhenPara">vx.when - para <b>(test.jt.vx.when.para)</b></div>
+		<div id="btn_setWhenPreguntaPara">vx.when - - pregunta - para <b>(test.jt.vx.when.pregunta.para)</b></div>
+		<div id="btn_setWhenParaPreguntaPara">vx.when - para - pregunta - para <b>(test.jt.vx.when.para.pregunta.para)</b></div>
+		<div id="btn_setWhenParaPreguntaParaDe">vx.when - para - pregunta - para de <b>(test.jt.vx.when.para.pregunta.para.de)</b></div>
     </body>
     
 	
@@ -39,16 +46,38 @@
 			});   
 			
 			
+			var mi_clavePublica = vx.addKey('DonCarlosGutierres');
+			console.log('mi_clavePublica', mi_clavePublica);
 			
 			
-			$('#btn_setRespondedor').on('click',function(){
-				//////Esto lo haria un nodo lejano que quiere responder cosas
+			
+			$('#btn_setWhen').on('click',function(){
 				vx.when({
-					tipoDeMensaje: "test.vx.tool.datos.particulares"
-				
+					tipoDeMensaje: "test.jt.vx.when"
+					
 				},function(obj){
 					
-					console.log('me llegó una pregunta: ', obj);
+					console.log('me llego test.jt.vx.when: ', obj);
+					
+				});
+			});
+			$('#btn_setWhenPara').on('click',function(){
+				
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.para",
+					para: mi_clavePublica
+				},function(obj){
+					console.log('me llego test.jt.vx.when.para: ', obj);
+				});
+			});
+			
+			$('#btn_setWhenPreguntaPara').on('click',function(){
+				//////Esto lo haria un nodo lejano que quiere responder cosas
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.pregunta.para"
+				},function(obj){
+					
+					console.log('me llego test.jt.vx.when.pregunta.para: ', obj);
 					
 					vx.send({
 						idRequest: obj.idRequest,
@@ -58,22 +87,56 @@
 					});
 				});
 			});
+			
+			
+			
+			
+			
+			$('#btn_setWhenParaPreguntaPara').on('click',function(){
+				//////Esto lo haria un nodo lejano que quiere responder cosas
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
+					para: mi_clavePublica
+				},function(obj){
+					
+					console.log('me llego test.jt.vx.when.para.pregunta.para: ', obj);
+					
+					vx.send({
+						idRequest: obj.idRequest,
+						para: obj.de,
+						datoSeguroOriginal: obj.datoSeguro,
+						loco: "las cosas son un flash"
+					});
+				});
+			});
+			
+			
+			
+			$('#btn_setWhenParaPreguntaParaDe').on('click',function(){
+				//////Esto lo haria un nodo lejano que quiere responder cosas
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para.de",
+					para: mi_clavePublica
+				},function(obj){
+					
+					console.log('me llego test.jt.vx.when.para.pregunta.para.de: ', obj);
+					
+					vx.send({
+						idRequest: obj.idRequest,
+						de: mi_clavePublica,
+						para: obj.de,
+						datoSeguroOriginal: obj.datoSeguro,
+						datoSeguro: {
+							loco: "las cosas son un flash"
+						}
+					});
+				});
+			});
 			/////////
 			
 			
 			
 				
-			$('#btn_publicarFiltros').on('click',function(){
-				vx.pedirMensajes({
-					filtro: {
-						tipoDeMensaje:"test.chota"
-					},
-					callback: function(mensaje){
-						console.log("llego: " + JSON.stringify(mensaje));
-					}
-				});
-			});
-			
 			////////////
         });
     </script>

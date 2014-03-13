@@ -1,17 +1,31 @@
-<head>
+<html>
+	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">    
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Prueba de vx</title>
+	
+		<style>
+			div{
+				border: solid 1px;
+			}
+		</style>
+	
 	</head>
 	
+	
+	
 	<body>
-		<button id="btn_initCache">Inicializa cache</button>
-		<button id="btn_setCache">Set cache</button>
-		<button id="btn_getCache">Get cache</button>
 		
-		<button id="btn_sendConRespuestaSeguro">vx.send con respuesta segura</button>
-		<button id="btn_enviarMensaje">enviar mensaje a la vieja usansa</button>
+		<div id="btn_send">vx.send <b>(test.jt.vx.when)</b></div>
+		<div id="btn_sendDe">vx.send - de <b>(test.jt.vx.when)</b></div>
+		<div id="btn_sendDePara">vx.send - de para<b>(test.jt.vx.when.para)</b></div>
+		<div id="btn_sendDePregunta">vx.send - de - pregunta<b>(test.jt.vx.when.pregunta.para)</b></div>
+		<div id="btn_sendDeParaPregunta">vx.send - de para - pregunta<b>(test.jt.vx.when.para.pregunta.para)</b></div>
+		<div id="btn_sendDeParaPreguntaDe">vx.send - de para - pregunta - de<b>(test.jt.vx.when.para.pregunta.para.de)</b></div>
 		
+		<div id="btn_initCache">Inicializa cache</div>
+		<div id="btn_setCache">Set cache</div>
+		<div id="btn_getCache">Get cache</div>
 		
     </body>
     
@@ -42,6 +56,91 @@
 				url:'https://router-vortex.herokuapp.com' 
 			});   
 			
+			
+			
+			//vx.addKey se puede usar de ambas formas
+
+			//var mi_claveRSA = cryptico.generateRSAKey('DonJoseTabuyo', 1024);
+			//var mi_clavePublica = vx.addKey(mi_claveRSA);
+
+			var mi_clavePublica = vx.addKey('DonJoseTabuyo');
+			console.log('mi_clavePublica', mi_clavePublica);
+			
+			
+			var su_clavePublica = cryptico.generateRSAKey('DonCarlosGutierres', 1024); // es como que me paso la clave publica y la tengo
+			su_clavePublica = cryptico.publicKeyString(su_clavePublica);
+			
+			console.log('su_clavePublica', su_clavePublica);
+			
+			$('#btn_send').on('click',function(){
+				vx.send({
+					tipoDeMensaje: "test.jt.vx.when",
+					datoComun:{
+						cosas: ['cosas', 'comunes']
+					}
+				});
+			});
+			
+			
+			$('#btn_sendDe').on('click',function(){
+				vx.send({
+					tipoDeMensaje: "test.jt.vx.when",
+					de: mi_clavePublica,
+					datoSeguro:{
+						cosas: ['cosas', 'seguras']
+					}
+				});
+			});
+			
+			
+			$('#btn_sendDePara').on('click',function(){
+				vx.send({
+					tipoDeMensaje: "test.jt.vx.when.para",
+					de: mi_clavePublica,
+					para: su_clavePublica,
+					datoSeguro:{
+						cosas: ['cosas', 'seguras']
+					}
+				});
+			});
+			
+			$('#btn_sendDePregunta').on('click',function(){
+				vx.send({
+					tipoDeMensaje: "test.jt.vx.when.pregunta.para",
+					de: mi_clavePublica,
+					datoSeguro:{
+						cosas: ['cosas', 'seguras']
+					}
+				}, function(obj){
+					console.log('respuesta al test.jt.vx.when.pregunta.para:', obj);
+				});
+			});
+			
+			$('#btn_sendDeParaPregunta').on('click',function(){
+				vx.send({
+					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
+					de: mi_clavePublica,
+					para: su_clavePublica,
+					datoSeguro:{
+						cosas: ['cosas', 'comunes']
+					}
+				}, function(obj){
+					console.log('respuesta al test.jt.vx.when.para.pregunta.para:', obj);
+				})
+			});
+
+			$('#btn_sendDeParaPreguntaDe').on('click',function(){
+				vx.send({
+					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para.de",
+					de: mi_clavePublica,
+					para: su_clavePublica,
+					datoSeguro:{
+						cosas: ['cosas', 'comunes']
+					}
+				}, function(obj){
+					console.log('respuesta al test.jt.vx.when.para.pregunta.para.de:', obj);
+				})
+			});
 			
 			
 			
@@ -121,49 +220,6 @@
 				
 			};
 						
-			
-			
-			
-			console.log('clave', cryptico.generateRSAKey('JOJOJOJIJIJI', 1024));
-			console.log('tipo clave', typeof(cryptico.generateRSAKey('JOJOJOJIJIJI', 1024)));
-			console.log('tipo function', typeof(function(){var a = 1;}));
-			
-			
-			
-			
-			$('#btn_sendConRespuestaSeguro').on('click',function(){
-				
-				//vx.addKey se puede usar de ambas formas
-				
-				//var mi_claveRSA = cryptico.generateRSAKey('DonJoseTabuyo', 1024);
-				//var mi_clavePublica = vx.addKey(mi_claveRSA);
-				
-				var mi_clavePublica = vx.addKey('DonJoseTabuyo');
-				
-				/////Mensaje con respuesta
-				
-				vx.send({
-					tipoDeMensaje: "test.vx.tool.datos.particulares",
-					de: mi_clavePublica,
-					datoSeguro:{
-						che: "que son las cosas seguras no?"
-					}
-				},function(obj){
-					console.log('respuesta a la pregunta:', obj);
-				});
-				//////////
-				
-			});
-			
-			
-				
-			$('#btn_enviarMensaje').on('click',function(){
-				vx.enviarMensaje({
-					tipoDeMensaje:"test.chota",
-					datun:"dale que baila"
-				});
-			});
-				
 			
 			$('#btn_initCache').on('click', function(){
 				///cache
