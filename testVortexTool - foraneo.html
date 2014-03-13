@@ -44,19 +44,18 @@
 			$('#btn_setRespondedor').on('click',function(){
 				//////Esto lo haria un nodo lejano que quiere responder cosas
 				vx.when({
-					filtro: {
-						tipoDeMensaje: "test.vx.tool.datos.particulares"
-					},
-					callback: function(obj){
-						
-						console.log('me llegó una pregunta: ', obj);
-						
-						vx.send({
-							idRequest: obj.idRequest,
-							para: obj.de,
-							loco: "las cosas son un flash"
-						});
-					}
+					tipoDeMensaje: "test.vx.tool.datos.particulares"
+				
+				},function(obj){
+					
+					console.log('me llegó una pregunta: ', obj);
+					
+					vx.send({
+						idRequest: obj.idRequest,
+						para: obj.de,
+						datoSeguroOriginal: obj.datoSeguro,
+						loco: "las cosas son un flash"
+					});
 				});
 			});
 			/////////

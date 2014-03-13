@@ -82,13 +82,18 @@ var Vortex = Vx = vX = vx = {
             callback: function(mensaje){                
                 var clave = _this.claveRSAComun;
                 if(mensaje.para) clave = claveRSA;
-        
-                var desencriptado = cryptico.decrypt(mensaje.datoSeguro, clave);
-                if(desencriptado.status == "success" && desencriptado.signature != "forged"){
-                    mensaje.datoSeguro = JSON.parse(desencriptado.plaintext);
-                    p.callback(mensaje);
-                }                    
+				
+				if(mensaje.datoSeguro){
+					var desencriptado = cryptico.decrypt(mensaje.datoSeguro, clave);
+					if(desencriptado.status == "success" && desencriptado.signature != "forged"){
+						mensaje.datoSeguro = JSON.parse(desencriptado.plaintext);
+						p.callback(mensaje);
+					}
+				}else{
+					p.callback(mensaje);
+				}
             }
+			
         })
     },
     enviarMensaje:function(mensaje){
@@ -99,7 +104,10 @@ var Vortex = Vx = vX = vx = {
         var su_clave_publica = this.clavePublicaComun;
         if(mensaje.de) mi_clave_privada = claveRSA;
         if(mensaje.para) su_clave_publica = mensaje.para;
-        mensaje.datoSeguro = cryptico.encrypt(JSON.stringify(mensaje.datoSeguro), su_clave_publica, mi_clave_privada).cipher
+		
+		if(mensaje.datoSeguro){
+			mensaje.datoSeguro = cryptico.encrypt(JSON.stringify(mensaje.datoSeguro), su_clave_publica, mi_clave_privada).cipher;
+		}
         
         this.router.recibirMensaje(mensaje);
     },
@@ -145,15 +153,11 @@ var Vortex = Vx = vX = vx = {
 			obj.idRequest = ++this.lastRequest;
 			
 			var idPortal = this.when({
-				filtro: {
-					idRequest: obj.idRequest,
-					para: obj.de
-				},
-				callback: function(objRespuesta){
-					callback(objRespuesta);
-					
-					_this.portales.splice(idPortal, 1);
-				}
+				idRequest: obj.idRequest,
+				para: obj.de
+			},function(objRespuesta){
+				callback(objRespuesta);
+				_this.portales.splice(idPortal, 1);
 			});
 		}
 		
@@ -167,12 +171,28 @@ var Vortex = Vx = vX = vx = {
 	},
 	
 	when: function(){
-		if(arguments.length==1){
-			return this.pedirMensajes(arguments[0]);
+		
+		var _filtro = arguments[0];
+		var _callback = arguments[1];
+		
+		if(_filtro.para){
+			return this.pedirMensajesSeguros({
+				filtro: _filtro,
+				callback: _callback
+			}, this.keys[_filtro.para]);
+		}else{
+			return this.pedirMensajes({
+				filtro: _filtro,
+				callback: _callback
+			});
 		}
-		if(arguments.length==2){
-			return this.pedirMensajesSeguros(arguments[0], arguments[1]);
-		}
+		
+		/*
+		return this.pedirMensajes({
+			filtro: _filtro,
+			callback: _callback
+		});
+		*/
 	}
 };
 
