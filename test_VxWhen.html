@@ -50,6 +50,9 @@
 			console.log('mi_clavePublica', mi_clavePublica);
 			
 			
+			var su_clavePublica = cryptico.generateRSAKey('DonJoseTabuyo', 1024); // es como que me paso la clave publica y la tengo
+			su_clavePublica = cryptico.publicKeyString(su_clavePublica);
+			
 			
 			$('#btn_setWhen').on('click',function(){
 				vx.when({
@@ -61,6 +64,19 @@
 					
 				});
 			});
+			
+			
+			$('#btn_setWhenDe').on('click',function(){
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.de",
+					de: su_clavePublica
+				},function(obj){
+					
+					console.log('me llego test.jt.vx.when.de: ', obj);
+					
+				});
+			});
+			
 			$('#btn_setWhenPara').on('click',function(){
 				
 				vx.when({
@@ -71,8 +87,19 @@
 				});
 			});
 			
+			$('#btn_setWhenDePara').on('click',function(){
+				
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.de.para",
+					de: su_clavePublica,
+					para: mi_clavePublica
+				},function(obj){
+					console.log('me llego test.jt.vx.when.de.para: ', obj);
+				});
+			});
+			
+			// PREGUNTAS
 			$('#btn_setWhenPreguntaPara').on('click',function(){
-				//////Esto lo haria un nodo lejano que quiere responder cosas
 				vx.when({
 					tipoDeMensaje: "test.jt.vx.when.pregunta.para"
 				},function(obj){
@@ -89,11 +116,24 @@
 			});
 			
 			
-			
-			
+			$('#btn_setWhenDePreguntaPara').on('click',function(){
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
+					de: su_clavePublica
+				},function(obj){
+					
+					console.log('me llego test.jt.vx.when.para.pregunta.para: ', obj);
+					
+					vx.send({
+						idRequest: obj.idRequest,
+						para: obj.de,
+						datoSeguroOriginal: obj.datoSeguro,
+						loco: "las cosas son un flash"
+					});
+				});
+			});
 			
 			$('#btn_setWhenParaPreguntaPara').on('click',function(){
-				//////Esto lo haria un nodo lejano que quiere responder cosas
 				vx.when({
 					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
 					para: mi_clavePublica
@@ -111,32 +151,97 @@
 			});
 			
 			
-			
-			$('#btn_setWhenParaPreguntaParaDe').on('click',function(){
-				//////Esto lo haria un nodo lejano que quiere responder cosas
+			$('#btn_setWhenDeParaPreguntaPara').on('click',function(){
 				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para.de",
+					tipoDeMensaje: "test.jt.vx.when.de.para.pregunta.para",
+					de: su_clavePublica,
 					para: mi_clavePublica
 				},function(obj){
 					
-					console.log('me llego test.jt.vx.when.para.pregunta.para.de: ', obj);
+					console.log('me llego test.jt.vx.when.de.para.pregunta.para: ', obj);
 					
 					vx.send({
 						idRequest: obj.idRequest,
-						de: mi_clavePublica,
 						para: obj.de,
 						datoSeguroOriginal: obj.datoSeguro,
-						datoSeguro: {
-							loco: "las cosas son un flash"
-						}
+						loco: "las cosas son un flash"
 					});
 				});
 			});
-			/////////
 			
 			
 			
-				
+			$('#btn_setWhenPreguntaDePara').on('click',function(){
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.pregunta.de.para"
+				},function(obj){
+					
+					console.log('me llego test.jt.vx.when.pregunta.para: ', obj);
+					
+					vx.send({
+						idRequest: obj.idRequest,
+						para: obj.de,
+						datoSeguroOriginal: obj.datoSeguro,
+						loco: "las cosas son un flash"
+					});
+				});
+			});
+			
+			
+			$('#btn_setWhenDePreguntaPara').on('click',function(){
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
+					de: su_clavePublica
+				},function(obj){
+					
+					console.log('me llego test.jt.vx.when.para.pregunta.para: ', obj);
+					
+					vx.send({
+						idRequest: obj.idRequest,
+						para: obj.de,
+						datoSeguroOriginal: obj.datoSeguro,
+						loco: "las cosas son un flash"
+					});
+				});
+			});
+			
+			$('#btn_setWhenParaPreguntaPara').on('click',function(){
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
+					para: mi_clavePublica
+				},function(obj){
+					
+					console.log('me llego test.jt.vx.when.para.pregunta.para: ', obj);
+					
+					vx.send({
+						idRequest: obj.idRequest,
+						para: obj.de,
+						datoSeguroOriginal: obj.datoSeguro,
+						loco: "las cosas son un flash"
+					});
+				});
+			});
+			
+			
+			$('#btn_setWhenDeParaPreguntaPara').on('click',function(){
+				vx.when({
+					tipoDeMensaje: "test.jt.vx.when.de.para.pregunta.para",
+					de: su_clavePublica,
+					para: mi_clavePublica
+				},function(obj){
+					
+					console.log('me llego test.jt.vx.when.de.para.pregunta.para: ', obj);
+					
+					vx.send({
+						idRequest: obj.idRequest,
+						para: obj.de,
+						datoSeguroOriginal: obj.datoSeguro,
+						loco: "las cosas son un flash"
+					});
+				});
+			});
+			
+			
 			////////////
         });
     </script>
