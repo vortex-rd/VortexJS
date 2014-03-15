@@ -8,6 +8,11 @@
 			div{
 				border: solid 1px;
 			}
+			
+			#btn_initCache{display: none;}
+			#btn_setCache{display: none;}
+			#btn_getCache{display: none;}
+			
 		</style>
 	
 	</head>
@@ -16,12 +21,18 @@
 	
 	<body>
 		
-		<div id="btn_send">vx.send <b>(test.jt.vx.when)</b></div>
-		<div id="btn_sendDe">vx.send - de <b>(test.jt.vx.when)</b></div>
-		<div id="btn_sendDePara">vx.send - de para<b>(test.jt.vx.when.para)</b></div>
-		<div id="btn_sendDePregunta">vx.send - de - pregunta<b>(test.jt.vx.when.pregunta.para)</b></div>
-		<div id="btn_sendDeParaPregunta">vx.send - de para - pregunta<b>(test.jt.vx.when.para.pregunta.para)</b></div>
-		<div id="btn_sendDeParaPreguntaDe">vx.send - de para - pregunta - de<b>(test.jt.vx.when.para.pregunta.para.de)</b></div>
+		<table>
+			<tr><td><button id="btn_send">btn_send</button></td><td>test.jt.vx.when</td></tr>
+			<tr><td><button id="btn_sendDe">btn_sendDe</button></td><td>test.jt.vx.when.de</td></tr>
+			<tr><td><button id="btn_sendPara">btn_sendPara</button></td><td>test.jt.vx.when.para</td></tr>
+			<tr><td><button id="btn_sendDePara">btn_sendDePara</button></td><td>test.jt.vx.when.de.para</td></tr>
+			
+			<tr><td><button id="btn_sendDeRespuestaPara">btn_sendDeRespuestaPara</button></td><td>test.jt.vx.when.de.respuesta.para</td></tr>
+			<tr><td><button id="btn_sendDeParaRespuestaPara">btn_sendDeParaRespuestaPara</button></td><td>test.jt.vx.when.de.para.respuesta.para</td></tr>
+			
+			<tr><td><button id="btn_sendDeRespuestaDePara">btn_sendDeRespuestaDePara</button></td><td>test.jt.vx.when.de.respuesta.para</td></tr>
+			<tr><td><button id="btn_sendDeParaRespuestaDePara">btn_sendDeParaRespuestaDePara</button></td><td>test.jt.vx.when.de.respuesta.de.para</td></tr>
+		</table>
 		
 		<div id="btn_initCache">Inicializa cache</div>
 		<div id="btn_setCache">Set cache</div>
@@ -72,6 +83,14 @@
 			
 			console.log('su_clavePublica', su_clavePublica);
 			
+			
+			vx.when({
+				de: mi_clavePublica
+			},function(obj){
+				console.log('_', obj);
+			});
+			
+			
 			$('#btn_send').on('click',function(){
 				vx.send({
 					tipoDeMensaje: "test.jt.vx.when",
@@ -84,9 +103,19 @@
 			
 			$('#btn_sendDe').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when",
+					tipoDeMensaje: "test.jt.vx.when.de",
 					de: mi_clavePublica,
 					datoSeguro:{
+						cosas: ['cosas', 'seguras']
+					}
+				});
+			});
+			
+			$('#btn_sendPara').on('click',function(){
+				vx.send({
+					tipoDeMensaje: "test.jt.vx.when.para",
+					para: su_clavePublica,
+					dato:{
 						cosas: ['cosas', 'seguras']
 					}
 				});
@@ -95,7 +124,7 @@
 			
 			$('#btn_sendDePara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.para",
+					tipoDeMensaje: "test.jt.vx.when.de.para",
 					de: mi_clavePublica,
 					para: su_clavePublica,
 					datoSeguro:{
@@ -104,41 +133,61 @@
 				});
 			});
 			
-			$('#btn_sendDePregunta').on('click',function(){
+			//////////////////////////////////////
+			
+			///test.jt.vx.when.de.respuesta.para    ver de ponerlo solo para testear el when del otro lado
+			
+			$('#btn_sendDeRespuestaPara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.pregunta.para",
+					tipoDeMensaje: "test.jt.vx.when.de.respuesta.para",
 					de: mi_clavePublica,
 					datoSeguro:{
 						cosas: ['cosas', 'seguras']
 					}
 				}, function(obj){
-					console.log('respuesta al test.jt.vx.when.pregunta.para:', obj);
+					console.log('respuesta de test.jt.vx.when.de.respuesta.para:', obj);
 				});
 			});
 			
-			$('#btn_sendDeParaPregunta').on('click',function(){
+			
+			///test.jt.vx.when.para.respuesta.para    no se si anda un obj-pregunta sin un de
+			
+			$('#btn_sendDeParaRespuestaPara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
+					tipoDeMensaje: "test.jt.vx.when.de.para.respuesta.para",
 					de: mi_clavePublica,
 					para: su_clavePublica,
 					datoSeguro:{
 						cosas: ['cosas', 'comunes']
 					}
 				}, function(obj){
-					console.log('respuesta al test.jt.vx.when.para.pregunta.para:', obj);
+					console.log('respuesta de test.jt.vx.when.de.para.respuesta.para:', obj);
 				})
 			});
-
-			$('#btn_sendDeParaPreguntaDe').on('click',function(){
+			////////////////////////////////////////////
+			
+			$('#btn_sendDeRespuestaDePara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para.de",
+					tipoDeMensaje: "test.jt.vx.when.de.para.respuesta.de.para",
+					de: mi_clavePublica,
+					datoSeguro:{
+						cosas: ['cosas', 'comunes']
+					}
+				}, function(obj){
+					console.log('respuesta de test.jt.vx.when.de.para.respuesta.de.para:', obj);
+				})
+			});
+			
+			$('#btn_sendDeParaRespuestaDePara').on('click',function(){
+				vx.send({
+					tipoDeMensaje: "test.jt.vx.when.de.para.respuesta.de.para",
 					de: mi_clavePublica,
 					para: su_clavePublica,
 					datoSeguro:{
 						cosas: ['cosas', 'comunes']
 					}
 				}, function(obj){
-					console.log('respuesta al test.jt.vx.when.para.pregunta.para.de:', obj);
+					console.log('respuesta de test.jt.vx.when.de.para.respuesta.de.para:', obj);
 				})
 			});
 			
