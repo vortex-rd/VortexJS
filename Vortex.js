@@ -77,6 +77,8 @@ var Vortex = Vx = vX = vx = {
     },
     pedirMensajesSeguros: function(p, claveRSA){
         var _this = this;
+		
+		
         return this.pedirMensajes({
             filtro:p.filtro,
             callback: function(mensaje){                
