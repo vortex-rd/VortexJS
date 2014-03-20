@@ -77,11 +77,32 @@ var Vortex = Vx = vX = vx = {
     },
     pedirMensajesSeguros: function(p, claveRSA){
         var _this = this;
+		
+		
         return this.pedirMensajes({
             filtro:p.filtro,
-            callback: function(mensaje){                
+            callback: function(mensaje){
+			
+			
+				var mi_clave_privada = this.claveRSAComun;
+				var su_clave_publica = this.clavePublicaComun;
+				
+				if(mensaje.para) mi_clave_privada = claveRSA;
+				if(mensaje.de) su_clave_publica = mensaje.de;
+				
+				
+				console.log('mensaje antes de desencriptar', mensaje);
+				
+				
+				
+				
+				
                 var clave = _this.claveRSAComun;
+				
                 if(mensaje.para) clave = claveRSA;
+				
+				
+				
 				
 				if(mensaje.datoSeguro){
 					var desencriptado = cryptico.decrypt(mensaje.datoSeguro, clave);
@@ -100,7 +121,8 @@ var Vortex = Vx = vX = vx = {
         this.router.recibirMensaje(mensaje);
     },
     enviarMensajeSeguro:function(mensaje, claveRSA){
-        var mi_clave_privada = undefined;
+        //var mi_clave_privada = undefined;
+        var mi_clave_privada = this.claveRSAComun;
         var su_clave_publica = this.clavePublicaComun;
         if(mensaje.de) mi_clave_privada = claveRSA;
         if(mensaje.para) su_clave_publica = mensaje.para;
@@ -161,12 +183,20 @@ var Vortex = Vx = vX = vx = {
 			});
 		}
 		
+		
+		
 		if(obj.de){
 			claveRSA = this.keys[obj.de];
 			this.enviarMensajeSeguro(obj, claveRSA);
-		}else{
-			this.enviarMensaje(obj);
+			return;
 		}
+		
+		if(!obj.de && obj.para){
+			this.enviarMensajeSeguro(obj);
+			return;
+		}
+		
+		this.enviarMensaje(obj);
 		
 	},
 	
@@ -180,7 +210,22 @@ var Vortex = Vx = vX = vx = {
 				filtro: _filtro,
 				callback: _callback
 			}, this.keys[_filtro.para]);
-		}else{
+		}
+		
+		if(_filtro.de){
+			return this.pedirMensajesSeguros({
+				filtro: _filtro,
+				callback: _callback
+			}, _filtro.de);
+		}
+		
+		
+		
+		
+		
+		
+		
+		else{
 			return this.pedirMensajes({
 				filtro: _filtro,
 				callback: _callback

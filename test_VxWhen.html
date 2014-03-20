@@ -11,11 +11,117 @@
 	</head>
 	
 	<body>
-		<div id="btn_setWhen">vx.when <b>(test.jt.vx.when)</b></div>
-		<div id="btn_setWhenPara">vx.when - para <b>(test.jt.vx.when.para)</b></div>
-		<div id="btn_setWhenPreguntaPara">vx.when - - pregunta - para <b>(test.jt.vx.when.pregunta.para)</b></div>
-		<div id="btn_setWhenParaPreguntaPara">vx.when - para - pregunta - para <b>(test.jt.vx.when.para.pregunta.para)</b></div>
-		<div id="btn_setWhenParaPreguntaParaDe">vx.when - para - pregunta - para de <b>(test.jt.vx.when.para.pregunta.para.de)</b></div>
+		<table>
+			
+			
+			
+			
+			<!-- ----------------------- -->
+			<tr>
+				<td>
+					btn_setWhen
+				</td>
+				<td id="btn_setWhen">
+					
+				</td>
+			</tr>
+			<tr>
+				<td>
+					btn_setWhenDe
+				</td>
+				<td id="btn_setWhenDe">
+					
+				</td>
+			</tr>
+			<tr>
+				<td>
+					btn_setWhenPara
+				</td>
+				<td id="btn_setWhenPara">
+					
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					btn_setWhenDePara
+				</td>
+				<td id="btn_setWhenDePara">
+					
+				</td>
+			</tr>
+			<!-- ----------------------- -->
+			<tr>
+				<td>
+					btn_setWhenPreguntaPara
+				</td>
+				<td id="btn_setWhenPreguntaPara">
+					
+				</td>
+			</tr>
+			<tr>
+				<td>
+					btn_setWhenDePreguntaPara
+				</td>
+				<td id="btn_setWhenDePreguntaPara">
+					
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					btn_setWhenParaPreguntaPara
+				</td>
+				<td id="btn_setWhenParaPreguntaPara">
+					
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					btn_setWhenDeParaPreguntaPara
+				</td>
+				<td id="btn_setWhenDeParaPreguntaPara">
+					
+				</td>
+			</tr>
+			<!-- ----------------------- -->
+			<tr>
+				<td>
+					btn_setWhenPreguntaDePara
+				</td>
+				<td id="btn_setWhenPreguntaDePara">
+					
+				</td>
+			</tr>
+			<tr>
+				<td>
+					btn_setWhenDePreguntaDePara
+				</td>
+				<td id="btn_setWhenDePreguntaDePara">
+					
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					btn_setWhenParaPreguntaDePara
+				</td>
+				<td id="btn_setWhenParaPreguntaDePara">
+					
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					btn_setWhenDeParaPreguntaDePara
+				</td>
+				<td id="btn_setWhenDeParaPreguntaDePara">
+					
+				</td>
+			</tr>
+		</table>
+		
     </body>
     
 	
@@ -43,7 +149,7 @@
 
 			vx.conectarPorWebSockets({
 				url:'https://router-vortex.herokuapp.com' 
-			});   
+			});
 			
 			
 			var mi_clavePublica = vx.addKey('DonCarlosGutierres');
@@ -52,197 +158,190 @@
 			
 			var su_clavePublica = cryptico.generateRSAKey('DonJoseTabuyo', 1024); // es como que me paso la clave publica y la tengo
 			su_clavePublica = cryptico.publicKeyString(su_clavePublica);
+			console.log('su_clavePublica', su_clavePublica);
 			
-			
-			$('#btn_setWhen').on('click',function(){
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when"
-					
-				},function(obj){
-					
-					console.log('me llego test.jt.vx.when: ', obj);
-					
-				});
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when"
+			},function(obj){
+				$('#btn_setWhen').append('OK');
+				console.log('me llego test.jt.vx.when: ', obj);
 			});
+
 			
 			
-			$('#btn_setWhenDe').on('click',function(){
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.de",
-					de: su_clavePublica
-				},function(obj){
-					
-					console.log('me llego test.jt.vx.when.de: ', obj);
-					
-				});
-			});
-			
-			$('#btn_setWhenPara').on('click',function(){
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.de",
+				de: su_clavePublica
+			},function(obj){
 				
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.para",
-					para: mi_clavePublica
-				},function(obj){
-					console.log('me llego test.jt.vx.when.para: ', obj);
-				});
-			});
-			
-			$('#btn_setWhenDePara').on('click',function(){
+				$('#btn_setWhenDe').append('OK');
+				console.log('me llego test.jt.vx.when.de: ', obj);
 				
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.de.para",
-					de: su_clavePublica,
-					para: mi_clavePublica
-				},function(obj){
-					console.log('me llego test.jt.vx.when.de.para: ', obj);
-				});
 			});
 			
+			
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.para",
+				para: mi_clavePublica
+			},function(obj){
+				$('#btn_setWhenPara').append('OK');
+				console.log('me llego test.jt.vx.when.para: ', obj);
+			});
+			
+			
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.de.para",
+				de: su_clavePublica,
+				para: mi_clavePublica
+			},function(obj){
+				$('#btn_setWhenDePara').append('OK');
+				console.log('me llego test.jt.vx.when.de.para: ', obj);
+			});
+
+			////////////////////////////////////////////////
+
 			// PREGUNTAS
-			$('#btn_setWhenPreguntaPara').on('click',function(){
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.pregunta.para"
-				},function(obj){
-					
-					console.log('me llego test.jt.vx.when.pregunta.para: ', obj);
-					
-					vx.send({
-						idRequest: obj.idRequest,
-						para: obj.de,
-						datoSeguroOriginal: obj.datoSeguro,
-						loco: "las cosas son un flash"
-					});
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.respuesta.para"
+			},function(obj){
+				
+				$('#btn_setWhenRespuestaPara').append('OK (llegó respuesta)');
+				console.log('me llego test.jt.vx.when.respuesta.para: ', obj);
+				
+				vx.send({
+					idRequest: obj.idRequest,
+					para: obj.de,
+					datoSeguroOriginal: obj.datoSeguro,
+					loco: "las cosas son un flash"
 				});
 			});
+
+
 			
 			
-			$('#btn_setWhenDePreguntaPara').on('click',function(){
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
-					de: su_clavePublica
-				},function(obj){
-					
-					console.log('me llego test.jt.vx.when.para.pregunta.para: ', obj);
-					
-					vx.send({
-						idRequest: obj.idRequest,
-						para: obj.de,
-						datoSeguroOriginal: obj.datoSeguro,
-						loco: "las cosas son un flash"
-					});
-				});
-			});
-			
-			$('#btn_setWhenParaPreguntaPara').on('click',function(){
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
-					para: mi_clavePublica
-				},function(obj){
-					
-					console.log('me llego test.jt.vx.when.para.pregunta.para: ', obj);
-					
-					vx.send({
-						idRequest: obj.idRequest,
-						para: obj.de,
-						datoSeguroOriginal: obj.datoSeguro,
-						loco: "las cosas son un flash"
-					});
-				});
-			});
-			
-			
-			$('#btn_setWhenDeParaPreguntaPara').on('click',function(){
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.de.para.pregunta.para",
-					de: su_clavePublica,
-					para: mi_clavePublica
-				},function(obj){
-					
-					console.log('me llego test.jt.vx.when.de.para.pregunta.para: ', obj);
-					
-					vx.send({
-						idRequest: obj.idRequest,
-						para: obj.de,
-						datoSeguroOriginal: obj.datoSeguro,
-						loco: "las cosas son un flash"
-					});
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.de.respuesta.para",
+				de: su_clavePublica
+			},function(obj){
+				
+				$('#btn_setWhenDeRespuestaPara').append('OK (llegó respuesta)');
+				console.log('me llego test.jt.vx.when.para.respuesta.para: ', obj);
+				
+				vx.send({
+					idRequest: obj.idRequest,
+					para: obj.de,
+					datoSeguroOriginal: obj.datoSeguro,
+					loco: "las cosas son un flash"
 				});
 			});
 			
 			
 			
-			$('#btn_setWhenPreguntaDePara').on('click',function(){
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.pregunta.de.para"
-				},function(obj){
-					
-					console.log('me llego test.jt.vx.when.pregunta.para: ', obj);
-					
-					vx.send({
-						idRequest: obj.idRequest,
-						para: obj.de,
-						datoSeguroOriginal: obj.datoSeguro,
-						loco: "las cosas son un flash"
-					});
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.para.respuesta.para",
+				para: mi_clavePublica
+			},function(obj){
+				
+				$('#btn_setWhenParaRespuestaPara').append('OK (llegó respuesta)');
+				console.log('me llego test.jt.vx.when.para.respuesta.para: ', obj);
+				
+				vx.send({
+					idRequest: obj.idRequest,
+					para: obj.de,
+					datoSeguroOriginal: obj.datoSeguro,
+					loco: "las cosas son un flash"
 				});
 			});
 			
 			
-			$('#btn_setWhenDePreguntaPara').on('click',function(){
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
-					de: su_clavePublica
-				},function(obj){
-					
-					console.log('me llego test.jt.vx.when.para.pregunta.para: ', obj);
-					
-					vx.send({
-						idRequest: obj.idRequest,
-						para: obj.de,
-						datoSeguroOriginal: obj.datoSeguro,
-						loco: "las cosas son un flash"
-					});
+			
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.de.para.respuesta.para",
+				de: su_clavePublica,
+				para: mi_clavePublica
+			},function(obj){
+				$('#btn_setWhenDeParaRespuestaPara').append('OK (llegó respuesta)');
+				console.log('me llego test.jt.vx.when.de.para.respuesta.para: ', obj);
+				
+				vx.send({
+					idRequest: obj.idRequest,
+					para: obj.de,
+					datoSeguroOriginal: obj.datoSeguro,
+					loco: "las cosas son un flash"
 				});
 			});
+		
+			////////////////////////////////////////////////
 			
-			$('#btn_setWhenParaPreguntaPara').on('click',function(){
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.para.pregunta.para",
-					para: mi_clavePublica
-				},function(obj){
-					
-					console.log('me llego test.jt.vx.when.para.pregunta.para: ', obj);
-					
-					vx.send({
-						idRequest: obj.idRequest,
-						para: obj.de,
-						datoSeguroOriginal: obj.datoSeguro,
-						loco: "las cosas son un flash"
-					});
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.respuesta.de.para"
+			},function(obj){
+				$('#btn_setWhenRespuestaDePara').append('OK (llegó respuesta)');
+				console.log('me llego test.jt.vx.when.respuesta.de.para: ', obj);
+				
+				vx.send({
+					idRequest: obj.idRequest,
+					de: mi_clavePublica,
+					para: obj.de,
+					datoSeguroOriginal: obj.datoSeguro,
+					loco: "las cosas son un flash"
 				});
 			});
-			
-			
-			$('#btn_setWhenDeParaPreguntaPara').on('click',function(){
-				vx.when({
-					tipoDeMensaje: "test.jt.vx.when.de.para.pregunta.para",
-					de: su_clavePublica,
-					para: mi_clavePublica
-				},function(obj){
-					
-					console.log('me llego test.jt.vx.when.de.para.pregunta.para: ', obj);
-					
-					vx.send({
-						idRequest: obj.idRequest,
-						para: obj.de,
-						datoSeguroOriginal: obj.datoSeguro,
-						loco: "las cosas son un flash"
-					});
+
+		
+		
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.de.respuesta.de.para",
+				de: su_clavePublica
+			},function(obj){
+				$('#btn_setWhenDeRespuestaPara').append('OK (llegó respuesta)');
+				console.log('me llego test.jt.vx.when.para.respuesta.para: ', obj);
+				
+				vx.send({
+					idRequest: obj.idRequest,
+					de: mi_clavePublica,
+					para: obj.de,
+					datoSeguroOriginal: obj.datoSeguro,
+					loco: "las cosas son un flash"
 				});
 			});
+
+		
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.para.respuesta.de.para",
+				para: mi_clavePublica
+			},function(obj){
+				$('#btn_setWhenParaRespuestaDePara').append('OK (llegó respuesta)');
+				console.log('me llego test.jt.vx.when.para.respuesta.de.para: ', obj);
+				
+				vx.send({
+					idRequest: obj.idRequest,
+					de: mi_clavePublica,
+					para: obj.de,
+					datoSeguroOriginal: obj.datoSeguro,
+					loco: "las cosas son un flash"
+				});
+			});
+
 			
-			
-			////////////
+			vx.when({
+				tipoDeMensaje: "test.jt.vx.when.de.para.respuesta.de.para",
+				de: su_clavePublica,
+				para: mi_clavePublica
+			},function(obj){
+				$('#btn_setWhenDeParaRespuestaDePara').append('OK (llegó respuesta)');
+				console.log('me llego test.jt.vx.when.de.para.respuesta.de.para: ', obj);
+				
+				vx.send({
+					idRequest: obj.idRequest,
+					de: mi_clavePublica,
+					para: obj.de,
+					datoSeguroOriginal: obj.datoSeguro,
+					loco: "las cosas son un flash"
+				});
+			});
+
+			////////////////////////////////////////////////
         });
     </script>
 
