@@ -93,7 +93,7 @@
 			
 			$('#btn_send').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when",
+					tipoDeMensaje: "21032014.test.jt.vx.when",
 					datoComun:{
 						cosas: ['cosas', 'comunes']
 					}
@@ -103,7 +103,7 @@
 			
 			$('#btn_sendDe').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.de",
+					tipoDeMensaje: "21032014.test.jt.vx.when.de",
 					de: mi_clavePublica,
 					datoSeguro:{
 						cosas: ['cosas', 'seguras']
@@ -113,7 +113,7 @@
 			
 			$('#btn_sendPara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.para",
+					tipoDeMensaje: "21032014.test.jt.vx.when.para",
 					para: su_clavePublica,
 					datoSeguro:{
 						cosas: ['cosas', 'seguras']
@@ -124,7 +124,7 @@
 			
 			$('#btn_sendDePara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.de.para",
+					tipoDeMensaje: "21032014.test.jt.vx.when.de.para",
 					de: mi_clavePublica,
 					para: su_clavePublica,
 					datoSeguro:{
@@ -135,59 +135,59 @@
 			
 			//////////////////////////////////////
 			
-			///test.jt.vx.when.de.respuesta.para    ver de ponerlo solo para testear el when del otro lado
+			///21032014.test.jt.vx.when.de.respuesta.para    ver de ponerlo solo para testear el when del otro lado
 			
 			$('#btn_sendDeRespuestaPara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.de.respuesta.para",
+					tipoDeMensaje: "21032014.test.jt.vx.when.de.respuesta.para",
 					de: mi_clavePublica,
 					datoSeguro:{
 						cosas: ['cosas', 'seguras']
 					}
 				}, function(obj){
-					console.log('respuesta de test.jt.vx.when.de.respuesta.para:', obj);
+					console.log('respuesta de 21032014.test.jt.vx.when.de.respuesta.para:', obj);
 				});
 			});
 			
 			
-			///test.jt.vx.when.para.respuesta.para    no se si anda un obj-pregunta sin un de
+			///21032014.test.jt.vx.when.para.respuesta.para    no se si anda un obj-pregunta sin un de
 			
 			$('#btn_sendDeParaRespuestaPara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.de.para.respuesta.para",
+					tipoDeMensaje: "21032014.test.jt.vx.when.de.para.respuesta.para",
 					de: mi_clavePublica,
 					para: su_clavePublica,
 					datoSeguro:{
 						cosas: ['cosas', 'comunes']
 					}
 				}, function(obj){
-					console.log('respuesta de test.jt.vx.when.de.para.respuesta.para:', obj);
+					console.log('respuesta de 21032014.test.jt.vx.when.de.para.respuesta.para:', obj);
 				})
 			});
 			////////////////////////////////////////////
 			
 			$('#btn_sendDeRespuestaDePara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.de.respuesta.de.para",
+					tipoDeMensaje: "21032014.test.jt.vx.when.de.respuesta.de.para",
 					de: mi_clavePublica,
 					datoSeguro:{
 						cosas: ['cosas', 'comunes']
 					}
 				}, function(obj){
-					console.log('respuesta de test.jt.vx.when.de.respuesta.de.para:', obj);
+					console.log('respuesta de 21032014.test.jt.vx.when.de.respuesta.de.para:', obj);
 				})
 			});
 			
 			$('#btn_sendDeParaRespuestaDePara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.de.para.respuesta.de.para",
+					tipoDeMensaje: "21032014.test.jt.vx.when.de.para.respuesta.de.para",
 					de: mi_clavePublica,
 					para: su_clavePublica,
 					datoSeguro:{
 						cosas: ['cosas', 'comunes']
 					}
 				}, function(obj){
-					console.log('respuesta de test.jt.vx.when.de.para.respuesta.de.para:', obj);
+					console.log('respuesta de 21032014.test.jt.vx.when.de.para.respuesta.de.para:', obj);
 				})
 			});
 			

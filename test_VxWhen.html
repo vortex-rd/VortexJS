@@ -161,52 +161,52 @@
 			console.log('su_clavePublica', su_clavePublica);
 			
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when"
+				tipoDeMensaje: "21032014.test.jt.vx.when"
 			},function(obj){
 				$('#btn_setWhen').append('OK');
-				console.log('me llego test.jt.vx.when: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 			});
 
 			
 			
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.de",
+				tipoDeMensaje: "21032014.test.jt.vx.when.de",
 				de: su_clavePublica
 			},function(obj){
 				
 				$('#btn_setWhenDe').append('OK');
-				console.log('me llego test.jt.vx.when.de: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 				
 			});
 			
 			
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.para",
+				tipoDeMensaje: "21032014.test.jt.vx.when.para",
 				para: mi_clavePublica
 			},function(obj){
 				$('#btn_setWhenPara').append('OK');
-				console.log('me llego test.jt.vx.when.para: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 			});
 			
 			
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.de.para",
+				tipoDeMensaje: "21032014.test.jt.vx.when.de.para",
 				de: su_clavePublica,
 				para: mi_clavePublica
 			},function(obj){
 				$('#btn_setWhenDePara').append('OK');
-				console.log('me llego test.jt.vx.when.de.para: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 			});
 
 			////////////////////////////////////////////////
 
 			// Respuestas
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.respuesta.para"
+				tipoDeMensaje: "21032014.test.jt.vx.when.respuesta.para"
 			},function(obj){
 				
 				$('#btn_setWhenRespuestaPara').append('OK (llegó pedido de respuesta)');
-				console.log('me llego test.jt.vx.when.respuesta.para: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 				
 				vx.send({
 					idRequest: obj.idRequest,
@@ -220,12 +220,12 @@
 			
 			
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.de.respuesta.para",
+				tipoDeMensaje: "21032014.test.jt.vx.when.de.respuesta.para",
 				de: su_clavePublica
 			},function(obj){
 				
 				$('#btn_setWhenDeRespuestaPara').append('OK (llegó pedido de respuesta)');
-				console.log('me llego test.jt.vx.when.para.respuesta.para: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 				
 				vx.send({
 					idRequest: obj.idRequest,
@@ -238,12 +238,12 @@
 			
 			
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.para.respuesta.para",
+				tipoDeMensaje: "21032014.test.jt.vx.when.para.respuesta.para",
 				para: mi_clavePublica
 			},function(obj){
 				
 				$('#btn_setWhenParaRespuestaPara').append('OK (llegó pedido de respuesta)');
-				console.log('me llego test.jt.vx.when.para.respuesta.para: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 				
 				vx.send({
 					idRequest: obj.idRequest,
@@ -256,12 +256,12 @@
 			
 			
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.de.para.respuesta.para",
+				tipoDeMensaje: "21032014.test.jt.vx.when.de.para.respuesta.para",
 				de: su_clavePublica,
 				para: mi_clavePublica
 			},function(obj){
 				$('#btn_setWhenDeParaRespuestaPara').append('OK (llegó pedido de respuesta)');
-				console.log('me llego test.jt.vx.when.de.para.respuesta.para: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 				
 				vx.send({
 					idRequest: obj.idRequest,
@@ -274,10 +274,10 @@
 			////////////////////////////////////////////////
 			
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.respuesta.de.para"
+				tipoDeMensaje: "21032014.test.jt.vx.when.respuesta.de.para"
 			},function(obj){
 				$('#btn_setWhenRespuestaDePara').append('OK (llegó pedido de respuesta)');
-				console.log('me llego test.jt.vx.when.respuesta.de.para: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 				
 				vx.send({
 					idRequest: obj.idRequest,
@@ -291,13 +291,13 @@
 		
 		
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.de.respuesta.de.para",
+				tipoDeMensaje: "21032014.test.jt.vx.when.de.respuesta.de.para",
 				de: su_clavePublica
 			},function(obj){
 				
 				$('#btn_setWhenDeRespuestaDePara').append('OK (llegó pedido de respuesta)');
 				
-				console.log('me llego test.jt.vx.when.para.respuesta.para: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 				
 				vx.send({
 					idRequest: obj.idRequest,
@@ -310,11 +310,11 @@
 
 		
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.para.respuesta.de.para",
+				tipoDeMensaje: "21032014.test.jt.vx.when.para.respuesta.de.para",
 				para: mi_clavePublica
 			},function(obj){
 				$('#btn_setWhenParaRespuestaDePara').append('OK (llegó pedido de respuesta)');
-				console.log('me llego test.jt.vx.when.para.respuesta.de.para: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 				
 				vx.send({
 					idRequest: obj.idRequest,
@@ -327,12 +327,12 @@
 
 			
 			vx.when({
-				tipoDeMensaje: "test.jt.vx.when.de.para.respuesta.de.para",
+				tipoDeMensaje: "21032014.test.jt.vx.when.de.para.respuesta.de.para",
 				de: su_clavePublica,
 				para: mi_clavePublica
 			},function(obj){
 				$('#btn_setWhenDeParaRespuestaDePara').append('OK (llegó pedido de respuesta)');
-				console.log('me llego test.jt.vx.when.de.para.respuesta.de.para: ', obj);
+				console.log('me llego '+obj.tipoDeMensaje+': ', obj);
 				
 				vx.send({
 					idRequest: obj.idRequest,
