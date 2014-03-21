@@ -31,7 +31,7 @@
 			<tr><td><button id="btn_sendDeParaRespuestaPara">btn_sendDeParaRespuestaPara</button></td><td>test.jt.vx.when.de.para.respuesta.para</td></tr>
 			
 			<tr><td><button id="btn_sendDeRespuestaDePara">btn_sendDeRespuestaDePara</button></td><td>test.jt.vx.when.de.respuesta.para</td></tr>
-			<tr><td><button id="btn_sendDeParaRespuestaDePara">btn_sendDeParaRespuestaDePara</button></td><td>test.jt.vx.when.de.respuesta.de.para</td></tr>
+			<tr><td><button id="btn_sendDeParaRespuestaDePara">btn_sendDeParaRespuestaDePara</button></td><td>test.jt.vx.when.de.para.respuesta.de.para</td></tr>
 		</table>
 		
 		<div id="btn_initCache">Inicializa cache</div>
@@ -85,7 +85,7 @@
 			
 			
 			vx.when({
-				de: mi_clavePublica
+				para: mi_clavePublica
 			},function(obj){
 				console.log('_', obj);
 			});
@@ -168,13 +168,13 @@
 			
 			$('#btn_sendDeRespuestaDePara').on('click',function(){
 				vx.send({
-					tipoDeMensaje: "test.jt.vx.when.de.para.respuesta.de.para",
+					tipoDeMensaje: "test.jt.vx.when.de.respuesta.de.para",
 					de: mi_clavePublica,
 					datoSeguro:{
 						cosas: ['cosas', 'comunes']
 					}
 				}, function(obj){
-					console.log('respuesta de test.jt.vx.when.de.para.respuesta.de.para:', obj);
+					console.log('respuesta de test.jt.vx.when.de.respuesta.de.para:', obj);
 				})
 			});
 			

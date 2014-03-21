@@ -33,6 +33,9 @@ var Vortex = Vx = vX = vx = {
         this.verbose = opt.verbose;
         this.router = new NodoRouter();
         this.claveRSAComun = cryptico.generateRSAKey("VORTEXCAPO", 1024);                               //ATA
+		
+		
+		
         this.clavePublicaComun = cryptico.publicKeyString(this.claveRSAComun);                          //PINGO
         this.portales = [];
         this.keys = [];
@@ -84,38 +87,31 @@ var Vortex = Vx = vX = vx = {
             callback: function(mensaje){
 			
 			
-				var mi_clave_privada = this.claveRSAComun;
-				var su_clave_publica = this.clavePublicaComun;
+				var mi_clave_privada = _this.claveRSAComun;
+				var su_clave_publica = _this.clavePublicaComun;
 				
 				if(mensaje.para) mi_clave_privada = claveRSA;
 				if(mensaje.de) su_clave_publica = mensaje.de;
 				
 				
-				console.log('mensaje antes de desencriptar', mensaje);
-				
-				
-				
-				
-				
-                var clave = _this.claveRSAComun;
-				
-                if(mensaje.para) clave = claveRSA;
-				
-				
-				
-				
 				if(mensaje.datoSeguro){
-					var desencriptado = cryptico.decrypt(mensaje.datoSeguro, clave);
-					if(desencriptado.status == "success" && desencriptado.signature != "forged"){
+					
+					var desencriptado = cryptico.decrypt(mensaje.datoSeguro, mi_clave_privada);
+					
+					if(desencriptado.status == "success"){
 						mensaje.datoSeguro = JSON.parse(desencriptado.plaintext);
-						p.callback(mensaje);
+						
+						if(desencriptado.signature == "verified"){
+							if(su_clave_publica == desencriptado.publicKeyString){
+								p.callback(mensaje);
+							}
+						}
 					}
-				}else{
+				} else {
 					p.callback(mensaje);
 				}
             }
-			
-        })
+        });
     },
     enviarMensaje:function(mensaje){
         this.router.recibirMensaje(mensaje);
@@ -187,6 +183,7 @@ var Vortex = Vx = vX = vx = {
 		
 		if(obj.de){
 			claveRSA = this.keys[obj.de];
+			
 			this.enviarMensajeSeguro(obj, claveRSA);
 			return;
 		}
@@ -212,32 +209,22 @@ var Vortex = Vx = vX = vx = {
 			}, this.keys[_filtro.para]);
 		}
 		
-		if(_filtro.de){
+		
+		if(_filtro.de && !_filtro.para){
 			return this.pedirMensajesSeguros({
 				filtro: _filtro,
 				callback: _callback
-			}, _filtro.de);
-		}
-		
-		
-		
-		
-		
-		
-		
-		else{
-			return this.pedirMensajes({
-				filtro: _filtro,
-				callback: _callback
 			});
+			
 		}
 		
-		/*
+		
 		return this.pedirMensajes({
 			filtro: _filtro,
 			callback: _callback
 		});
-		*/
+		
+		
 	}
 };
 

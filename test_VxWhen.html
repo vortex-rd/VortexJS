@@ -53,70 +53,70 @@
 			<!-- ----------------------- -->
 			<tr>
 				<td>
-					btn_setWhenPreguntaPara
+					btn_setWhenRespuestaPara
 				</td>
-				<td id="btn_setWhenPreguntaPara">
+				<td id="btn_setWhenRespuestaPara">
 					
 				</td>
 			</tr>
 			<tr>
 				<td>
-					btn_setWhenDePreguntaPara
+					btn_setWhenDeRespuestaPara
 				</td>
-				<td id="btn_setWhenDePreguntaPara">
-					
-				</td>
-			</tr>
-			
-			<tr>
-				<td>
-					btn_setWhenParaPreguntaPara
-				</td>
-				<td id="btn_setWhenParaPreguntaPara">
+				<td id="btn_setWhenDeRespuestaPara">
 					
 				</td>
 			</tr>
 			
 			<tr>
 				<td>
-					btn_setWhenDeParaPreguntaPara
+					btn_setWhenParaRespuestaPara
 				</td>
-				<td id="btn_setWhenDeParaPreguntaPara">
+				<td id="btn_setWhenParaRespuestaPara">
+					
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					btn_setWhenDeParaRespuestaPara
+				</td>
+				<td id="btn_setWhenDeParaRespuestaPara">
 					
 				</td>
 			</tr>
 			<!-- ----------------------- -->
 			<tr>
 				<td>
-					btn_setWhenPreguntaDePara
+					btn_setWhenRespuestaDePara
 				</td>
-				<td id="btn_setWhenPreguntaDePara">
+				<td id="btn_setWhenRespuestaDePara">
 					
 				</td>
 			</tr>
 			<tr>
 				<td>
-					btn_setWhenDePreguntaDePara
+					btn_setWhenDeRespuestaDePara
 				</td>
-				<td id="btn_setWhenDePreguntaDePara">
-					
-				</td>
-			</tr>
-			
-			<tr>
-				<td>
-					btn_setWhenParaPreguntaDePara
-				</td>
-				<td id="btn_setWhenParaPreguntaDePara">
+				<td id="btn_setWhenDeRespuestaDePara">
 					
 				</td>
 			</tr>
 			
 			<tr>
 				<td>
-					btn_setWhenDeParaPreguntaDePara
+					btn_setWhenParaRespuestaDePara
 				</td>
-				<td id="btn_setWhenDeParaPreguntaDePara">
+				<td id="btn_setWhenParaRespuestaDePara">
+					
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					btn_setWhenDeParaRespuestaDePara
+				</td>
+				<td id="btn_setWhenDeParaRespuestaDePara">
 					
 				</td>
 			</tr>
@@ -200,12 +200,12 @@
 
 			////////////////////////////////////////////////
 
-			// PREGUNTAS
+			// Respuestas
 			vx.when({
 				tipoDeMensaje: "test.jt.vx.when.respuesta.para"
 			},function(obj){
 				
-				$('#btn_setWhenRespuestaPara').append('OK (llegó respuesta)');
+				$('#btn_setWhenRespuestaPara').append('OK (llegó pedido de respuesta)');
 				console.log('me llego test.jt.vx.when.respuesta.para: ', obj);
 				
 				vx.send({
@@ -224,7 +224,7 @@
 				de: su_clavePublica
 			},function(obj){
 				
-				$('#btn_setWhenDeRespuestaPara').append('OK (llegó respuesta)');
+				$('#btn_setWhenDeRespuestaPara').append('OK (llegó pedido de respuesta)');
 				console.log('me llego test.jt.vx.when.para.respuesta.para: ', obj);
 				
 				vx.send({
@@ -242,7 +242,7 @@
 				para: mi_clavePublica
 			},function(obj){
 				
-				$('#btn_setWhenParaRespuestaPara').append('OK (llegó respuesta)');
+				$('#btn_setWhenParaRespuestaPara').append('OK (llegó pedido de respuesta)');
 				console.log('me llego test.jt.vx.when.para.respuesta.para: ', obj);
 				
 				vx.send({
@@ -260,7 +260,7 @@
 				de: su_clavePublica,
 				para: mi_clavePublica
 			},function(obj){
-				$('#btn_setWhenDeParaRespuestaPara').append('OK (llegó respuesta)');
+				$('#btn_setWhenDeParaRespuestaPara').append('OK (llegó pedido de respuesta)');
 				console.log('me llego test.jt.vx.when.de.para.respuesta.para: ', obj);
 				
 				vx.send({
@@ -276,7 +276,7 @@
 			vx.when({
 				tipoDeMensaje: "test.jt.vx.when.respuesta.de.para"
 			},function(obj){
-				$('#btn_setWhenRespuestaDePara').append('OK (llegó respuesta)');
+				$('#btn_setWhenRespuestaDePara').append('OK (llegó pedido de respuesta)');
 				console.log('me llego test.jt.vx.when.respuesta.de.para: ', obj);
 				
 				vx.send({
@@ -294,7 +294,9 @@
 				tipoDeMensaje: "test.jt.vx.when.de.respuesta.de.para",
 				de: su_clavePublica
 			},function(obj){
-				$('#btn_setWhenDeRespuestaPara').append('OK (llegó respuesta)');
+				
+				$('#btn_setWhenDeRespuestaDePara').append('OK (llegó pedido de respuesta)');
+				
 				console.log('me llego test.jt.vx.when.para.respuesta.para: ', obj);
 				
 				vx.send({
@@ -311,7 +313,7 @@
 				tipoDeMensaje: "test.jt.vx.when.para.respuesta.de.para",
 				para: mi_clavePublica
 			},function(obj){
-				$('#btn_setWhenParaRespuestaDePara').append('OK (llegó respuesta)');
+				$('#btn_setWhenParaRespuestaDePara').append('OK (llegó pedido de respuesta)');
 				console.log('me llego test.jt.vx.when.para.respuesta.de.para: ', obj);
 				
 				vx.send({
@@ -329,7 +331,7 @@
 				de: su_clavePublica,
 				para: mi_clavePublica
 			},function(obj){
-				$('#btn_setWhenDeParaRespuestaDePara').append('OK (llegó respuesta)');
+				$('#btn_setWhenDeParaRespuestaDePara').append('OK (llegó pedido de respuesta)');
 				console.log('me llego test.jt.vx.when.de.para.respuesta.de.para: ', obj);
 				
 				vx.send({
