@@ -10,6 +10,8 @@ if(typeof(require) != "undefined"){
 }
 
 var NodoPortal = function(aliasPortal){
+    this._vecino;
+    this._filtroRecibido = {};
     this._listaPedidos = [];
     this._aliasPortal = "portal " + aliasPortal;
 };
@@ -48,8 +50,18 @@ NodoPortal.prototype.recibirMensaje = function(un_mensaje, vecino_emisor) {
     });	        
 };
 
-NodoPortal.prototype.conectarCon = function(un_receptor){
-    this._pata.conectarCon(un_receptor);
+NodoPortal.prototype.conectarCon = function(un_vecino){    
+    if(this._vecino === un_vecino) return; 
+    if(!datos_del_vecino) {
+        var datos_del_vecino = {
+            vecino: un_vecino,
+            filtroRecibido: new FiltroFalse(),
+            filtroEnviado: new FiltroFalse()
+        };
+        this._datosDeLosVecinos.push(datos_del_vecino);   
+        this.mergearYEnviarFiltros();
+        un_vecino.conectarCon(this);
+    }    
 };
 
 if(typeof(require) != "undefined"){ exports.clase = NodoPortal;}
