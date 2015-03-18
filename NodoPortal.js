@@ -9,12 +9,28 @@ if(typeof(require) != "undefined"){
     var FiltroAND = require("./FiltrosYTransformaciones").FiltroAND;
 }
 
-var NodoPortal = function(aliasPortal){
-    this._vecino;
-    this._filtroRecibido = {};
-    this._listaPedidos = [];
-    this._aliasPortal = "portal " + aliasPortal;
+var NodoPortal = function(opt){
+    this._datosDelVecino = {
+        vecino: new NodoNulo(),
+        filtroRecibido: new FiltroFalse(),
+        filtroEnviado: new FiltroFalse()
+    };
+    
+    this._pedidos = [];
+    this._aliasPortal = "portal " + opt.aliasPortal;
 };
+
+NodoPortal.prototype.send = function(un_mensaje, callback){
+    if(this._datosDelVecino.filtroRecibido.evaluarMensaje(un_mensaje)){
+        this._datosDelVecino.vecino.recibirMensaje(un_mensaje);        
+    }
+};
+
+NodoPortal.prototype.when = function(filtro, callback){
+    this._listaPedidos.push({ "filtro": filtro, "callback": callback});
+    this.publicarFiltros();
+};
+
 
 NodoPortal.prototype.publicarFiltros = function(){
     var filtros = [];
@@ -25,14 +41,7 @@ NodoPortal.prototype.publicarFiltros = function(){
     this._pata.publicarFiltro(filtroMergeado);
 };
 
-NodoPortal.prototype.send = function(un_mensaje){
-    this._pata.recibirMensaje(un_mensaje);
-};
 
-NodoPortal.prototype.when = function(filtro, callback){
-    this._listaPedidos.push({ "filtro": filtro, "callback": callback});
-    this.publicarFiltros();
-};
 
 NodoPortal.prototype.recibirMensaje = function(un_mensaje, vecino_emisor) {
     var _this = this;

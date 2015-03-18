@@ -30,8 +30,9 @@ NodoRouter.prototype.mergearFiltrosParaUnVecino = function(datos_del_vecino){
         tipoDeMensaje : "Vortex.Filtro.Publicacion",
         filtro: filtro_a_publicar_al_vecino.serializar()
     }
+        var _this = this;
     setTimeout(function(){              
-        datos_del_vecino.vecino.recibirMensaje(publicacion_de_filtro, this);  
+        datos_del_vecino.vecino.recibirMensaje(publicacion_de_filtro, _this);  
     },0);	    
 };
 
