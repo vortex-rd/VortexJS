@@ -4,6 +4,10 @@ To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.
 Project URL: https://sourceforge.net/p/vortexnet
 */
 
+if(typeof(require) != "undefined"){
+    var _ = require("./underscore-min");
+}
+
 var DesSerializadorDeFiltros = {
 	desSerializarFiltro : function(un_filtro_serializado){
         var filtro;
@@ -42,15 +46,8 @@ var FiltroXEjemplo = function (ejemplo) {
     this.ejemplo = ejemplo;
 };
 FiltroXEjemplo.prototype = {    
-    evaluarMensaje : function (un_mensaje) {
-        for(var prop in this.ejemplo){
-            if(typeof un_mensaje[prop] == "object"){
-                var filtro_por_ejemplo = new FiltroXEjemplo(this.ejemplo[prop]);
-                if(!filtro_por_ejemplo.evaluarMensaje(un_mensaje[prop])) return false;
-            }
-            if(this.ejemplo[prop] != un_mensaje[prop]) return false;
-        }
-        return true;
+    eval : function (un_mensaje) {
+		return _.isMatch(un_mensaje, this.ejemplo);
     },
 	serializar : function(){
 		return {
@@ -64,10 +61,10 @@ FiltroXEjemplo.prototype = {
     simplificar: function(){return this;},
     equals: function(otro_filtro){
         if(!(otro_filtro instanceof FiltroXEjemplo)) return false;
-        return this.ejemplo == otro_filtro.ejemplo;
+        return _.isEqual(this.ejemplo, otro_filtro.ejemplo);
     }
 };
-if(typeof(require) != "undefined"){ exports.FiltroXClaveValor = FiltroXClaveValor;}
+if(typeof(require) != "undefined"){ exports.FiltroXEjemplo = FiltroXEjemplo;}
 
 
 var FiltroXClaveValor = function (clave, valor) {
@@ -75,7 +72,7 @@ var FiltroXClaveValor = function (clave, valor) {
 	this._valor = valor;
 };
 FiltroXClaveValor.prototype = {
-    evaluarMensaje : function (un_mensaje) {
+    eval : function (un_mensaje) {
         return un_mensaje[this._clave] == this._valor;
     },
 	serializar : function(){
@@ -95,79 +92,15 @@ FiltroXClaveValor.prototype = {
 };
 if(typeof(require) != "undefined"){ exports.FiltroXClaveValor = FiltroXClaveValor;}
 
-var DesSerializadorDeTrafos = {
-	desSerializarTrafo : function(una_trafo_serializada){
-        var trafo;
-		switch(una_trafo_serializada.tipo)
-		{
-			case 'COMP':
-				trafo =  new TrafoCompuesta();
-				break;
-			case 'KEYVALUE':
-				trafo =  new TrafoXClaveValor();
-				break;
-		}
-		trafo.desSerializar(una_trafo_serializada);
-		return trafo;
-	}
-};
-if(typeof(require) != "undefined"){ exports.DesSerializadorDeTrafos = DesSerializadorDeTrafos;}
-
-var TrafoXClaveValor = function (clave, valor) {
-	this.clave = clave;
-	this.valor = valor;
-};
-TrafoXClaveValor.prototype = {
-    transformarMensaje : function (un_mensaje) {
-    	un_mensaje[this.clave] = this.valor;
-        return un_mensaje;
-    },
-    serializar : function(){
-		return {	tipo: 'KEYVALUE',
-					clave: this.clave,
-                    valor: this.valor};
-	},	
-	desSerializar : function(una_trafo_serializada){
-        this.clave = una_trafo_serializada.clave; 
-		this.valor = una_trafo_serializada.valor; 
-	}
-};
-if(typeof(require) != "undefined"){ exports.TrafoXClaveValor = TrafoXClaveValor;}
-
-var TrafoCompuesta = function(trafos){
-    this.trafos = (trafos === undefined)? [] : trafos;
-};
-TrafoCompuesta.prototype = {
-    transformarMensaje : function (un_mensaje) {
-        for(var i=0; i<this.trafos.length; i++){
-			this.trafos[i].transformarMensaje(un_mensaje);
-		}
-        return un_mensaje;
-    },
-    serializar : function(){
-		var ret = {	tipo: 'COMP',
-					trafos: []};
-		for(var i=0; i<this.trafos.length; i++){
-			ret.trafos.push(this.trafos[i].serializar());
-		}		
-		return ret;
-	},	
-	desSerializar : function(una_trafo_serializada){
-		for(var i=0; i<una_trafo_serializada.trafos.length; i++){
-			this.trafos.push(DesSerializadorDeTrafos.desSerializarTrafo(una_trafo_serializada.trafos[i]));
-		}
-	}
-};
-if(typeof(require) != "undefined"){ exports.TrafoCompuesta = TrafoCompuesta;}
 
 var FiltroAND = function (_filtros) {
 	this.filtros = (_filtros === undefined)? [] : _filtros;
 };
 FiltroAND.prototype = {
-    evaluarMensaje : function (un_mensaje) {
+    eval : function (un_mensaje) {
         var valorRetorno = true;
 		for(var i=0; i<this.filtros.length; i++){
-			var evaluacion = this.filtros[i].evaluarMensaje(un_mensaje);
+			var evaluacion = this.filtros[i].eval(un_mensaje);
 			if (evaluacion == false) { 
 				return false;
 			}
@@ -240,10 +173,10 @@ var FiltroOR = function (_filtros) {
 	this.filtros = (_filtros === undefined)? [] : _filtros;
 };
 FiltroOR.prototype = {    
-    evaluarMensaje : function (un_mensaje) {
+    eval : function (un_mensaje) {
         var valorRetorno = false;
 		for(var i=0; i<this.filtros.length; i++){
-			var evaluacion = this.filtros[i].evaluarMensaje(un_mensaje);
+			var evaluacion = this.filtros[i].eval(un_mensaje);
 			if (evaluacion == true) { 
 				return true;
 			}
@@ -317,7 +250,7 @@ var FiltroDesconocido = function(){
     this.version_serializada = {'tipo': '?'};
 };
 FiltroDesconocido.prototype = {
-	evaluarMensaje : function (un_mensaje) {
+	eval : function (un_mensaje) {
         return undefined;
     },    
     onChange : function(observador){
@@ -336,7 +269,7 @@ if(typeof(require) != "undefined"){ exports.FiltroDesconocido = FiltroDesconocid
 var FiltroTrue = function(){
 };
 FiltroTrue.prototype = {
-	evaluarMensaje : function (un_mensaje) {
+	eval : function (un_mensaje) {
         return true;
     },    
     onChange : function(observador){
@@ -358,7 +291,7 @@ if(typeof(require) != "undefined"){ exports.FiltroTrue = FiltroTrue;}
 var FiltroFalse = function(){
 };
 FiltroFalse.prototype = {
-	evaluarMensaje : function (un_mensaje) {
+	eval : function (un_mensaje) {
         return false;
     },    
     onChange : function(observador){

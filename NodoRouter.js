@@ -4,41 +4,79 @@ To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.
 Project URL: https://sourceforge.net/p/vortexnet
 */
 
+if(typeof(require) != "undefined"){
+    var Filtros = require("./Filtros");
+    var _ = require("./underscore-min");
+    var FiltroOR = Filtros.FiltroOR;
+    var FiltroAND = Filtros.FiltroAND;
+    var FiltroFalse = Filtros.FiltroFalse;
+    var FiltroXEjemplo = Filtros.FiltroXEjemplo;
+}
+
 var NodoRouter = function(){
     this.datosVecinos = [];
+	this.pedidos = [];
 };
 
 NodoRouter.prototype.send = function (un_mensaje, callback) {
-    _.forEach(this.datosVecinos, function (datos_de_un_vecino) {
-        if(datos_de_un_vecino.filtroRecibido.evaluarMensaje(un_mensaje)){ 
+    //envío a los vecinos que corresponda
+	_.forEach(this.datosVecinos, function (datos_de_un_vecino) {
+        if(datos_de_un_vecino.filtroRecibido.eval(un_mensaje)){ 
             setTimeout(function(){              
                 datos_de_un_vecino.vecino.recibirMensaje(un_mensaje, this);  
             },0);
         }
     });
+	
+	//ejecuto el callback que corresponda
+	_.forEach(this.pedidos, function (un_pedido) {
+        if(un_pedido.filtro.eval(un_mensaje)){ 
+            setTimeout(function(){      
+                un_pedido.callback(un_mensaje); 
+            },0);
+        }
+    });
+	
+	if(callback){
+		
+	}
 };
 
 NodoRouter.prototype.when = function (filtro, callback) {
-    
+	if(!filtro.eval) filtro = new FiltroXEjemplo(filtro);
+    this.pedidos.push({ "filtro": filtro, "callback": callback});
+    this.publicarFiltros();
 };
 
 NodoRouter.prototype.recibirMensaje = function (un_mensaje, vecino_emisor) {
     var _this = this;
     //si es una publicacion de filtros
-    if(un_mensaje.tipoDeMensaje == "Vortex.Filtro.Publicacion"){   
-        var datos_del_vecino_emisor = _.find(this.datosVecinos, function(datos_de_un_vecino){ return datos_de_un_vecino.vecino === vecino_emisor});
-        //si no conozco al vecino me rajo
-        if(!datos_del_vecino_emisor) return;
-        datos_del_vecino_emisor.filtroRecibido = DesSerializadorDeFiltros.desSerializarFiltro(un_mensaje.filtro);
-        this.mergearYEnviarFiltros();
-        return;
-    }
+	if(un_mensaje.tipoDeMensaje)
+    {
+		if(un_mensaje.tipoDeMensaje == "Vortex.Filtro.Publicacion"){   
+			var datos_del_vecino_emisor = _.find(this.datosVecinos, function(datos_de_un_vecino){ return datos_de_un_vecino.vecino === vecino_emisor});
+			//si no conozco al vecino me rajo
+			if(!datos_del_vecino_emisor) return;
+			datos_del_vecino_emisor.filtroRecibido = DesSerializadorDeFiltros.desSerializarFiltro(un_mensaje.filtro);
+			this.publicarFiltros();
+			return;
+		}
+	}
     //si no, envío a todos los vecinos menos al que me me mandó el mensaje
     _.forEach(this.datosVecinos, function (datos_de_un_vecino) {
         if(vecino_emisor === datos_de_un_vecino.vecino) return;
-        if(datos_de_un_vecino.filtroRecibido.evaluarMensaje(un_mensaje)){ 
+        if(datos_de_un_vecino.filtroRecibido.eval(un_mensaje)){ 
             setTimeout(function(){              
                 datos_de_un_vecino.vecino.recibirMensaje(un_mensaje, this);  
+            },0);
+        }
+    });
+	
+	//ejecuto el callback que corresponda
+	_.forEach(this.pedidos, function (un_pedido) {
+        if(un_pedido.filtro.eval(un_mensaje)){ 
+            setTimeout(function(){              
+                un_pedido.callback(un_mensaje); 
             },0);
         }
     });
@@ -46,23 +84,25 @@ NodoRouter.prototype.recibirMensaje = function (un_mensaje, vecino_emisor) {
 
 NodoRouter.prototype.conectarCon = function(un_vecino) {
     var datos_del_vecino = _.find(this.datosVecinos, function(datos_de_un_vecino){ return datos_de_un_vecino.vecino === un_vecino });
-    if(!datos_del_vecino) {
-        var datos_del_vecino = {
-            vecino: un_vecino,
-            filtroRecibido: new FiltroFalse(),
-            filtroEnviado: new FiltroFalse()
-        };
-        this.datosVecinos.push(datos_del_vecino);   
-        this.mergearYEnviarFiltros();
-        un_vecino.conectarCon(this);
-    }    
+    if(datos_del_vecino) return;
+	var datos_del_vecino = {
+		vecino: un_vecino,
+		filtroRecibido: new FiltroFalse(),
+		filtroEnviado: new FiltroFalse()
+	};
+	this.datosVecinos.push(datos_del_vecino);   
+	this.publicarFiltrosAUnVecino(datos_del_vecino);
+	un_vecino.conectarCon(this);
 };
 
-NodoRouter.prototype.mergearFiltrosParaUnVecino = function(datos_del_vecino){
+NodoRouter.prototype.publicarFiltrosAUnVecino = function(datos_del_vecino){
     var filtros_para_el_vecino = [];
     _.forEach(this.datosVecinos, function (datos_de_un_vecino) {
         if(datos_del_vecino === datos_de_un_vecino ) return;
         filtros_para_el_vecino.push(datos_de_un_vecino.filtroRecibido);
+    });
+	_.forEach(this.pedidos, function (un_pedido) {
+        filtros_para_el_vecino.push(un_pedido.filtro);
     });
     var filtro_a_publicar_al_vecino = new FiltroOR(filtros_para_el_vecino).simplificar();
     if(filtro_a_publicar_al_vecino.equals(datos_del_vecino.filtroEnviado)) return;
@@ -71,15 +111,20 @@ NodoRouter.prototype.mergearFiltrosParaUnVecino = function(datos_del_vecino){
         tipoDeMensaje : "Vortex.Filtro.Publicacion",
         filtro: filtro_a_publicar_al_vecino.serializar()
     }
-        var _this = this;
+    var _this = this;
     setTimeout(function(){              
         datos_del_vecino.vecino.recibirMensaje(publicacion_de_filtro, _this);  
     },0);	    
 };
 
-NodoRouter.prototype.mergearYEnviarFiltros = function(){
+NodoRouter.prototype.publicarFiltros = function(){
     //para cada vecino mergeo los filtros de los demas
+	var _this = this;
     _.forEach(this.datosVecinos, function (datos_de_un_vecino) {            
-        _this.mergearFiltrosParaUnVecino(datos_de_un_vecino);
+        _this.publicarFiltrosAUnVecino(datos_de_un_vecino);
     });
 };
+
+if(typeof(require) != "undefined"){
+    exports.clase = NodoRouter;
+}

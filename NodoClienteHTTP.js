@@ -4,6 +4,10 @@ To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.
 Project URL: https://sourceforge.net/p/vortexnet
 */
 
+if(typeof(require) != "undefined"){
+    var NodoNulo = require("./NodoNulo").clase;
+}
+
 var NodoClienteHTTP = function (url, intervalo_polling, verbose, mensajes_por_paquete) {
     this.url = url;
     this.intervalo_polling = (intervalo_polling === undefined) ? 1500 : intervalo_polling;
@@ -15,10 +19,8 @@ var NodoClienteHTTP = function (url, intervalo_polling, verbose, mensajes_por_pa
 NodoClienteHTTP.prototype.start = function () {
     this.intervaloPedidoIdSesion = 5000;
     this.bandejaSalida = [];
-    //arranca con un receptor que no hace nada
-    this.receptor = {
-        recibirMensaje: function (un_mensaje) { }
-    };
+    //arranca con un vecino que no hace nada
+    this.vecino = new NodoNulo();
 
     //pido sesi�n
     this.pedirIdSesion();
@@ -77,7 +79,7 @@ NodoClienteHTTP.prototype.enviarYRecibirMensajes = function () {
 
             mensajesRecibidos.forEach(function (element, index, array) {
                 if (_this.verbose) console.log("mensaje recibido:", element);
-                _this.receptor.recibirMensaje(element);
+                _this.vecino.recibirMensaje(element, _this);
             });
 
             setTimeout(function () {
@@ -97,8 +99,10 @@ NodoClienteHTTP.prototype.recibirMensaje = function (un_mensaje) {
     this.bandejaSalida.push(un_mensaje);
 };
 
-NodoClienteHTTP.prototype.conectarCon = function (un_receptor) {
-    this.receptor = un_receptor;
+NodoClienteHTTP.prototype.conectarCon = function (un_vecino) {
+    if(this.vecino === un_nodo) return;
+    this.vecino = un_nodo;
+	un_vecino.conectarCon(this);
 };
 
 
