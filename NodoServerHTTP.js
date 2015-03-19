@@ -4,6 +4,7 @@ To view a copy of this licence, visit: http://creativecommons.org/licenses/by/3.
 Project URL: https://sourceforge.net/p/vortexnet
 */
 var qs = require('querystring');
+var NodoNulo = require("./NodoNulo").clase;
 
 var NodoServerHTTP = function(opt){
     this.idSesion = opt.id;
@@ -39,25 +40,24 @@ var NodoServerHTTP = function(opt){
     });
     if(this.verbose) console.log("Conector HTTP server: " + this.idSesion + " conectado");
     this.resetTiempoDevida();
+	
+	this.vecino = new NodoNulo();
 };
 
 NodoServerHTTP.prototype.resetTiempoDevida = function(){
     var _this = this;
     if(this.timeoutTiempoDevida) clearTimeout(this.timeoutTiempoDevida);
     this.timeoutTiempoDevida = setTimeout(function(){
-        _this.desconectarDe(_this.receptor);
+        _this.desconectarDe(_this.vecino);
     }, this.tiempoDeVida);
 };
 
 NodoServerHTTP.prototype.conectarCon = function(un_nodo){
-    this.receptor = un_nodo;
+    this.vecino = un_nodo;
 };
 
 NodoServerHTTP.prototype.desconectarDe = function(un_nodo){
-    this.receptor = {
-        recibirMensaje:function(){},
-        desconectarDe: function(){}
-    };
+    this.vecino = new NodoNulo();
     this.desconectarDe = function(){};
     un_nodo.desconectarDe(this);
     if(this.verbose) console.log('Conector HTTP server: ' + this.idSesion + ' desconectado');
@@ -71,7 +71,7 @@ NodoServerHTTP.prototype.recibirMensaje = function(mensaje){
 
 NodoServerHTTP.prototype.recibirMensajePorHttp = function(mensaje){
     if(this.verbose) console.log("mensaje recibido desde el cliente en sesion " + this.idSesion + " : " + JSON.stringify(mensaje));
-    this.receptor.recibirMensaje(mensaje);
+    this.vecino.recibirMensaje(mensaje);
 };
 
 NodoServerHTTP.prototype.getMensajesRecibidos = function(){

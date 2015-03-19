@@ -16,6 +16,10 @@ NodoNulo.prototype.conectarCon = function(){
     
 };
 
+NodoNulo.prototype.desconectarDe = function(){
+    
+};
+
 if(typeof(require) != "undefined"){
     exports.clase = NodoNulo;
 }
