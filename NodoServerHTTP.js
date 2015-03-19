@@ -52,8 +52,8 @@ NodoServerHTTP.prototype.resetTiempoDevida = function(){
     }, this.tiempoDeVida);
 };
 
-NodoServerHTTP.prototype.conectarCon = function(un_nodo){
-    this.vecino = un_nodo;
+NodoServerHTTP.prototype.conectarCon = function(un_vecino){
+    this.vecino = un_vecino;
 };
 
 NodoServerHTTP.prototype.desconectarDe = function(un_nodo){

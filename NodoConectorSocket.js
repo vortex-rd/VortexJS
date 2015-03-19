@@ -23,9 +23,9 @@ NodoConectorSocket.prototype.start = function(){
     });
 };
 
-NodoConectorSocket.prototype.conectarCon = function(un_nodo){
-	if(this.vecino === un_nodo) return;
-    this.vecino = un_nodo;
+NodoConectorSocket.prototype.conectarCon = function(un_vecino){
+	if(this.vecino === un_vecino) return;
+    this.vecino = un_vecino;
 	un_vecino.conectarCon(this);
 };
 

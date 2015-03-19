@@ -13,10 +13,12 @@
         </div>
     </body>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
+	<script type="text/javascript" src="underscore-min.js"></script>
     <script type="text/javascript" src="Filtros.js"></script>
     <script type="text/javascript" src="NodoRouter.js"></script> 
     <script type="text/javascript" src="NodoClienteHTTP.js"></script> 
-    <script type="text/javascript" src="NodoConectorSocket.js"></script>
+    <script type="text/javascript" src="NodoConectorSocket.js"></script>    
+	<script type="text/javascript" src="NodoNulo.js"></script>
     <script type="text/javascript" src="socket.io.js"></script>
     <script>
         $(document).ready(function () {
@@ -26,17 +28,17 @@
             var socket = io.connect('http://localhost:3000');    
             //var socket = io.connect('https://router-vortex.herokuapp.com');
             var adaptador = new NodoConectorSocket(socket);    
-
-            var portal = new NodoPortalBidi();
-            portal.conectarBidireccionalmenteCon(adaptador);
-
+			
+			var router = new NodoRouter();
+			router.conectarCon(adaptador);
+			
             var div_contador = $('#contador_de_mensajes');
             var mensajes_enviados = 0;
 
             $('#btn_start').click(function () {
                 for (var i = 0; i < 1000; i++) {
-                    portal.enviarMensaje({
-                        tipoDeMensaje: 'pruebaHTTP'
+                    router.send({
+                        contenido: 'pruebaHTTP'
                     });
                     mensajes_enviados += 1;
                     div_contador.text(mensajes_enviados.toString());

@@ -6,7 +6,6 @@ Project URL: https://sourceforge.net/p/vortexnet
 
 if(typeof(require) != "undefined"){
    	exports.Filtros = require("./Filtros");
-    exports.NodoMultiplexor = require("./NodoMultiplexor").clase;
     exports.NodoRouter = require("./NodoRouter").clase;
     exports.NodoConectorSocket = require("./NodoConectorSocket").clase;    
     //exports.NodoClienteHTTP =  require("./NodoClienteHTTP").clase;    
