@@ -71,7 +71,7 @@ NodoServerHTTP.prototype.recibirMensaje = function(mensaje){
 
 NodoServerHTTP.prototype.recibirMensajePorHttp = function(mensaje){
     if(this.verbose) console.log("mensaje recibido desde el cliente en sesion " + this.idSesion + " : " + JSON.stringify(mensaje));
-    this.vecino.recibirMensaje(mensaje);
+    this.vecino.recibirMensaje(mensaje, this);
 };
 
 NodoServerHTTP.prototype.getMensajesRecibidos = function(){

@@ -125,6 +125,11 @@ NodoRouter.prototype.publicarFiltros = function(){
     });
 };
 
+NodoRouter.prototype.desconectarDe = function(un_vecino) {
+    this.datosVecinos = _.filter(this.datosVecinos, function(datos_de_un_vecino){ return datos_de_un_vecino.vecino!==un_vecino;});
+	this.publicarFiltros();
+};
+
 if(typeof(require) != "undefined"){
     exports.clase = NodoRouter;
 }

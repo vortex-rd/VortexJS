@@ -31,7 +31,7 @@
             
             var socket = io.connect('http://localhost:3000');    
             //var socket = io.connect('https://router-vortex.herokuapp.com');
-            var adaptador = new NodoConectorSocket(socket);    
+            var adaptador = new NodoConectorSocket({socket:socket});    
 			
 			var router = new NodoRouter();
 			router.conectarCon(adaptador);  

@@ -9,5 +9,5 @@ if(typeof(require) != "undefined"){
     exports.NodoRouter = require("./NodoRouter").clase;
     exports.NodoConectorSocket = require("./NodoConectorSocket").clase;    
     //exports.NodoClienteHTTP =  require("./NodoClienteHTTP").clase;    
-    exports.NodoConectorHttpServer = require("./NodoServerHTTP").clase;   
+    exports.NodoServerHTTP = require("./NodoServerHTTP").clase;   
 }
