@@ -11,6 +11,7 @@ if(typeof(require) != "undefined"){
     var FiltroAND = Filtros.FiltroAND;
     var FiltroFalse = Filtros.FiltroFalse;
     var FiltroXEjemplo = Filtros.FiltroXEjemplo;
+    var DesSerializadorDeFiltros = Filtros.DesSerializadorDeFiltros;
 }
 
 var NodoRouter = function(){
