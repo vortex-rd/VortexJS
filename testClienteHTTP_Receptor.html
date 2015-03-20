@@ -13,13 +13,14 @@
     </body>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
     <script type="text/javascript" src="underscore-min.js"></script>
+    <script type="text/javascript" src="socket.io.js"></script>
     <script type="text/javascript" src="Filtros.js"></script>
     <script type="text/javascript" src="NodoRouter.js"></script> 
     <script type="text/javascript" src="NodoClienteHTTP.js"></script> 
     <script type="text/javascript" src="NodoConectorSocket.js"></script>
     <script type="text/javascript" src="NodoNulo.js"></script>
-    <script type="text/javascript" src="socket.io.js"></script>
-    
+	<script type="text/javascript" src="Vortex.js"></script> 
+
     <script>
         $(document).ready(function () {
             var div_contador = $('#contador_de_mensajes');
@@ -29,19 +30,16 @@
             //var adaptador = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true, 1000);
             //var adaptador = new NodoClienteHTTP('http://localhost:3000', 10, true, 5);
             
-            //var socket = io.connect('http://localhost:3000');    
-            var socket = io.connect('https://server-vortex.herokuapp.com');
+            var socket = io.connect('http://localhost:3000');    
+            //var socket = io.connect('https://server-vortex.herokuapp.com');
             var adaptador = new NodoConectorSocket({socket:socket});    
 			
-			var router = new NodoRouter();
-			router.conectarCon(adaptador);  
-
-              
-            router.when({contenido:'pruebaHTTP'},
-                function (mensaje) {
-                    mensajes_recibidos += 1;
-                    div_contador.text(mensajes_recibidos.toString());
-                });        
+			Vx.conectarCon(adaptador); 
+			
+            Vx.when({contenido:'pruebaHTTP'}, function (mensaje) {
+				mensajes_recibidos += 1;
+				div_contador.text(mensajes_recibidos.toString());
+			});        
         });
     </script>
 </html>
