@@ -189,4 +189,12 @@ describe("Filtros", function() {
 	it("25 - Un filtro X Ejemplo deberia evaluar negativamente mensajes que no contienen todas las claves y valores de un ejemplo", function() {
         expect(new FiltroXEjemplo({p1: 1, p2:2}).eval({p1: 1, p3:3})).toBeFalsy();
     });
+    
+    it("26 - Al simplificar una OR que contiene dos filtros por ejemplo que se incluyen  debería quedar solo el mas general", function() {
+        var un_filtro_or = new FiltroOR([new FiltroXEjemplo({p1:1, p2:2}), 
+                                         new FiltroXEjemplo({p1:1}),
+                                         new FiltroXEjemplo({p3:3})]);
+              
+        expect(un_filtro_or.simplificar().equals(new FiltroOR([new FiltroXEjemplo({p1:1}), new FiltroXEjemplo({p3:3})]))).toBeTruthy();
+    });
 });

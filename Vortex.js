@@ -9,8 +9,10 @@ if(typeof(require) != "undefined"){
    	exports.Filtros = require("./Filtros");
     exports.NodoRouter = NodoRouter;
     exports.NodoConectorSocket = require("./NodoConectorSocket").clase;    
-    //exports.NodoClienteHTTP =  require("./NodoClienteHTTP").clase;    
-    exports.NodoServerHTTP = require("./NodoServerHTTP").clase;   
+    exports.NodoSesionHTTP = require("./NodoSesionHTTP").clase;   
+    exports.ServerHTTP = require("./ServerHTTP").clase;   
+    exports.ServerWebSockets = require("./ServerWebSockets").clase;   
+    exports.ServerVortex = require("./ServerVortex").clase;   
 }
 
 var Vx = new NodoRouter(); 
@@ -18,5 +20,3 @@ var Vx = new NodoRouter();
 if(typeof(require) != "undefined"){	
 	exports.Vx = Vx;
 }
-
-

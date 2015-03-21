@@ -17,6 +17,7 @@ if(typeof(require) != "undefined"){
 var NodoRouter = function(){
     this.datosVecinos = [];
 	this.pedidos = [];
+    this.proximoIdPedido = 0;
 };
 
 NodoRouter.prototype.send = function (un_mensaje, callback) {
@@ -39,13 +40,37 @@ NodoRouter.prototype.send = function (un_mensaje, callback) {
     });
 	
 	if(callback){
-		
-	}
+		un_mensaje.idRequest = this.randomString(32);
+		var pedido = this.when({
+            tipoDeMensaje: "Vortex.respuesta",
+            responseTo: un_mensaje.idRequest
+        }, function(respuesta){
+            callback(respuesta);
+            pedido.remove();
+        });
+	}	
 };
 
 NodoRouter.prototype.when = function (filtro, callback) {
 	if(!filtro.eval) filtro = new FiltroXEjemplo(filtro);
-    this.pedidos.push({ "filtro": filtro, "callback": callback});
+    var id_pedido = this.proximoIdPedido;
+    this.proximoIdPedido += 1;
+    var _this = this;
+    var pedido = {
+        id: id_pedido, 
+        filtro: filtro, 
+        callback: callback,
+        remove: function(){
+            _this.quitarPedido(id_pedido);
+        }
+    };
+    this.pedidos.push(pedido);
+    this.publicarFiltros();
+    return pedido;
+};
+
+NodoRouter.prototype.quitarPedido = function (id_pedido) {
+    this.pedidos = _.filter(this.pedidos, function(pedido){ return pedido.id != id_pedido;});
     this.publicarFiltros();
 };
 
@@ -129,6 +154,13 @@ NodoRouter.prototype.publicarFiltros = function(){
 NodoRouter.prototype.desconectarDe = function(un_vecino) {
     this.datosVecinos = _.filter(this.datosVecinos, function(datos_de_un_vecino){ return datos_de_un_vecino.vecino!==un_vecino;});
 	this.publicarFiltros();
+};
+
+NodoRouter.prototype.randomString = function (length) {
+	var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    return result;
 };
 
 if(typeof(require) != "undefined"){

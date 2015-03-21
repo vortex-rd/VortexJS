@@ -10,12 +10,20 @@
     "type": "git",
     "url": "https://github.com/jlurgo/VortexJS.git"
   },
-  "dependencies" : {
-      "underscore-node": "*"
+  "dependencies": {
+    "underscore-node": "*"
   },
-  "author": "Vortex Group",
+  "author": {
+    "name": "Vortex Group"
+  },
   "license": "Creative Commons",
   "bugs": {
     "url": "https://github.com/jlurgo/VortexJS/issues"
-  }
+  },
+  "gitHead": "96537b36c96b343ce89aaa2301d7fa63b608fad4",
+  "readme": "ERROR: No README data found!",
+  "homepage": "https://github.com/jlurgo/VortexJS",
+  "_id": "vortexjs@0.0.23",
+  "_shasum": "4c985eb10ad6cb37e6c00ecfec2e9c0858952923",
+  "_from": "vortexjs@0.0.23"
 }

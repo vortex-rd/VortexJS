@@ -6,7 +6,7 @@ Project URL: https://sourceforge.net/p/vortexnet
 var qs = require('querystring');
 var NodoNulo = require("./NodoNulo").clase;
 
-var NodoServerHTTP = function(opt){
+var NodoSesionHTTP = function(opt){
     this.idSesion = opt.id;
     this.verbose = opt.verbose||false;
     this.app = opt.app;
@@ -44,7 +44,7 @@ var NodoServerHTTP = function(opt){
 	this.vecino = new NodoNulo();
 };
 
-NodoServerHTTP.prototype.resetTiempoDevida = function(){
+NodoSesionHTTP.prototype.resetTiempoDevida = function(){
     var _this = this;
     if(this.timeoutTiempoDevida) clearTimeout(this.timeoutTiempoDevida);
     this.timeoutTiempoDevida = setTimeout(function(){
@@ -52,11 +52,11 @@ NodoServerHTTP.prototype.resetTiempoDevida = function(){
     }, this.tiempoDeVida);
 };
 
-NodoServerHTTP.prototype.conectarCon = function(un_vecino){
+NodoSesionHTTP.prototype.conectarCon = function(un_vecino){
     this.vecino = un_vecino;
 };
 
-NodoServerHTTP.prototype.desconectarDe = function(un_nodo){
+NodoSesionHTTP.prototype.desconectarDe = function(un_nodo){
     this.vecino = new NodoNulo();
     this.desconectarDe = function(){};
     un_nodo.desconectarDe(this);
@@ -64,17 +64,17 @@ NodoServerHTTP.prototype.desconectarDe = function(un_nodo){
     this.alDesconectar();
 };
 
-NodoServerHTTP.prototype.recibirMensaje = function(mensaje){
+NodoSesionHTTP.prototype.recibirMensaje = function(mensaje){
     if(this.verbose) console.log("mensaje recibido desde el router en sesion " + this.idSesion + " : " + JSON.stringify(mensaje));
     this.bandejaDeEntrada.push(mensaje);
 };
 
-NodoServerHTTP.prototype.recibirMensajePorHttp = function(mensaje){
+NodoSesionHTTP.prototype.recibirMensajePorHttp = function(mensaje){
     if(this.verbose) console.log("mensaje recibido desde el cliente en sesion " + this.idSesion + " : " + JSON.stringify(mensaje));
     this.vecino.recibirMensaje(mensaje, this);
 };
 
-NodoServerHTTP.prototype.getMensajesRecibidos = function(){
+NodoSesionHTTP.prototype.getMensajesRecibidos = function(){
     var mensajesRecibidos = [];
     for(i=0;i<this.bandejaDeEntrada.length;i++){
         mensajesRecibidos.push(this.bandejaDeEntrada[i]);
@@ -83,4 +83,4 @@ NodoServerHTTP.prototype.getMensajesRecibidos = function(){
     return mensajesRecibidos;
 };
 
-exports.clase = NodoServerHTTP;
+exports.clase = NodoSesionHTTP;

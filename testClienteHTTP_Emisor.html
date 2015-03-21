@@ -34,14 +34,14 @@
 			
             var div_contador = $('#contador_de_mensajes');
             var mensajes_enviados = 0;
-
             $('#btn_start').click(function () {
-                for (var i = 0; i < 100; i++) {
+                for (var i = 0; i < 10; i++) {
                     Vx.send({
                         contenido: 'pruebaHTTP'
-                    });
-                    mensajes_enviados += 1;
-                    div_contador.text(mensajes_enviados.toString());
+                    }, function(respuesta){
+                        mensajes_enviados += 1;
+                        div_contador.text(mensajes_enviados.toString());
+                    });                    
                 }
             });
         });
