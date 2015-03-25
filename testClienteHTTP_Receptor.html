@@ -26,14 +26,11 @@
             var div_contador = $('#contador_de_mensajes');
             var mensajes_recibidos = 0;
             div_contador.text(mensajes_recibidos.toString());
-            //var adaptador = new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true, 1000);
-            //var adaptador = new NodoClienteHTTP('http://localhost:3000', 10, true, 5);
-            
-            var socket = io.connect('http://localhost:3000');    
-            //var socket = io.connect('https://server-vortex.herokuapp.com');
-            var adaptador = new NodoConectorSocket({socket:socket});    
 			
-			Vx.conectarCon(adaptador); 
+            //Vx.conectarCon(new NodoClienteHTTP('http://server-vortex.herokuapp.com', 10, true, 1000));
+			//Vx.conectarCon(new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true, 1000));
+			Vx.conectarCon(new NodoConectorSocket('https://server-vortex.herokuapp.com'));
+			//Vx.conectarCon(new NodoConectorSocket('http://localhost:3000'));
 			
             Vx.when({contenido:'pruebaHTTP'}, function (mensaje) {
 				mensajes_recibidos += 1;

@@ -9,7 +9,7 @@ if(typeof(require) != "undefined"){
 }
 
 var NodoConectorSocket = function(opt){
-    this.socket = opt.socket;
+    this.socket = opt.socket||io.connect(opt);
     this.verbose = opt.verbose||false;
     this.id = opt.id||"anonimo";
     this.alDesconectar = opt.alDesconectar||function(){};
