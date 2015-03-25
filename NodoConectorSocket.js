@@ -6,6 +6,7 @@ Project URL: https://sourceforge.net/p/vortexnet
 
 if(typeof(require) != "undefined"){
     var NodoNulo = require("./NodoNulo").clase;
+	var io = require('socket.io');
 }
 
 var NodoConectorSocket = function(opt){
