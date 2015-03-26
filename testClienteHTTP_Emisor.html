@@ -15,24 +15,31 @@
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
 	<script type="text/javascript" src="underscore-min.js"></script>
     <script type="text/javascript" src="socket.io.js"></script>
+    
+	<!--
     <script type="text/javascript" src="Filtros.js"></script>
     <script type="text/javascript" src="NodoRouter.js"></script> 
     <script type="text/javascript" src="NodoClienteHTTP.js"></script> 
-    <script type="text/javascript" src="NodoConectorSocket.js"></script>    
-	<script type="text/javascript" src="NodoNulo.js"></script>
-    <script type="text/javascript" src="Vortex.js"></script> 
+    <script type="text/javascript" src="NodoConectorSocket.js"></script>
+    <script type="text/javascript" src="NodoNulo.js"></script>
+	<script type="text/javascript" src="Vortex.js"></script> 
+	-->
+	<script type="text/javascript" src="vortex.min.js"></script>
+	
+	
     <script>
         $(document).ready(function () {
 			//Vx.conectarCon(new NodoClienteHTTP('http://server-vortex.herokuapp.com', 10, true, 1000));
 			//Vx.conectarCon(new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true, 1000));
-			//Vx.conectarCon(new NodoConectorSocket('https://server-vortex.herokuapp.com'));
-			Vx.conectarCon(new NodoConectorSocket('http://localhost:3000'));
+			Vx.conectarCon(new NodoConectorSocket('https://server-vortex.herokuapp.com'));
+			//Vx.conectarCon(new NodoConectorSocket('http://localhost:3000'));
 			
             var div_contador = $('#contador_de_mensajes');
             var mensajes_enviados = 0;
             $('#btn_start').click(function () {
                 for (var i = 0; i < 10; i++) {
-                    Vx.send({
+				
+					Vx.send({
                         contenido: 'pruebaHTTP'
                     }, function(respuesta){
                         mensajes_enviados += 1;
