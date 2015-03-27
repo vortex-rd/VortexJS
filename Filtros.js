@@ -347,7 +347,7 @@ FiltroFalse.prototype = {
         return (otro_filtro instanceof FiltroFalse);
     },
 	contains: function(otro_filtro){
-		return false;
+		return (otro_filtro instanceof FiltroFalse);
 	}
 };
 if(typeof(require) != "undefined"){ exports.FiltroFalse = FiltroFalse;}
