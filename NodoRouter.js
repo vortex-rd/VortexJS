@@ -21,6 +21,7 @@ var NodoRouter = function(){
 };
 
 NodoRouter.prototype.send = function (un_mensaje, callback) {		
+	var _this = this;
 	if(callback){
 		un_mensaje.idRequest = this.randomString(32);
 		var pedido = this.when({
