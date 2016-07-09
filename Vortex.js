@@ -15,7 +15,7 @@ if(typeof(require) != "undefined"){
     exports.ServerVortex = require("./ServerVortex").clase;   
 }
 
-var Vx = new NodoRouter(); 
+var Vx = vx = new NodoRouter(); 
 
 if(typeof(require) != "undefined"){	
 	exports.Vx = Vx;
