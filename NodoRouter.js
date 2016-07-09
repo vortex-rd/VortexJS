@@ -35,11 +35,20 @@ NodoRouter.prototype.send = function (un_mensaje, callback) {
 	//ejecuto el callback que corresponda
 	_.forEach(this.pedidos, function (un_pedido) {
         if(un_pedido.filtro.eval(un_mensaje)){ 
-            setTimeout(function(){      
-                un_pedido.callback(un_mensaje); 
+            setTimeout(function(){    
+				if(un_mensaje.idRequest) 
+					un_pedido.callback(un_mensaje, {
+						send: function(respuesta){
+							respuesta.tipoDeMensaje = "Vortex.respuesta";
+							respuesta.responseTo = un_mensaje.idRequest;
+							_this.send(respuesta);
+						}
+					});
+				else un_pedido.callback(un_mensaje); 
             },0);
         }
     });
+	
 	
 	//envío a los vecinos que corresponda
 	_.forEach(this.datosVecinos, function (datos_de_un_vecino) {
@@ -75,6 +84,7 @@ NodoRouter.prototype.quitarPedido = function (id_pedido) {
 };
 
 NodoRouter.prototype.recibirMensaje = function (un_mensaje, vecino_emisor) {
+	if(this.verbose) console.log("llegó a vx:", un_mensaje);
     var _this = this;
     //si es una publicacion de filtros
 	if(un_mensaje.tipoDeMensaje)
