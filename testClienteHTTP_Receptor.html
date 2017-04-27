@@ -33,8 +33,8 @@
 			
             //Vx.conectarCon(new NodoClienteHTTP('http://server-vortex.herokuapp.com', 10, true, 1000));
 			//Vx.conectarCon(new NodoClienteHTTP('http://router-vortex.herokuapp.com', 10, true, 1000));
-			//vx.conectarCon(new NodoConectorSocket('https://server-vortex.herokuapp.com'));
-			Vx.conectarCon(new NodoConectorSocket('http://localhost:3000'));
+			vx.conectarCon(new NodoConectorSocket('https://router-vortex.herokuapp.com'));
+			//Vx.conectarCon(new NodoConectorSocket('http://localhost:3000'));
 			
             Vx.when({contenido:'prueba'}, function (mensaje, response) {
 				mensajes_recibidos += 1;
