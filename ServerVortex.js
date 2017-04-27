@@ -1,7 +1,7 @@
 var ServerVortex = function(app){
 	var http = require("http");
     var url = require("url");
-    var Vortex = require('vortexjs');
+    var Vortex = require('vortex-js');
     var express = require('express');
     
     var app = express();
