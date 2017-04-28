@@ -1,7 +1,7 @@
 {
   "name": "vortex-js",
-  "version": "0.0.30",
-  "description": "Port de Vortex a Javascript ",
+  "version": "1.0.0",
+  "description": "Módulo vortex-js para node.js",
   "main": "Vortex.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,22 +9,15 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/vortex-rd/vortex-js.git"
-	
   },
-  "dependencies": {
-    "underscore-node": "*"
-  },
-  "author": {
-    "name": "Vortex Group"
-  },
+  "keywords": [
+    "vortex",
+    "router"
+  ],
+  "author": "vortex-rd",
   "license": "Creative Commons",
   "bugs": {
     "url": "https://github.com/vortex-rd/vortex-js/issues"
   },
-  "gitHead": "96537b36c96b343ce89aaa2301d7fa63b608fad4",
-  "readme": "ERROR: No README data found!",
-  "homepage": "https://github.com/vortex-rd/vortex-js",
-  "_id": "vortex-js@0.0.23",
-  "_shasum": "4c985eb10ad6cb37e6c00ecfec2e9c0858952923",
-  "_from": "vortex-js@0.0.23"
+  "homepage": "https://github.com/vortex-rd/vortex-js"
 }
