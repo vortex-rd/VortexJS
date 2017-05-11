@@ -1,10 +1,15 @@
 {
   "name": "vortex-js",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Módulo vortex-js para node.js",
   "main": "Vortex.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies" : {
+	"express": "*",
+    "socket.io": "*",
+	"socket.io-client": "*"
   },
   "repository": {
     "type": "git",
