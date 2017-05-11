@@ -1,6 +1,6 @@
 {
   "name": "vortex-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Módulo vortex-js para node.js",
   "main": "Vortex.js",
   "scripts": {
